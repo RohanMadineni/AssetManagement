@@ -1,0 +1,64 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: assetdb
+      MYSQL_USER: assetuser
+      MYSQL_PASSWORD: assetpass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbituser
+      RABBITMQ_DEFAULT_PASS: rabbitpass
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # Management UI
+
+  laravel:
+    build: ./laravel
+    container_name: laravel
+    restart: always
+    depends_on:
+      - mysql
+      - redis
+      - rabbitmq
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./laravel:/var/www/html
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: assetdb
+      DB_USERNAME: assetuser
+      DB_PASSWORD: assetpass
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      QUEUE_CONNECTION: redis
+      BROKER_HOST: rabbitmq
+      BROKER_USER: rabbituser
+      BROKER_PASS: rabbitpass
+
+volumes:
+  mysql_data:
+  redis_data:
