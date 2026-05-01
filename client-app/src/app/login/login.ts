@@ -11,7 +11,7 @@ import { AuthService } from '../auth-service';
   selector: 'app-login',
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
-  standalone: true,
+  // standalone: true,
   imports: [MatCardModule, MatFormFieldModule, MatButtonModule, ReactiveFormsModule, MatInputModule],
 })
 export class LoginPage {

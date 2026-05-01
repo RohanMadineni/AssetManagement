@@ -1,53 +1,83 @@
 
-<mat-toolbar >
-
-  <div class="secondtitle">Asset Management System</div>
-      
+<mat-toolbar>
+  <mat-icon style="color:white;">reorder_icon</mat-icon><div class="secondtitle">Asset Management System</div>
+  <div class="person" style="display:flex;">
+    <mat-icon class="acc_circle">account_circle </mat-icon>
+    <span>{{role | titlecase}}  {{name}}</span> 
+  </div>
 </mat-toolbar>
 <!-- <div class = "side-contain"> -->
 <mat-drawer-container class="sidenav-container">
   
   <mat-drawer mode="side" opened class="sidenav">
-    <!-- <mat-drawer-content> -->
+    <mat-card class="sidenav-card">
     <mat-nav-list class="list">
       
       <a mat-list-item routerLink="dashboard" routerLinkActive="active-link">
+        <p>
         <mat-icon>dashboard</mat-icon>
         Dashboard
+        </p>
       </a>
 
       <a mat-list-item  routerLink="assets" routerLinkActive="active-link">
+        <p>
         <mat-icon>inventory</mat-icon>
         My Assets
+        </p>
       </a>
 
       <a mat-list-item routerLink="addAsset" routerLinkActive="active-link">
+        <p>
         <mat-icon>add-box</mat-icon>
         Add Asset
+        </p>
       </a>
       <!-- <a mat-list-item routerLink="assetdetail" routerLinkActive="active-link">
         <mat-icon>build</mat-icon>
         Asset Details
       </a> -->
       <span *ngIf="isadmin()">
-        <a mat-list-item routerLink="register" routerLinkActive="active-link">
-        <mat-icon>person_add</mat-icon>
-        Register User
+      <a mat-list-item>
+        <p class="admincontrols" style="color:rgb(70, 69, 69); font-size:14px;font-weight:400;  margin-left:10px;">
+          ADMINISTRATION
+        </p>
       </a>
+      </span>
+      <span *ngIf="isadmin()">
+        <a mat-list-item routerLink="register" routerLinkActive="active-link">
+          <p>
+            <mat-icon>person_add</mat-icon>
+            Register User
+          </p>
+        </a>
       </span> 
       
       <span *ngIf="isadmin()">
-      <a mat-list-item routerLink="categoryConfig" routerLinkActive="active-link">
-        <mat-icon>add</mat-icon>
-         Category Config
-      </a>
+        <a mat-list-item routerLink="usermanagement" routerLinkActive="active-link">
+          <p>
+            <mat-icon>supervised_user_circle</mat-icon>
+            User Management
+          </p>
+        </a>
+      </span> 
+
+      <span *ngIf="isadmin()">
+          <a mat-list-item routerLink="categoryConfig" routerLinkActive="active-link">
+            <p>
+              <mat-icon>add</mat-icon>
+              Category Config
+            </p>
+          </a>
       </span>
+
       <a mat-list-item (click)="onLogout()">
         <mat-icon>logout</mat-icon>
         Log Out
       </a>
+
     </mat-nav-list>
-    <!-- </mat-drawer-content> -->
+    </mat-card>
   </mat-drawer>
   <mat-drawer-content class = "main">
     <div class="content">

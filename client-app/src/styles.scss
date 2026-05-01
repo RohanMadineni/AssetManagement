@@ -22,7 +22,8 @@ html {
 :root {
   @include mat.toolbar-overrides((
     // container-background-color: linear-gradient(to right, rgb(180, 30, 106), rgb(243, 109, 161))
-    container-background-color: linear-gradient(to bottom, rgb(205, 67, 143), rgb(246, 129, 174))
+    // container-background-color: linear-gradient(to bottom, rgb(205, 67, 143), rgb(246, 129, 174))
+    container-background-color: linear-gradient(to bottom, rgb(250, 62, 142), rgb(246, 129, 174))
   ));
 }
 :root{
@@ -36,13 +37,13 @@ html {
   ));
 }
 
-.mat-mdc-card {
-  background: linear-gradient(
-    to bottom,
-    rgb(244, 180, 218),
-    rgb(243, 239, 240)
-  );
-}
+// .mat-mdc-card {
+//   background: linear-gradient(
+//     to bottom,
+//     rgb(244, 180, 218),
+//     rgb(243, 239, 240)
+//   );
+// }
 :root {
   @include mat.table-overrides((
     background-color: #e2e9f9,
@@ -60,7 +61,7 @@ body {
   // Default the application to a light color theme. This can be changed to
   // `dark` to enable the dark color theme, or to `light dark` to defer to the
   // user's system settings.
-  color-scheme: light;
+  // color-scheme: light;
 
   // Set a default background, font and text colors for the application using
   // Angular Material's system-level CSS variables. Learn more about these

@@ -1,135 +1,86 @@
-<!-- <div class="filters">
-    <mat-form-field class = "half-width">
-        <mat-label>Category</mat-label>
-        <mat-select [(ngModel)] = "filters.category_id" (selectionChange)="loadAssets()">
-            <mat-option value="">All</mat-option>
-            <mat-option *ngFor = "let cat of categories()" [value] = "cat.id">{{cat.name}}</mat-option>
-        </mat-select>
-    </mat-form-field>
+<div class="add-asset-page">
 
-    <mat-form-field class = "half-width">
-        <mat-label>Status</mat-label>
-        <mat-select [(ngModel)] = "filters.status" (selectionChange)="loadAssets()">
-            <mat-option value="">All</mat-option>
-            <mat-option value="assigned">Assigned</mat-option>
-            <mat-option value="available">Available</mat-option>
-        </mat-select>
-    </mat-form-field>
-    <mat-form-field class = "half-width">
-        <mat-label>Asset</mat-label>
-        <mat-select [(ngModel)] = "filters.asset">
-            <mat-option value="">Select</mat-option>
-            <mat-option *ngFor = "let a of assets()" [value]="a.id">{{a.name}}</mat-option> 
-        </mat-select>
-    </mat-form-field>
+  <h1 class="page-title">Add Asset</h1>
+  <p class="welcome">Fill in information for a new asset!</p>
+  
+  <!-- <mat-card class="asset-card"> -->
+  <form [formGroup]="assetForm" (ngSubmit)="onSubmit()">
+    <!-- <mat-card class="form-card"> -->
+    <div class="section-title" style="display:flex; align-content: center; padding-bottom: 10px;">
+      <mat-icon class="icon-circle">info</mat-icon>
+      <span style="align-content: center; margin-left:5px; font-weight:500;">Asset Information</span>
+    </div>
 
-    <button mat-raised-button class = "apply-fil">
-        <mat-icon>filter_list</mat-icon>
-        Apply Filters
-    </button>
-</div>
-
-<mat-card class="form-card">
-    <form [formGroup]="assetForm" (ngSubmit)="onSubmit()">
-
+    <div class="form-grid">
+      <div>
+        <span style="font-weight: 500;">Asset Name</span>
+        <mat-form-field class="full-width" type="string">
+          <mat-label>Enter asset name</mat-label>
+          <input matInput formControlName="name">
+        </mat-form-field>
+      </div>
+      <div>
+        <span style="font-weight: 500;">Model</span>
+        <mat-form-field class="full-width" type="string">
+          <mat-label>Enter model</mat-label>
+          <input matInput formControlName="model">
+        </mat-form-field>
+      </div>
+      <div>
+        <span style="font-weight: 500;">Category</span>
+        <mat-form-field class="full-width">
+          <mat-label>Select category</mat-label>
+          <mat-select formControlName="category_id"
+                      (selectionChange)="onCategoryChange($event.value)">
+            <mat-option *ngFor="let cat of categories" [value]="cat.id">
+              {{ cat.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      
+    </div>
     
-    <mat-card-title>Add Parameters</mat-card-title>
-    <mat-form-field  class="par-val" >
-        <mat-label>Parameter Name</mat-label>
-        <input matInput formControlName="param_name">
-    </mat-form-field>
+    <div class="form-grid2">
+      <div>
+        <span style="font-weight: 500;">Brand</span>
+        <mat-form-field class="full-width">
+          <mat-label>Enter brand</mat-label> 
+          <input matInput formControlName="brand">
+        </mat-form-field>
+      </div>
 
-    <mat-form-field  class="par-val" >
-        <mat-label>Parameter Value</mat-label>
-        <input matInput formControlName="param_value">
-    </mat-form-field>
+      <div>
+        <span style="font-weight: 500;">Purchase Price</span>
+        <mat-form-field class="full-width">
+          <mat-label>Enter price</mat-label>
+          <input matInput formControlName="brand">
+        </mat-form-field>
+      </div>
+
+      <div>
+        <span style="font-weight: 500;">Status</span>
+        <mat-form-field class="full-width">
+          <mat-label>Select Status</mat-label>
+          <mat-select formControlName="status">
+            <mat-option value="available">Available</mat-option>
+            <mat-option value="assigned">Assigned</mat-option>
+            <mat-option value="maintenance">Under Maintenance</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="form-grid3">
+      <span style="font-weight: 500;">Description</span>
+      <mat-form-field class="hun-width">
+          <mat-label>Enter asset description</mat-label>
+          <input matInput formControlName="description">
+      </mat-form-field>
+    </div>
     <button mat-raised-button color="primary" type="submit">
       Create Asset
     </button>
-</form>
-</mat-card> -->
-
-<div class="assetdetail-page">
-    
-    <mat-card class = "filter-card">
-
-        <mat-card-header>
-            <div style="color: rgb(71, 70, 70);">
-                <mat-card-title>Filters</mat-card-title>
-            </div>
-        </mat-card-header>
-
-        <mat-card-content class="filter-content">
-            <mat-form-field class = "full-width">
-
-                <mat-label>Category</mat-label>
-
-                <mat-select [(ngModel)] = "filters.category_id" (selectionChange)="loadAssets()">
-                    <mat-option value="">All</mat-option>
-                    <mat-option *ngFor = "let cat of categories()" [value] = "cat.id">{{cat.name}}</mat-option>
-                </mat-select>
-
-             </mat-form-field>
-
-            <mat-form-field class = "full-width">
-
-                <mat-label>Status</mat-label>
-
-                <mat-select [(ngModel)] = "filters.status" (selectionChange)="loadAssets()">
-
-                    <mat-option value="">All</mat-option>
-                    <mat-option value="assigned">Assigned</mat-option>
-                    <mat-option value="available">Available</mat-option>
-
-                </mat-select>
-
-            </mat-form-field>
-
-                <mat-form-field class = "full-width">
-
-                    <mat-label>Asset</mat-label>
-
-                    <mat-select [(ngModel)] = "filters.asset">
-                        <mat-option value="">Select</mat-option>
-                        <mat-option *ngFor = "let a of assets()" [value]="a.id">{{a.name}}</mat-option> 
-                    </mat-select>
-                </mat-form-field>
-            
-            <button mat-raised-button class = "apply-fil">
-                <mat-icon>filter_list</mat-icon>
-                    Apply Filters
-            </button>
-        </mat-card-content>  
-
-    </mat-card>
-
-    <mat-card class="assetdetail-card">
-
-        <mat-card-header>
-            <div style="color: rgb(71, 70, 70);">
-                <mat-card-title>Add Asset Detail</mat-card-title>
-            </div>
-        </mat-card-header>
-        
-        <mat-card-content class="assetdetail-content">
-
-            <form [formGroup]="assetForm" (ngSubmit)="onSubmit()">
-
-                <mat-form-field  class="full-width" >
-                    <mat-label>Parameter Name</mat-label>
-                    <input matInput formControlName="param_name">
-                </mat-form-field>
-
-                <mat-form-field  class="full-width" >
-                    <mat-label>Parameter Value</mat-label>
-                    <input matInput formControlName="param_value">
-                </mat-form-field>
-
-                <button mat-raised-button color="primary" type="submit">
-                    Create Asset
-                </button>
-
-            </form>
-        </mat-card-content>
-    </mat-card>
+        <!-- </mat-card> -->
+  </form>
+  <!-- </mat-card> -->
 </div>

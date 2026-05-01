@@ -4,8 +4,8 @@
     <p><strong>Name:</strong> {{data.name}}</p>
     <p><strong>Status:</strong> {{data.status}}</p>
     <p><strong>Brand:</strong> {{data.brand}}</p>
-    <div *ngFor="let p of data.parameters">
-    <strong>{{p.name}}:</strong> {{p.value}}
+    <div *ngFor="let p of data.attribute_values">
+      <p><strong>{{p.parameter.name}}:</strong> {{p.value}}</p>
     </div>
 </mat-dialog-content>
 

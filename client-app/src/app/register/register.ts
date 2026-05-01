@@ -27,6 +27,7 @@ export class RegisterPage {
 
 //loginform: FormGroup;
   loginform = new FormGroup({
+    email: new FormControl(''),
     username: new FormControl(''),
     password: new FormControl(''),
     role: new FormControl(''),

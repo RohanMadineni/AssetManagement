@@ -63,26 +63,26 @@
         <mat-card-content class="filter-content">
             <mat-form-field class = "full-width" style="margin-top: 18px;">
 
-                    <mat-label>Category</mat-label>
+                <mat-label>Category</mat-label>
 
-                    <mat-select [(ngModel)] = "filters.edit_category_id" (selectionChange)="loadParameters()">
-                        <!-- <mat-option value="">All</mat-option> -->
-                        <mat-option *ngFor = "let cat of categories()" [value] = "cat.id">{{cat.name}}</mat-option>
-                    </mat-select>
+                <mat-select [(ngModel)] = "filters.edit_category_id" (selectionChange)="loadParameters()">
+                    <!-- <mat-option value="">All</mat-option> -->
+                    <mat-option *ngFor = "let cat of categories()" [value] = "cat.id">{{cat.name}}</mat-option>
+                </mat-select>
 
-                </mat-form-field>
+            </mat-form-field>
 
             <mat-form-field class = "full-width">
 
-                    <mat-label>Parameter Name</mat-label>
+                <mat-label>Parameter Name</mat-label>
 
-                    <mat-select [(ngModel)] = "filters.edit_param_id" (selectionChange)="onParamChange()">
-                        <!-- <mat-option value="">All</mat-option> -->
-                        <!-- <mat-option value="processor">Processor</mat-option> -->
-                        <mat-option *ngFor = "let par of parameters()" [value] = "par.id">{{par.name}}</mat-option>
-                    </mat-select>
+                <mat-select [(ngModel)] = "filters.edit_param_id" (selectionChange)="onParamChange()">
+                    <!-- <mat-option value="">All</mat-option> -->
+                    <!-- <mat-option value="processor">Processor</mat-option> -->
+                    <mat-option *ngFor = "let par of parameters()" [value] = "par.id">{{par.name}}</mat-option>
+                </mat-select>
 
-                </mat-form-field>
+            </mat-form-field>
 
             <form [formGroup]="editForm" (ngSubmit)="onSubmit('edit')" >
                 <mat-form-field class="full-width">

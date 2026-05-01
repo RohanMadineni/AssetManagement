@@ -1,17 +1,4 @@
-// import { Component } from '@angular/core';
-// import { MatCardModule } from '@angular/material/card';
-// import { MatFormFieldModule } from '@angular/material/form-field';
-// @Component({
-//   selector: 'app-add-asset',
-//   imports: [],
-//   templateUrl: './add-asset.html',
-//   styleUrl: './add-asset.css',
-// })
-// export class AddAsset {
-
-// }
-
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -20,14 +7,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
-
+import { MatIcon } from '@angular/material/icon';
 import { AssetService } from '../asset-service';
 
 @Component({
   selector: 'app-add-asset',
-  standalone: true,
   templateUrl: './add-asset.html',
-  styleUrls: ['./add-asset.scss'],
+  styleUrl: './add-asset.scss',
   imports: [
     CommonModule,
     MatFormFieldModule,
@@ -35,14 +21,17 @@ import { AssetService } from '../asset-service';
     MatButtonModule,
     MatSelectModule,
     MatCardModule,
+    MatIcon,
     ReactiveFormsModule
   ]
 })
-export class AddAssetComponent implements OnInit {
+export class AddAssetComponent implements OnInit{
 
   assetForm!: FormGroup;
   categories: any[] = [];
   parameters: any[] = [];
+  @Input() user: any;
+  @Output() back = new EventEmitter<void>();
 
   constructor(
     private fb: FormBuilder,
@@ -58,7 +47,13 @@ export class AddAssetComponent implements OnInit {
     this.assetForm = this.fb.group({
       name: ['', Validators.required],
       category_id: ['', Validators.required],
-      status: ['available', Validators.required],
+      status: ['', Validators.required],
+      brand: [''],
+      model: [''],
+      description: [''],
+      date: [''],
+      warranty: [''],
+      price: <number|null>(null),
       attributes: this.fb.array([])
     });
   }
@@ -75,11 +70,7 @@ export class AddAssetComponent implements OnInit {
 
   onCategoryChange(categoryId: number) {
     this.assetService.getCategoryParameters(categoryId).subscribe(res => {
-    //   console.log(res);
-    //   console.log('FULL RESPONSE:', res);
-    // console.log('TYPE:', typeof res);
-    // console.log('IS ARRAY:', Array.isArray(res));
-
+    
       const params = res.pendingAttributes; 
       this.parameters = params;
 
@@ -105,6 +96,7 @@ export class AddAssetComponent implements OnInit {
       console.log('Asset created', res);
        this.assetForm.reset();
        this.attributes.clear();
+      //  this.back.emit();
     }});
   }
 
@@ -118,10 +110,13 @@ export class AddAssetComponent implements OnInit {
     });
 
     return {
+      selected_user: this.user?this.user:0,
       name: formValue.name,
       category_id: formValue.category_id,
       status: formValue.status,
+      brand: formValue.brand,
       attributes
     };
   }
+
 }

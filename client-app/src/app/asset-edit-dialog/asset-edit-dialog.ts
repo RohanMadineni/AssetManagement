@@ -15,7 +15,8 @@ import { MatSelectModule } from '@angular/material/select';
 })
 export class AssetEditDialog implements OnInit{
 
-  attributes = signal<any[]>([]);
+  // attributes = signal<any[]>([]);
+  parameters = signal<any[]>([]);
 
   readonly data = inject<any>(MAT_DIALOG_DATA);
   readonly dialogRef = inject(MatDialogRef<AssetEditDialog>);
@@ -24,13 +25,22 @@ export class AssetEditDialog implements OnInit{
     name: new FormControl(this.data.name),
     brand: new FormControl(this.data.brand),
     status: new FormControl(this.data.status),
+
+    attributesControls: new FormGroup({
+      parameterID: new FormControl<number|null>(null),
+      value: new FormControl<any|null>(null), 
+      }
+    )
+
   });
 
   constructor(private assetService: AssetService){}
 
   ngOnInit(): void {
-    this.attributes.set([]);
-    this.loadAttributes();
+    // this.attributes.set([]);
+    this.parameters.set([]);
+    // this.loadAttributes();
+    this.loadParameters();
   }
 
   onNoClick(): void {
@@ -38,17 +48,27 @@ export class AssetEditDialog implements OnInit{
   }
 
   onSubmit(){
-    const payload = {
-      ...this.editForm.value,
+    const {attributesControls, ...form} = this.editForm.value;
+    const payload:any = { 
+      ...form
+    };
+    if(attributesControls?.parameterID){
+      payload.attributes = {
+        [attributesControls.parameterID]: attributesControls.value
+      }
     }
+  
     console.log(payload);
     
-    this.assetService.updateAsset(Number(this.data.id), payload).subscribe(()=>{this.dialogRef.close(true);});
-    // this.editForm.reset();
+    this.assetService.updateAsset(Number(this.data.id), payload).subscribe(res=>{console.log(res);this.dialogRef.close(true);});
   }
 
-  loadAttributes(){
+  // loadAttributes(){
 
+  // }
+  
+  loadParameters(){
+    this.assetService.getCategoryParameters(this.data.category_id).subscribe(res => {this.parameters.set(res)});
   }
 
 }

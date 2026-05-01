@@ -12,7 +12,6 @@ import { AssetService } from '../asset-service';
 export class AssetViewDialog implements OnInit{
 
   attributes = signal<any[]>([]);
-
   readonly data = inject<any>(MAT_DIALOG_DATA);
   readonly dialogRef = inject(MatDialogRef<AssetViewDialog>);
 
@@ -20,14 +19,12 @@ export class AssetViewDialog implements OnInit{
 
   ngOnInit(){
     this.attributes.set([]);
-    this.loadAttributes();
+    console.log(this.data);
   }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
 
-  loadAttributes(){
-    
-  }
+
 }

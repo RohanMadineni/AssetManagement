@@ -1,15 +1,15 @@
-import { HttpClient } from '@angular/common/http';
+// import { HttpClient } from '@angular/common/http';
 import { Injectable, Component, PLATFORM_ID } from '@angular/core';
 import { RequestService } from './request-service';
-import { signal } from '@angular/core';
+// import { signal } from '@angular/core';
 @Injectable({
   providedIn: 'root',
 })
 export class AssetService {
-  constructor(private http:HttpClient, private requestService: RequestService){
+  constructor(private requestService: RequestService){
     
   }
-  users = signal<any[]>([]);
+  // users = signal<any[]>([]);
   getStats() {
     // return this.http.get<any>('http://localhost:8000/api/assets/stats');
     
@@ -35,7 +35,10 @@ export class AssetService {
     // return this.http.get<any>('http://localhost:8000/api/assets', {params});
     return this.requestService.GetRequest('http://localhost:8000/api/assets', params);
   }
-
+  getAllAssets(params: any) {
+    // return this.http.get<any>('http://localhost:8000/api/assets', {params});
+    return this.requestService.GetRequest('http://localhost:8000/api/assets/all', params);
+  }
   updateAsset(id: number, data:any){
     return this.requestService.PutRequest(`http://localhost:8000/api/assets/${id}`, data);
   }

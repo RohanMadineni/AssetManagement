@@ -12,6 +12,10 @@ class CategoryController extends Controller
         return response()->json($categories);
     }
     
+    public function name($id){
+        $category = Category::findorFail($id);
+        return response()->json($category);
+    }
     public function create(Request $request){
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -22,7 +26,7 @@ class CategoryController extends Controller
 
         return response()->json($category, 201);    
     }
-
+    
     public function update(Request $request, $id){
 
         $category = Category::findorFail($id);

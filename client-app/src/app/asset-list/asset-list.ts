@@ -1,4 +1,4 @@
-import { Component, OnInit, NgModule, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 // import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; // 🔥 for ngModel
@@ -23,10 +23,7 @@ import { AssetEditDialog } from '../asset-edit-dialog/asset-edit-dialog';
   templateUrl: './asset-list.html',
   styleUrl: './asset-list.scss',
 })
-// export class AssetListPage {
-//   constructor(private assetService: AssetService){}
-  
-// }
+
 export class AssetListPage implements OnInit {
   assets= signal<any[]>([]);
   total = signal(0);
@@ -37,6 +34,8 @@ export class AssetListPage implements OnInit {
     status: ''
   };
 
+  @Input() user:any;
+  @Output() back = new EventEmitter<void>();
   displayedColumns: string[] = ['name', 'actions'];
 
   constructor(private assetService: AssetService, private dialog: MatDialog) {}
@@ -49,14 +48,15 @@ export class AssetListPage implements OnInit {
   loadAssets() {
     const params: any = {
       page: (this.page()),
+      selected_user: this.user?this.user:0,
       ...this.filters
     };
     console.log(params);
     this.assetService.getAssets(params).subscribe(res => {
       setTimeout(()=>{
+        console.log(res);
         this.assets.set(res.data);
-      this.total.set(res.total);
-      // this.cdr.detectChanges();
+        this.total.set(res.total);
       });
     });
   }
@@ -77,7 +77,7 @@ export class AssetListPage implements OnInit {
  
   deleteAsset(id: any) {
     this.assetService.deleteAsset(id).subscribe(() => {
-      this.loadAssets(); // 🔥 refresh list after delete    
+      this.loadAssets(); 
     });
   }
 
@@ -90,7 +90,7 @@ export class AssetListPage implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.loadAssets();   // refresh table
+        this.loadAssets();   
       }
     });
   }

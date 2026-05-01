@@ -1,16 +1,17 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
+import { inject, Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root',
 })
 export class RequestService {
   
   val_res: any;
-  constructor(private http: HttpClient){};
+  private readonly http = inject(HttpClient);
+  
+  constructor(){};
 
   public GetRequest(url: string, params?: any){
-    
+  
     if(params){
       return this.http.get<any>(url,{params});
     }

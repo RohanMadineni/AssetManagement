@@ -5,35 +5,35 @@
 
         <mat-form-field class="full-width">
             <mat-label>Name</mat-label>
-            <input matInput formControlName="name">
+            <input matInput formControlName="username">
         </mat-form-field>
 
         <mat-form-field class = "full-width">
-            <mat-label>Status</mat-label>
-            <mat-select formControlName="status">
-                <mat-option value="assigned">Assigned</mat-option>
-                <mat-option value="available">Available</mat-option>
-                <mat-option value="under maintenance">Under Maintenance</mat-option>
+            <mat-label>Role</mat-label>
+            <mat-select formControlName="role">
+                <mat-option value="viewer">Viewer</mat-option>
+                <mat-option value="manager">Manager</mat-option>
+                <mat-option value="admin">Admin</mat-option>
             </mat-select>
         </mat-form-field>
 
-        <mat-form-field class="full-width">
+        <!-- <mat-form-field class="full-width">
             <mat-label>Brand</mat-label>
             <input matInput formControlName="brand">
-        </mat-form-field>
+        </mat-form-field> -->
 
 
-        <mat-form-field class="full-width" formGroupName="attributesControls">
+        <!-- <mat-form-field class="full-width" formGroupName="attributesControls">
             <mat-label>Parameter Name</mat-label>
             <mat-select formControlName="parameterID">
                 <mat-option *ngFor = "let par of parameters()" [value]="par.id">{{par.name}}</mat-option>
             </mat-select>
-        </mat-form-field>
+        </mat-form-field> -->
 
-        <mat-form-field class="full-width" formGroupName="attributesControls">
+        <!-- <mat-form-field class="full-width" formGroupName="attributesControls">
             <mat-label>Parameters Value</mat-label>
             <input matInput formControlName="value">
-        </mat-form-field>
+        </mat-form-field> -->
     </mat-dialog-content>
 
     <mat-dialog-actions>

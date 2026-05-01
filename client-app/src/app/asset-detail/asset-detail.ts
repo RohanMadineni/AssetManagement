@@ -1,66 +1,115 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { AssetService } from '../asset-service';
-import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormArray, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import {signal} from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCardModule } from '@angular/material/card';
+import { MatIcon } from '@angular/material/icon';
+import { AssetService } from '../asset-service';
+
 @Component({
   selector: 'app-asset-detail',
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatSelectModule, CommonModule, FormsModule, MatButtonModule, MatIconModule, MatCardModule, MatInputModule],
   templateUrl: './asset-detail.html',
   styleUrl: './asset-detail.scss',
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatCardModule,
+    MatIcon,
+    ReactiveFormsModule
+  ]
 })
 export class AssetDetail implements OnInit{
-  
-  categories = signal<any[]>([]);
-  assets = signal<any[]>([]);
-  filters = {
-    category_id: '',
-    status: '',
-    asset: '',
-  };
-  assetForm = new FormGroup({
-      param_name: new FormControl(''),
-      param_value: new FormControl('')
-  });
-  constructor(private assetService: AssetService, private fb: FormBuilder) {};
-  
+
+  assetForm!: FormGroup;
+  categories: any[] = [];
+  parameters: any[] = [];
+
+  constructor(
+    private fb: FormBuilder,
+    private assetService: AssetService
+  ) {}
+
   ngOnInit(): void {
     this.initForm();
-    setTimeout(() => {
-      this.loadCategories();
-      this.loadAssets();
-      
-    }, 1000);
+    this.loadCategories();
   }
-  initForm(){
-    this.categories.set([[]])
-     this.assets.set([]);
-    // this.cd.detectChanges()
-  }
-  loadCategories(){{
-    this.assetService.getCategories().subscribe(res => {this.categories.set(res)});
-    // this.cd.detectChanges();
-  
-  }}
-  onSubmit()
-  {this.assetForm.reset();}
 
-  loadAssets(){
-    const params: any = {
-      ...this.filters
-    };
-    this.assetService.getAssets(params).subscribe(res=>{
-      this.assets.set(res.data);
-      console.log(res);
-      console.log(this.assets);
+  initForm() {
+    this.assetForm = this.fb.group({
+      name: ['', Validators.required],
+      category_id: ['', Validators.required],
+      status: ['', Validators.required],
+      brand: [''],
+      model: [''],
+      description: [''],
+      price: <number|null>(null),
+      attributes: this.fb.array([])
     });
-    
-    // this.cd.detectChanges();
   }
+
+  get attributes(): FormArray {
+    return this.assetForm.get('attributes') as FormArray;
+  }
+
+  loadCategories() {
+    this.assetService.getCategories().subscribe(res => {
+      this.categories = res;
+    });
+  }
+
+  onCategoryChange(categoryId: number) {
+    this.assetService.getCategoryParameters(categoryId).subscribe(res => {
+    
+      const params = res.pendingAttributes; 
+      this.parameters = params;
+
+      this.attributes.clear();
+
+      params.forEach((param: any) => {
+        this.attributes.push(
+          this.fb.group({
+            parameter_id: [param.id],
+            value: ['', param.is_required ? Validators.required : []]
+          })
+        );
+      });
+    });
+  }
+
+  onSubmit() {
+    if (this.assetForm.invalid) return;
+
+    const payload = this.transformPayload();
+    console.log(payload);
+    this.assetService.createAsset(payload).subscribe({next: (res) => {
+      console.log('Asset created', res);
+       this.assetForm.reset();
+       this.attributes.clear();
+    }});
+  }
+
+  transformPayload() {
+    const formValue = this.assetForm.value;
+
+    const attributes: any = {};
+
+    formValue.attributes.forEach((attr: any) => {
+      attributes[attr.parameter_id] = attr.value;
+    });
+
+    return {
+      name: formValue.name,
+      category_id: formValue.category_id,
+      status: formValue.status,
+      attributes
+    };
+  }
+
 }

@@ -1,4 +1,4 @@
-<div class="dash">
+<!-- <div class="dash">
   <mat-card class="dashboard-card">
     
     <mat-card-header>
@@ -12,4 +12,112 @@
     </mat-card-content>
 
   </mat-card>
+</div> -->
+
+<div class="DashboardPage">
+  <div>
+    <h1 class="page-title">Dashboard</h1>
+    <p class="welcome">Welcome back, Admin User!</p>
+  </div>
+
+<!-- STAT CARDS -->
+  <div class="stats-grid">
+
+    <mat-card class="stat-card pink">
+      <div class="stat-content">
+        <div>
+          <div class="stat-title">Total Assets</div>
+          <div class="stat-number">{{totalAssets()}}</div>
+          <div class="stat-sub">All assets in system</div>
+        </div>
+        <mat-icon>inventory_2</mat-icon>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card blue">
+      <div class="stat-content">
+        <div>
+          <div class="stat-title">Assigned Assets</div>
+          <div class="stat-number">{{assignedAssets()}}</div>
+          <div class="stat-sub">Currently assigned</div>
+        </div>
+        <mat-icon>person</mat-icon>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card green">
+      <div class="stat-content">
+        <div>
+          <div class="stat-title">Available Assets</div>
+          <div class="stat-number">{{availableAssets()}}</div>
+          <div class="stat-sub">Ready to assign</div>
+        </div>
+        <mat-icon>check_circle</mat-icon>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card orange">
+      <div class="stat-content">
+        <div>
+          <div class="stat-title">Under Maintenance</div>
+          <div class="stat-number">{{maintenanceAssets()}}</div>
+          <div class="stat-sub">Currently under maintenance</div>
+        </div>
+        <mat-icon>build</mat-icon>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card purple">
+      <div class="stat-content">
+        <div>
+          <div class="stat-title">Categories</div>
+          <div class="stat-number">{{categories()}}</div>
+          <div class="stat-sub">Asset categories</div>
+        </div>
+        <mat-icon>category</mat-icon>
+      </div>
+    </mat-card>
+  </div>
+
+  <div class="chart-grid">
+
+    <mat-card class="chart-card">
+      <!-- <div class="chart-header" style="display:flex;">
+        <mat-icon style="color: #e91e63;">pie_chart</mat-icon>
+      </div> -->
+
+      <canvasjs-chart
+        [options]="chartOptions()"
+        [styles]="{width: '100%', height: '260px'}">
+      </canvasjs-chart>
+
+    </mat-card>
+
+    <mat-card class="chart-card">
+      <!-- <div class="chart-header" style="display:flex;">  
+        <mat-icon style="color: #e91e63;">pie_chart</mat-icon>
+      </div> -->
+
+      <canvasjs-chart
+        [options]="chartOptions2()"
+        [styles]="{width: '100%', height: '260px'}">
+      </canvasjs-chart>
+    </mat-card>
+
+  </div>
+  <!-- <mat-card class="chart-card">
+    <div class="chart-header">
+      <mat-icon>pie_chart</mat-icon>
+      <span>Assets by Status</span>
+    </div>
+
+    <canvasjs-chart
+      [options]="statusChartOptions"
+      [styles]="{width: '100%', height: '260px'}">
+    </canvasjs-chart>
+
+  </mat-card> -->
+
+<!-- </div> -->
+
 </div>

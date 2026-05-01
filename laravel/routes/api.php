@@ -7,8 +7,9 @@ use App\Http\Middleware\EnsureHasRole;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ParameterController;
 use App\Http\Controllers\AssetController;
+use App\Http\Controllers\UserController;
 
-Route::get('/user', function (Request $request) {
+Route::get('/users', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
@@ -21,6 +22,7 @@ Route::post('auth/logout', [AuthController::class, 'logout']);
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('/category', [CategoryController::class, 'index']);
+    Route::get('/category/{id}', [CategoryController::class, 'name']);
     Route::post('/category', [CategoryController::class, 'create']);
     Route::put('/categories/{id}', [CategoryController::class, 'update']);
     Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
@@ -34,14 +36,21 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function(){
-    Route::get('/assets', [AssetController::class, 'show']);
-    Route::post('/assets', [AssetController::class, 'store']);
     Route::get('/assets/stats', [AssetController::class, 'stats']); 
-    
+    Route::get('/assets', [AssetController::class, 'show']);
+    // Route::get('/assets/all', [AssetController::class, 'showAll']);
+    Route::post('/assets', [AssetController::class, 'store']);
     Route::get('/assets/{id}', [AssetController::class, 'index']);
     Route::put('/assets/{id}', [AssetController::class, 'update']);
     Route::delete('/assets/{id}', [AssetController::class, 'destroy']);
      
+});
+Route::put('/putusers/{id}', [UserController::class, 'update'])->middleware('auth:sanctum');
+Route::middleware('auth:sanctum')->group(function(){ 
+    Route::get('/users', [UserController::class, 'index']);
+    
+    Route::delete('/users/{id}', [UserController::class, 'destroy']);
+    
 });
 
 Route::get('auth/role', [AuthController::class, 'getrole'])->middleware('auth:sanctum');

@@ -20,13 +20,14 @@ export class LayoutPage {
   
   role: string = "";
   isadmin = signal(false);
-    
+  name: string = "";
   constructor(private authService: AuthService, private router: Router){
    
     this.authService.getRole().subscribe(
       res => {
         console.log(res);
         this.role=res.role;
+        this.name=res.username;
         this.isAdmin();
       }
     );
