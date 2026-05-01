@@ -7,20 +7,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+// use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasAPITokens, HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
+        // 'name',
+        'username',
         'password',
         'role'
     ];
@@ -28,7 +28,7 @@ class User extends Authenticatable
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -47,12 +47,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-
-    public function assets(){
-        return $this->hasMany(Asset::class, 'assigned_to_user_id');
+    public function assets()
+    {
+        return $this->hasMany(Asset::class);
     }
-
-    public function auditLogs(){
-        return $this->hasMany(AuditLog::class);
-    }
+    
 }

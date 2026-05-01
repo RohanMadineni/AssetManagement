@@ -1,0 +1,63 @@
+<div class = "add-asset-page">
+
+  <mat-card class="form-card">
+    
+    <mat-card-header>
+      <div style="color: rgb(71, 70, 70);">
+        <mat-card-title>Add New Asset</mat-card-title>
+      </div>
+    </mat-card-header>
+    
+    <form [formGroup]="assetForm" (ngSubmit)="onSubmit()">
+
+      <mat-card-content class="page-content">
+
+        <mat-form-field  class="full-width">
+          <mat-label>Asset Name</mat-label>
+          <input matInput formControlName="name">
+        </mat-form-field>
+
+      
+        <mat-form-field  class="full-width">
+          <mat-label>Category</mat-label>
+          <mat-select formControlName="category_id"
+                      (selectionChange)="onCategoryChange($event.value)">
+            <mat-option *ngFor="let cat of categories" [value]="cat.id">
+              {{ cat.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      
+        <mat-form-field class="full-width">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status">
+            <mat-option value="available">Available</mat-option>
+            <mat-option value="assigned">Assigned</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div formArrayName="attributes">
+
+          <div *ngFor="let attr of attributes.controls; let i = index"
+              [formGroupName]="i">
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>{{ parameters[i]?.name }}</mat-label>
+              <input matInput formControlName="value">
+            </mat-form-field>
+
+          </div>
+
+        </div>
+
+        <button mat-raised-button color="primary" type="submit">
+          Create Asset
+        </button>
+
+      </mat-card-content>
+    </form>
+
+  </mat-card>
+
+</div>

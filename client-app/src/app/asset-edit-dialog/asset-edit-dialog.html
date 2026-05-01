@@ -1,0 +1,31 @@
+
+<form [formGroup]="editForm">
+    <h2 mat-dialog-title class="DialogTitle">Asset {{data.id}}</h2>
+    <mat-dialog-content class="DialogContent">
+
+        <mat-form-field class="full-width">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name">
+        </mat-form-field>
+
+        <mat-form-field class = "full-width">
+            <mat-label>status</mat-label>
+            <mat-select formControlName="status">
+                <mat-option value="assigned">Assigned</mat-option>
+                <mat-option value="available">Available</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+            <mat-label>Brand</mat-label>
+            <input matInput formControlName="brand">
+        </mat-form-field>
+
+    </mat-dialog-content>
+
+    <mat-dialog-actions>
+        <!-- <button matButton="elevated" (click)="onNoClick()">Close View</button> -->
+        <button matButton="elevated" (click)="onSubmit()">Edit</button>
+    </mat-dialog-actions>
+
+</form>

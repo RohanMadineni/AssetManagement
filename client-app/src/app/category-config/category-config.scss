@@ -1,0 +1,22 @@
+.category-page{
+    width: 100%;
+    min-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+.filter-card{
+    width: 400px;
+    height: 450px;
+    max-height: 100%;
+    max-width: 100%
+}
+// .filter-content{
+    // padding: 18px;
+    // margin-top: 18px;
+    // max-height: 100%;
+// }
+.full-width{
+    width: 100%;
+}

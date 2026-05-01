@@ -1,0 +1,62 @@
+// button{
+//     color: black;
+// }
+
+// .temp{
+//     padding-left: 10px;
+//     padding-right: 10px;
+//     padding-top: 10px;
+// }
+// .mat-elevation-z8 {
+//   border-radius: 12px;
+//   box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+//   background: linear-gradient(
+//       to bottom,
+//       rgba(214, 187, 239, 0.35),
+//       rgba(189, 235, 246, 0) 
+//     )
+// }
+
+// .filters{
+//     align-items: center;
+//     display: flex;
+// }
+
+.assetlist-page{
+    width: 100%;
+    min-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.filters{
+    width: 400px;
+    height: 400px;
+    max-height: 100%;
+    max-width: 100%
+    // padding: 18px;
+}
+
+.full-width{
+    width: 100%;
+}
+
+.filter-content{
+    padding: 18px;
+}
+
+.asset-table{
+    width: 550px;
+    height: 600px;
+    max-height: 100%;
+    max-width: 100%
+}
+.Assetlist-content{
+    padding: 18px;
+}
+.paginator-class{
+    height: 45px;
+    background-color: rgb(254, 227, 241);
+}

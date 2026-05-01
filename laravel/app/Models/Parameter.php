@@ -7,12 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 class Parameter extends Model
 {
     //
-    //protected $fillable = ['name', 'description'];
-    protected $fillable = ['category_id', 'name', 'data_type', 'is_required'];
-    public function category() {
-        return $this->belongsTo(Category::class);
+    protected $fillable=[
+        'name',
+        'category_id',
+        'data_type',
+        'is_required',
+    ];
+    public function category(){
+        return $this->belongTo(Category::class);
     }
-    public function attributeValues() {
-        return $this->hasMany(AttributeValue::class);
+    public function attribute_values()
+    {
+        return $this->hasMany(Attribute_value::class);
     }
+
+  
+
 }

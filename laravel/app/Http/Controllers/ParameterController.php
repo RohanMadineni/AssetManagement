@@ -1,42 +1,60 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Category;
-use App\Models\Parameter;
+
 use Illuminate\Http\Request;
+use App\Models\Parameter;
 
-class ParameterController extends Controller {
-    public function index($id) {
-        $category = Category::with('parameters')->findOrFail($id);
-        return $category->parameters;
+class ParameterController extends Controller
+{
+    //
+    public function index(Request $request, $id){
+        $parameters = Parameter::where('category_id', $id)->get();
+        return response()->json($parameters);
     }
-
-    public function store(Request $request,$id) {
+    public function create(Request $request, $id){
+        // print('Creating param');
         $validated = $request->validate([
-            'name'=>'required|string',
-            'data_type'=>'required|in:string,number,boolean,date',
-            'is_required'=>'boolean'
-        ]);
-        $category = Category::findOrFail($id);
-        $param = $category->parameters()->create($validated);
-        return response()->json($param,201);
-    }
-
-    public function update(Request $request,$id) {
-        $param = Parameter::findOrFail($id);
-        $validated = $request->validate([
-            'name'=>'required|string',
-            'data_type'=>'required|in:string, number, boolean, date',
+            'name'=>'required|string|max:255',
+            // 'name'=>'required',
+            'data_type'=>'required',
+            // 'data_type'=>'required|in:string, number, boolean, date',
             'is_required'=>'boolean',
-            'default_value'=>'nullable|string'
         ]);
-        $param->update($validated);
-        return response()->json($param);
-    }
+        $validated['category_id'] = $id;
+        $parameter = Parameter::create($validated);
 
-    public function destroy($id) {
-        $param = Parameter::findOrFail($id);
-        $param->delete();
-        return response()->json(['message'=>'Deleted']);
+        return response()->json($parameter, 201);
+    }
+    public function update(Request $request, $id){
+        $parameter = Parameter::findOrFail($id);
+
+        $validated = $request->validate([
+            // 'name' => 'sometimes|string|max:255',
+            'name' => 'required',
+            // 'data_type' => 'sometimes|in:string,number,boolean,date',
+            'data_type' => 'required',
+            'is_required' => 'boolean'
+        ]);
+
+        $parameter->update($validated);
+
+        return response()->json($parameter);
+    }
+    
+    public function destroy(Request $request, $id){
+        $parameter = Parameter::findOrFail($id);
+
+        if ($parameter->attributeValues()->exists()) {
+            return response()->json([
+                'message' => 'Cannot delete parameter with existing attribute values'
+            ], 409);
+        }
+
+        $parameter->delete();
+
+        return response()->json([
+            'message' => 'Parameter deleted'
+        ]);
     }
 }

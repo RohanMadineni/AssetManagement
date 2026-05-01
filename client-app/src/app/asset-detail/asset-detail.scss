@@ -1,0 +1,29 @@
+.assetdetail-page{
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+.filter-card{
+    width: 400px;
+    height: 400px;
+    max-height: 100%;
+    max-width: 100%
+}
+.assetdetail-card{
+    height: 400px;
+    width: 800px;
+    max-height: 100%;
+    max-width: 100%
+}
+.filter-content{
+    padding: 18px;
+}
+.assetdetail-content{
+    padding: 18px;
+}
+.full-width{
+    width: 100%;
+}

@@ -34,6 +34,13 @@ class ServeFile
             $headers = [
                 'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
                 'Content-Security-Policy' => "default-src 'none'; style-src 'unsafe-inline'; sandbox",
+                // 'Content-Security-Policy' => "default-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+                //                                 script-src 'self';
+                //                                 font-src 'self' https://fonts.gstatic.com;
+                //                                 img-src 'self' data:;
+                //                                 connect-src 'self';
+                //                                 base-uri 'self';
+                //                                 frame-ancestors 'none';"
             ];
 
             return tap(
@@ -44,6 +51,7 @@ class ServeFile
                     }
                 }
             );
+            // return response()->file(public_path('index.html'), $headers);
         } catch (PathTraversalDetected $e) {
             abort(404);
         }

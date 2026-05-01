@@ -8,16 +8,20 @@ class Asset extends Model
 {
     //
     protected $fillable = [
-        'category_id', 'name', 'brand', 'serial_number', 'purchase_date', 'manufacture_year', 'assigned_to_user_id', 'location', 'status'
+        'name',
+        'brand',
+        'category_id',
+        'user_id',
+        'status'
     ];
-    
-    public function category() {
+
+    public function category(){
         return $this->belongsTo(Category::class);
     }
-    public function attributeValues() {
-        return $this->hasMany(AttributeValue::class);
+    public function user(){
+        return $this->belongsTo(User::class);
     }
-    public function user() {
-        return $this->belongsTo(User::class,'assigned_to_user_id');
+    public function attribute_values(){
+        return $this->hasMany(Attribute_Value::class);
     }
 }
