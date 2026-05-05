@@ -16,6 +16,12 @@ export class AssetService {
     return this.requestService.GetRequest('http://localhost:8000/api/assets/stats');
   }
   
+  getallStats() {
+    // return this.http.get<any>('http://localhost:8000/api/assets/stats');
+    
+    return this.requestService.GetRequest('http://localhost:8000/api/assets/allstats');
+  }
+
   getCategories() {
     // return this.http.get<any>('http://localhost:8000/api/category');
     return this.requestService.GetRequest('http://localhost:8000/api/category');
@@ -25,7 +31,9 @@ export class AssetService {
     // return this.http.get<any>(`http://localhost:8000/api/categories/${categoryId}/parameters`);
     return this.requestService.GetRequest(`http://localhost:8000/api/categories/${categoryId}/parameters`);
   }
-  
+  createCategory(data:any){
+    return this.requestService.PostRequest('http://localhost:8000/api/category', data);
+  }
   createAsset(data: any) {
     // return this.http.post('http://localhost:8000/api/assets', data);
     return this.requestService.PostRequest('http://localhost:8000/api/assets', data);
@@ -38,6 +46,12 @@ export class AssetService {
   getAllAssets(params: any) {
     // return this.http.get<any>('http://localhost:8000/api/assets', {params});
     return this.requestService.GetRequest('http://localhost:8000/api/assets/all', params);
+  }
+  getUpcomingAssets(){
+    return this.requestService.GetRequest('http://localhost:8000/api/assets/warranty/upcoming');
+  }
+  getAllUpcomingAssets(){
+    return this.requestService.GetRequest('http://localhost:8000/api/assets/allwarranty/upcoming');
   }
   updateAsset(id: number, data:any){
     return this.requestService.PutRequest(`http://localhost:8000/api/assets/${id}`, data);

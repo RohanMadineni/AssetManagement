@@ -8,6 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth-service';
+import { MatIconModule } from '@angular/material/icon';
 // import { CommonModule } from '@angular/common';
 
 interface loginform{
@@ -21,7 +22,7 @@ interface loginform{
   templateUrl: './register.html',
   styleUrls: ['./register.scss'],
   standalone: true,
-  imports: [MatCardModule, MatFormFieldModule, MatButtonModule, ReactiveFormsModule, MatInputModule, MatSelectModule],
+  imports: [MatCardModule, MatFormFieldModule, MatButtonModule, ReactiveFormsModule, MatInputModule, MatSelectModule, MatIconModule],
 })
 export class RegisterPage {
 

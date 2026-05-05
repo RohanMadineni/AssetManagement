@@ -1,22 +1,6 @@
-<!-- <div class="dash">
-  <mat-card class="dashboard-card">
-    
-    <mat-card-header>
-      <mat-card-title class="DashTitle">Dashboard</mat-card-title>
-    </mat-card-header>
-
-    <mat-card-content class="DashCont">
-      <p>Total Number of Assets : {{ totalAssets() }}</p>
-      <p>Assigned : {{ assignedAssets() }}</p>
-      <p>Available : {{ unassignedAssets() }}</p>
-    </mat-card-content>
-
-  </mat-card>
-</div> -->
-
-<div class="DashboardPage">
+<div class="SystemPage">
   <div>
-    <h1 class="page-title">Dashboard</h1>
+    <h1 class="page-title">System Dashboard</h1>
     <p class="welcome">Welcome back, Admin User!</p>
   </div>
 
@@ -30,7 +14,7 @@
           <div class="stat-number">{{totalAssets()}}</div>
           <div class="stat-sub">All assets in system</div>
         </div>
-        <mat-icon >inventory_2</mat-icon>
+        <mat-icon>inventory_2</mat-icon>
       </div>
     </mat-card>
 
@@ -45,7 +29,7 @@
       </div>
     </mat-card>
 
-    <!-- <mat-card class="stat-card green">
+    <mat-card class="stat-card green">
       <div class="stat-content">
         <div>
           <div class="stat-title">Available Assets</div>
@@ -54,7 +38,7 @@
         </div>
         <mat-icon>check_circle</mat-icon>
       </div>
-    </mat-card> -->
+    </mat-card>
 
     <mat-card class="stat-card orange">
       <div class="stat-content">
@@ -77,7 +61,6 @@
         <mat-icon>category</mat-icon>
       </div>
     </mat-card>
-
     <mat-card class="stat-card green">
       <div class="stat-content">
         <div>
@@ -88,31 +71,9 @@
         <mat-icon>attach_money</mat-icon>
       </div>
     </mat-card>
-
   </div>
 
-  <div class="chart-grid">
-    <!-- <div class="card warranty-card" style="height: 300px;">
-      
-      <h3 style="font-weight:500;">Upcoming Warranty Expiry</h3>
-      <div *ngFor="let asset of upcomingWarranties()">
-        <div class="warranty-item">
-          <div class="icon">
-            <mat-icon>devices</mat-icon>    {{asset.id}}
-          </div>
-          <div>
-            <strong>{{asset.name}}</strong>
-            <p>{{asset.model}}</p>
-          </div>
-
-          <div class="expiry">
-            <span >
-              {{asset.days_left}} Days Left
-            </span>
-          </div>
-        </div>
-      </div>
-    </div> -->
+  <div class="chart-grid" >
     <div class="warranty-card" style="height: 300px;">
       <h3>Upcoming Warranty Expirations</h3>
         <table mat-table [dataSource]="upcomingWarranties()">
@@ -152,36 +113,30 @@
         </table>
     </div>
     <div style="height:500px;">
-      <mat-card class="chart-card">
-        
-        <!-- <div class="chart-header" style="display:flex;">
-          <mat-icon style="color: #e91e63;">pie_chart</mat-icon>
-        </div> -->
-        <span style="font-weight:500; padding:13px;">Assets by Category</span>
-        <!-- <div class="chart-container"> -->
-          <canvasjs-chart
-            [options]="chartOptions()"
-            [styles]="{width: '100%', height: '260px'}">
-          </canvasjs-chart>
-        <!-- </div> -->
-      </mat-card>
+    <mat-card class="chart-card">
+      <!-- <div class="chart-header" style="display:flex;">
+        <mat-icon style="color: #e91e63;">pie_chart</mat-icon>
+      </div> -->
+      <span style="font-weight:500; padding:13px;">Assets by Category</span>
+      <canvasjs-chart
+        [options]="chartOptions()"
+        [styles]="{width: '100%', height: '260px'}">
+      </canvasjs-chart>
 
-      <mat-card class="chart-card">
-        <!-- <div class="chart-header" style="display:flex;">  
-          <mat-icon style="color: #e91e63;">pie_chart</mat-icon>
-        </div> -->
-        <span style="font-weight:500; padding:13px;">Assets by Status</span>
-        <canvasjs-chart
-          [options]="chartOptions2()"
-          [styles]="{width: '100%', height: '260px'}">
-        </canvasjs-chart>
-      </mat-card>
+    </mat-card>
+
+    <mat-card class="chart-card">
+      <!-- <div class="chart-header" style="display:flex;">  
+        <mat-icon style="color: #e91e63;">pie_chart</mat-icon>
+      </div> -->
+      <span style="font-weight:500; padding:13px;">Assets by Status</span>
+      <canvasjs-chart
+        [options]="chartOptions2()"
+        [styles]="{width: '100%', height: '260px'}">
+      </canvasjs-chart>
+    </mat-card>
     </div>
-
-    
   </div>
-
-  
   <!-- <mat-card class="chart-card">
     <div class="chart-header">
       <mat-icon>pie_chart</mat-icon>

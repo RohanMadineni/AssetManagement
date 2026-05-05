@@ -1,5 +1,5 @@
 
-<mat-toolbar>
+<mat-toolbar style="height:52px;">
   <mat-icon style="color:white;">reorder_icon</mat-icon><div class="secondtitle">Asset Management System</div>
   <div class="person" style="display:flex;">
     <mat-icon class="acc_circle">account_circle </mat-icon>
@@ -44,6 +44,14 @@
         </p>
       </a>
       </span>
+      <span *ngIf="isadmin()">
+        <a mat-list-item routerLink="system" routerLinkActive="active-link">
+          <p>
+            <mat-icon>dashboard</mat-icon>
+            System Dashboard
+          </p>
+        </a>
+      </span> 
       <span *ngIf="isadmin()">
         <a mat-list-item routerLink="register" routerLinkActive="active-link">
           <p>

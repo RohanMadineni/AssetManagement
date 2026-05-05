@@ -27,21 +27,23 @@ import { AssetService } from '../asset-service';
 export class CategoryConfig implements OnInit{
   categories = signal<any[]>([]);
   parameters = signal<any[]>([]);
-  filters = {
-    category_id : 0,
-    edit_category_id: 0,
-    param_id: 0,
-    edit_param_id: 0,
-  }
+  createcatForm = new FormGroup({
+    name: new FormControl(''),
+    description: new FormControl(''),
+  });
   categoryForm = new FormGroup({
     name: new FormControl(''),
     data_type: new FormControl(''),
     is_required: new FormControl<boolean|null>(null),
+    category_id : new FormControl(<number>0),
+    param_id : new FormControl(<number>0)
   });
   editForm = new FormGroup({
     name: new FormControl(''),
     data_type: new FormControl(''),
     is_required: new FormControl<boolean|null>(null),
+    edit_category_id: new FormControl(0),
+    edit_param_id: new FormControl(0),
   });
   constructor(private assetService: AssetService, private fb: FormBuilder){};
 
@@ -61,17 +63,16 @@ export class CategoryConfig implements OnInit{
     this.assetService.getCategories().subscribe(res => {this.categories.set(res)});
   }
   loadParameters(){
-    this.assetService.getCategoryParameters(this.filters.edit_category_id).subscribe(res => {this.parameters.set(res), console.log(res)});
-    // this.parameters.set(['processor']);
+    this.assetService.getCategoryParameters(<number>this.editForm.value.edit_category_id).subscribe(res => {this.parameters.set(res), console.log(res)});
   }
-  onSubmit(mode: 'create' | 'edit'){
+  onSubmit(mode: 'create' | 'edit' | 'createCat'){
     if(mode==='create'){
 
       const payload = {
         ...this.categoryForm.value,
         is_required: this.categoryForm.value.is_required === true
       };
-      this.assetService.createParam(Number(this.filters.category_id), payload).subscribe();
+      this.assetService.createParam(Number(this.categoryForm.value.category_id), payload).subscribe();
       this.categoryForm.reset();
     }
 
@@ -80,15 +81,25 @@ export class CategoryConfig implements OnInit{
         ...this.editForm.value,
         is_required: this.editForm.value.is_required === true
       };
-      console.log(this.filters.edit_param_id);
       console.log(payload);
-      this.assetService.updateParam(Number(this.filters.edit_param_id), payload).subscribe();
+      this.assetService.updateParam(Number(this.editForm.value.edit_param_id), payload).subscribe();
+      
       this.editForm.reset();
+      // this.initForm();
+    }
+
+    if(mode==='createCat'){
+      const payload = {
+        ...this.createcatForm.value,
+      };
+      console.log(payload);
+      this.assetService.createCategory(payload).subscribe();
+      this.createcatForm.reset();
     }
   }
   
   onParamChange() {
-    const param = this.parameters().find(p => p.id == this.filters.edit_param_id);
+    const param = this.parameters().find(p => p.id == this.editForm.value.edit_param_id);
     console.log(param);
     this.editForm.patchValue({name: param.name}); 
   }

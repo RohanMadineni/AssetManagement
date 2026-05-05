@@ -54,7 +54,7 @@ html {
 }
 :root{
   @include mat.dialog-overrides((
-    container-color: pink
+    container-color: rgb(250, 211, 243)
   ));
 }
 body {

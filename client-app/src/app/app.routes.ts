@@ -4,6 +4,7 @@ import { LoginPage } from './login/login';
 import { authGuard } from './auth-guard';
 import { DashboardPage } from './dashboard/dashboard';
 import { AssetListPage } from './asset-list/asset-list';
+import { SystemPage } from './system/system';
 import { AddAssetComponent } from './add-asset/add-asset';
 import { AssetDetail } from './asset-detail/asset-detail';
 export const routes: Routes = [
@@ -21,6 +22,7 @@ export const routes: Routes = [
         canActivate: [authGuard],
         children : [
             // {path: 'dashboard', component: DashboardPage, canActivate: [authGuard]},
+            {path: 'system', loadComponent: ()=> import('./system/system').then(m=>m.SystemPage)},
             {path: 'dashboard', loadComponent: ()=> import('./dashboard/dashboard').then(m => m.DashboardPage)},
             {path: 'assets', component: AssetListPage, canActivate: [authGuard]},
             {path: 'addAsset', component: AddAssetComponent, canActivate: [authGuard]},

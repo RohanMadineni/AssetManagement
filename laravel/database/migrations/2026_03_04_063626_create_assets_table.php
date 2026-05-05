@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('brand');
             $table->string('status');
+            $table->real('price');
             $table->foreignId('category_id')
                 ->constrained()
                 ->onDelete('cascade');

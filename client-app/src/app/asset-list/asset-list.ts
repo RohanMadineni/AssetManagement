@@ -35,6 +35,7 @@ export class AssetListPage implements OnInit {
   };
 
   @Input() user:any;
+  @Input() use_name:any;
   @Output() back = new EventEmitter<void>();
   displayedColumns: string[] = ['name', 'actions'];
 
@@ -86,7 +87,7 @@ export class AssetListPage implements OnInit {
   }
 
   editAsset(edit_Asset: any){
-    const dialogRef = this.dialog.open(AssetEditDialog, {data: edit_Asset, height: '380px', width: '370px'});
+    const dialogRef = this.dialog.open(AssetEditDialog, {data: edit_Asset, height: '700px', width: '600px'});
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {

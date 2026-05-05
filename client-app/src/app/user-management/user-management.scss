@@ -79,3 +79,18 @@ td.mat-mdc-cell {
     color: white !important;
     background-color: #fa4d8d !important;
 }
+
+.user-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.cellname {
+  font-weight: 500;
+  color: #2c2c2c;
+}
+
+.cellemail {
+  font-size: 12px;
+  color: #777;
+}

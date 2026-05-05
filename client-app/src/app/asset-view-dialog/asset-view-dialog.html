@@ -4,6 +4,7 @@
     <p><strong>Name:</strong> {{data.name}}</p>
     <p><strong>Status:</strong> {{data.status}}</p>
     <p><strong>Brand:</strong> {{data.brand}}</p>
+    <p><strong>Warranty Expiration:</strong> {{data.Warranty}}</p>
     <div *ngFor="let p of data.attribute_values">
       <p><strong>{{p.parameter.name}}:</strong> {{p.value}}</p>
     </div>

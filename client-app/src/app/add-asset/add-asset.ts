@@ -31,6 +31,7 @@ export class AddAssetComponent implements OnInit{
   categories: any[] = [];
   parameters: any[] = [];
   @Input() user: any;
+  @Input() use_name: any;
   @Output() back = new EventEmitter<void>();
 
   constructor(
@@ -115,6 +116,8 @@ export class AddAssetComponent implements OnInit{
       category_id: formValue.category_id,
       status: formValue.status,
       brand: formValue.brand,
+      warranty: formValue.warranty,
+      price: formValue.price,
       attributes
     };
   }

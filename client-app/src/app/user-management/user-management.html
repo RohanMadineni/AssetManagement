@@ -4,9 +4,10 @@
         <div>
             <p class="welcome">View and manage users</p>
         </div>
+        <div style="margin-left: 10px;">
         <button mat-raised-button class="add-user-btn" (click)="NewUser()">
                 <mat-icon>account_box</mat-icon>New User
-        </button>
+        </button></div>
     </div>
 
     <div class="User-Content">
@@ -20,7 +21,13 @@
                 
                 <ng-container matColumnDef="Name" >
                     <th mat-header-cell *matHeaderCellDef>Name</th>
-                    <td mat-cell *matCellDef="let element">{{element.username}}</td>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="user-cell">
+                            <span class="cellname">{{ element.username }}</span>
+                            <span class="cellemail">user@example.com</span>
+                            <!-- <span class="cellemail">{{ element.email }}</span> -->
+                        </div>
+                    </td>
                 </ng-container>
 
                 <ng-container matColumnDef="Role">
@@ -31,7 +38,7 @@
                 <ng-container matColumnDef="Actions">
                     <th mat-header-cell *matHeaderCellDef>Actions</th>
                     <td mat-cell *matCellDef="let element" >
-                        <button mat-icon-button (click)="viewAssets(element.id)">
+                        <button mat-icon-button (click)="viewAssets(element.id, element.username)">
                             <mat-icon style="color:blueviolet;">visibility</mat-icon>
                         </button>
                         <button mat-icon-button (click)="editUser(element)">
@@ -49,7 +56,7 @@
                 <ng-container matColumnDef="add">
                     <th mat-header-cell *matHeaderCellDef></th>
                     <td mat-cell *matCellDef="let element" >
-                        <button mat-raised-button (click)="addAsset(element.id)">
+                        <button mat-raised-button (click)="addAsset(element.id, element.username)">
                             Add Asset
                         </button>
                     </td>
@@ -73,13 +80,15 @@
 
 <span *ngIf="view() === 'asset-page'">
   <app-add-asset
-    [user]="selectedUser()"
+    [user]="selectedUser()",
+    [use_name]="selectedName()", 
     (back)="view.set('user-page')">
   </app-add-asset>
 </span>
 <span *ngIf="view() === 'assetlist-page'">
     <app-asset-list
         [user]="selectedUser()"
+        [use_name]="selectedName()", 
         (back)="view.set('user-page')">
     </app-asset-list> 
 </span>

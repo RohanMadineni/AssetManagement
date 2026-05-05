@@ -12,7 +12,9 @@ class Asset extends Model
         'brand',
         'category_id',
         'user_id',
-        'status'
+        'status',
+        'price',
+        'warranty',
     ];
 
     public function category(){

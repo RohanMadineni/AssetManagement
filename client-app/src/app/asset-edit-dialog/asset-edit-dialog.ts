@@ -25,7 +25,8 @@ export class AssetEditDialog implements OnInit{
     name: new FormControl(this.data.name),
     brand: new FormControl(this.data.brand),
     status: new FormControl(this.data.status),
-
+    price: new FormControl(this.data.price), 
+    warranty: new FormControl(this.data.Warranty),
     attributesControls: new FormGroup({
       parameterID: new FormControl<number|null>(null),
       value: new FormControl<any|null>(null), 

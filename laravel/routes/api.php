@@ -36,14 +36,24 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function(){
-    Route::get('/assets/stats', [AssetController::class, 'stats']); 
-    Route::get('/assets', [AssetController::class, 'show']);
-    // Route::get('/assets/all', [AssetController::class, 'showAll']);
-    Route::post('/assets', [AssetController::class, 'store']);
-    Route::get('/assets/{id}', [AssetController::class, 'index']);
-    Route::put('/assets/{id}', [AssetController::class, 'update']);
-    Route::delete('/assets/{id}', [AssetController::class, 'destroy']);
-     
+    Route::prefix('assets')->group(function () {
+        Route::get('stats', [AssetController::class, 'stats']); 
+        Route::get('allstats', [AssetController::class, 'allstats']); 
+        Route::get('warranty/upcoming', [AssetController::class, 'upcomingWarranty']);
+        Route::get('allwarranty/upcoming', [AssetController::class, 'upcomingAllWarranty']);
+        Route::get('/', [AssetController::class, 'show']);
+        Route::post('/', [AssetController::class, 'store']);
+        Route::get('{id}', [AssetController::class, 'index'])->whereNumber('id');
+        Route::put('{id}', [AssetController::class, 'update'])->whereNumber('id');
+        Route::delete('{id}', [AssetController::class, 'destroy'])->whereNumber('id');
+    });
+    // Route::get('/assets/stats', [AssetController::class, 'stats']); 
+    // Route::get('/assets/allstats', [AssetController::class, 'allstats']); 
+    // Route::get('/assets', [AssetController::class, 'show']);
+    // Route::post('/assets', [AssetController::class, 'store']);
+    // Route::get('/assets/{id}', [AssetController::class, 'index'])->whereNumber('id');
+    // Route::put('/assets/{id}', [AssetController::class, 'update'])->whereNumber('id');
+    // Route::delete('/assets/{id}', [AssetController::class, 'destroy'])->whereNumber('id');
 });
 Route::put('/putusers/{id}', [UserController::class, 'update'])->middleware('auth:sanctum');
 Route::middleware('auth:sanctum')->group(function(){ 

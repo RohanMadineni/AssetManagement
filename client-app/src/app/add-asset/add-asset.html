@@ -1,7 +1,7 @@
 <div class="add-asset-page">
   <div>
     <span *ngIf="user"><button matButton (click)="back.emit();"><mat-icon>keyboard_backspace</mat-icon>Back</button></span>
-    <h1 class="page-title">Add Asset</h1>
+    <h1 class="page-title">Add Asset <span *ngIf="user" style="color:rgb(130, 56, 192)">:  {{use_name}}</span></h1>
     <p class="welcome">Fill in information for a new asset!</p>
   </div>
   <div class="asset-card">
@@ -25,7 +25,7 @@
         <mat-form-field class="full-width" type="string">
           <mat-label>Enter model</mat-label>
           <input matInput formControlName="model">
-        </mat-form-field>
+        </mat-form-field> 
       </div>
       <div>
         <span style="font-weight: 500;">Category</span>
@@ -88,7 +88,7 @@
           <mat-select formControlName="status">
             <mat-option value="available">Available</mat-option>
             <mat-option value="assigned">Assigned</mat-option>
-            <mat-option value="maintenance">Under Maintenance</mat-option>
+            <mat-option value="under maintenance">Under Maintenance</mat-option>
           </mat-select>
         </mat-form-field>
       </div>

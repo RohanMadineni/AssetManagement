@@ -28,7 +28,7 @@ export class UserManagement implements OnInit{
   total = signal(0);
   view = signal<'user-page'|'asset-page'|'assetlist-page'>('user-page');
   selectedUser = signal<any|null>(null);
-
+  selectedName = signal<any|null>(null);
   ngOnInit(): void {
     this.initTable();
   }
@@ -70,12 +70,14 @@ export class UserManagement implements OnInit{
         }
       });
   }
-  addAsset(user_:any){
+  addAsset(user_:any, user_name: any){
     this.selectedUser.set(user_);
+    this.selectedName.set(user_name);
     this.view.set('asset-page');
   }
-  viewAssets(user_:number){
+  viewAssets(user_:number, user_name: any){
     this.selectedUser.set(user_);
+    this.selectedName.set(user_name);
     this.view.set('assetlist-page');
   }
 }

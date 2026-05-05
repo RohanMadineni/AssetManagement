@@ -97,7 +97,7 @@
   <!-- HEADER -->
   <div>
       <span *ngIf="user"><button matButton (click)="back.emit();"><mat-icon>keyboard_backspace</mat-icon>Back</button></span>
-      <h1 class="page-title">Asset List</h1>
+      <h1 class="page-title">Asset List <span *ngIf="user" style="color:rgb(130, 56, 192)">:  {{use_name}}</span></h1>
       <div class="welcome">
       <p>Manage and monitor all assets in the system</p>
       </div>

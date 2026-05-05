@@ -23,6 +23,7 @@ export class UserEditDialog {
   editForm = new FormGroup({
     username: new FormControl(this.data.username),
     role: new FormControl(this.data.role),
+    email: new FormControl(this.data.email?this.data.email:''),
     // status: new FormControl(this.data.status),
 
     // attributesControls: new FormGroup({

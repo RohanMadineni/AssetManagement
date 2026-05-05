@@ -8,6 +8,7 @@ use App\Models\Attribute_value;
 use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class AssetController extends Controller
 {
@@ -20,7 +21,7 @@ class AssetController extends Controller
     }
     
     public function show(Request $request){
-        if($request['selected_user']===0)
+        if($request->selected_user==0)
                 $user_id = Auth::id();
         else $user_id = $request['selected_user'];
         $query = Asset::with('attribute_values.parameter')
@@ -40,9 +41,13 @@ class AssetController extends Controller
                 ->where('value', $request->value);
             });
         }
-
+        // return response()->json($user_id);
         return $query->paginate(10);
     }
+    // public function showAll(){
+    //     $query = Asset::with('attribute_values.parameter');
+    //     return $query->paginate(10);
+    // }
     // public function showAll(Request $request){
     //     $query = Asset::with('attribute_values.parameter')
     //     ->where('assets.user_id', Auth::id())
@@ -72,10 +77,12 @@ class AssetController extends Controller
             'category_id'=>'required',
             'status'=>'required',
             'brand'=>'required',
+            'warranty'=>'required',
+            'price'=>'required',
             'selected_user'=>'required',
         ]);
         // dd($request->all());
-        if($validated['selected_user']===0)
+        if($validated['selected_user']==0)
                 $user_id = Auth::id();
         else $user_id=$validated['selected_user'];
         $asset = Asset::create([
@@ -83,9 +90,10 @@ class AssetController extends Controller
             // 'brand'=>$validated['brand'],
             'brand'=>$validated['brand'],
             'category_id'=>$validated['category_id'],
-            
+            'Warranty'=>$validated['warranty'],
             'user_id'=>$user_id,
             'status'=>$validated['status'],
+            'price'=>$validated['price'], 
             // 'user_id'=>1,
             // 'attributes'=>'array',
             
@@ -117,7 +125,9 @@ class AssetController extends Controller
         $validated = $request->validate([
             'name' => 'required',
             'status' => 'required',
-            'brand' => 'required'
+            'brand' => 'required',
+            'price' => 'required',
+            'Warranty' => 'required',
         ]);
         $asset->update($validated);
         // $asset->update($request->only(['name', 'brand', 'status']));
@@ -175,11 +185,12 @@ class AssetController extends Controller
         //     'no_categories' => 1,
         // ]);
 
-        $assets = DB::select('select category_id, status from assets where user_id = ?', [$user_id]);  
+        $assets = DB::select('select category_id, status, price from assets where user_id = ?', [$user_id]);  
         
         $total = count($assets);
         
         $contvalues = array_count_values(array_column($assets, 'status'));
+        $sum = array_sum(array_column($assets, 'price'));
         $maintenance = 0;
         $unassigned = 0;
         $assigned = 0;
@@ -208,7 +219,86 @@ class AssetController extends Controller
             // 'no_categories' => count($categories),
             'catNames' => $cat_names,
             'cat_Array' =>$categories,
+            'totalvalue' =>$sum,
         ]);
 
     }
-}
+
+    public function allstats(){
+        $assets = DB::select('select category_id, status, price from assets');  
+        
+        $total = count($assets);
+        $sum = array_sum(array_column($assets, 'price'));
+        $contvalues = array_count_values(array_column($assets, 'status'));
+        $maintenance = 0;
+        $unassigned = 0;
+        $assigned = 0;
+        if(array_key_exists('available', $contvalues))
+            $unassigned = $contvalues['available'];
+        if(array_key_exists('assigned', $contvalues))
+            $assigned = $contvalues['assigned'];
+        if(array_key_exists('under maintenance', $contvalues))
+            $maintenance = $contvalues['under maintenance'];
+        $categories = array_count_values(array_column($assets, 'category_id'));
+
+        $cat_names = Category::pluck('name', 'id');
+        return response()->json([
+            'total_assets' => $total,
+            'assigned_assets' => $assigned,
+            'unassigned_assets' => $unassigned,
+            'under_maintenance' => $maintenance,
+            // 'no_categories' => count($categories),
+            'catNames' => $cat_names,
+            'cat_Array' =>$categories,
+            'totalvalue' =>$sum,
+        ]);
+    }
+
+    public function upcomingWarranty(){
+        // $user_id = Auth::id();
+        $today = Carbon::today();
+        $threshold = Carbon::today()->addDays(15);
+        $assets = Asset::whereNotNull('Warranty')
+                ->where('user_id',Auth::id())
+                // ->where('Warranty', '>', $today)
+                ->whereBetween('Warranty', [$today, $threshold])
+                ->get()
+                ->map(function ($asset) {
+                    return [
+                        'id' => $asset->id,
+                        'name' => $asset->name,
+                        'model' => $asset->model,
+                        'Warranty' => $asset->Warranty,
+                        'status'=>$asset->status,
+                        'brand'=>$asset->brand,
+                        'days_left' => Carbon::today()->diffInDays($asset->Warranty, false),
+                    ];
+                });
+        // return $assets->paginate(10);
+        return response()->json($assets);
+    }
+
+    public function upcomingAllWarranty(){
+        // $user_id = Auth::id();
+        $today = Carbon::today();
+        $threshold = Carbon::today()->addDays(15);
+        $assets = Asset::whereNotNull('Warranty')
+                // ->where('user_id',Auth::id())
+                // ->where('Warranty', '>', $today)
+                ->whereBetween('Warranty', [$today, $threshold])
+                ->get()
+                ->map(function ($asset) {
+                    return [
+                        'id' => $asset->id,
+                        'name' => $asset->name,
+                        'model' => $asset->model,
+                        'Warranty' => $asset->Warranty,
+                        'status'=>$asset->status,
+                        'brand'=>$asset->brand,
+                        'days_left' => Carbon::today()->diffInDays($asset->Warranty, false),
+                    ];
+                });
+        
+        return response()->json($assets);
+    }
+} 
