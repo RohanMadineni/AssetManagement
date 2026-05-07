@@ -29,7 +29,8 @@ export const routes: Routes = [
             {path: 'assetdetail', component: AssetDetail, canActivate: [authGuard]},
             {path: 'register', loadComponent: () => import('./register/register').then(m => m.RegisterPage),},
             {path: 'categoryConfig', loadComponent: () => import('./category-config/category-config').then(m => m.CategoryConfig),},
-            {path: 'usermanagement', loadComponent: () => import('./user-management/user-management').then(m => m.UserManagement),}
+            {path: 'usermanagement', loadComponent: () => import('./user-management/user-management').then(m => m.UserManagement),},
+            {path: 'availableAssets', loadComponent: () => import('./available-assets-list/available-assets-list').then(m => m.AvailableAssetsList),},
         ]
     },
 

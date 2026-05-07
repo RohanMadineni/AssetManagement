@@ -152,3 +152,17 @@ td.mat-mdc-cell {
   justify-content: center;
   font-size: 14px;
 }
+
+.status-chip.available {
+  color: green;
+}
+
+/* assigned → blue (optional) */
+.status-chip.assigned {
+  color: green;
+}
+
+/* maintenance → yellow */
+.status-chip.maintenance {
+  color: rgb(233, 162, 9);
+}

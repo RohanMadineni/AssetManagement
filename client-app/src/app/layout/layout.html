@@ -53,6 +53,14 @@
         </a>
       </span> 
       <span *ngIf="isadmin()">
+        <a mat-list-item  routerLink="availableAssets" routerLinkActive="active-link">
+          <p>
+          <mat-icon>inventory</mat-icon>
+          Available Assets
+          </p>
+        </a>
+      </span>
+      <span *ngIf="isadmin()">
         <a mat-list-item routerLink="register" routerLinkActive="active-link">
           <p>
             <mat-icon>person_add</mat-icon>

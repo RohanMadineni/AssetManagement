@@ -25,7 +25,7 @@ export class AuthService {
     );
   }
 
-  register(username:any, password:any, role:any){
+  register(username:any, password:any, role:any, email:any){
     // const token = localStorage.getItem('token');
 
     // const headers = {
@@ -33,7 +33,7 @@ export class AuthService {
     // };
 
     // return this.http.post<User>('http://localhost:8000/api/auth/register', {username, password, role});
-    return this.requestService.PostRequest('http://localhost:8000/api/auth/register', {username, password, role});
+    return this.requestService.PostRequest('http://localhost:8000/api/auth/register', {username, password, role, email});
   }
 
   logout(){

@@ -21,6 +21,7 @@ class User extends Authenticatable
     protected $fillable = [
         // 'name',
         'username',
+        'email',
         'password',
         'role'
     ];
@@ -51,5 +52,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Asset::class);
     }
-    
+    public function assignedAssets()
+    {
+        return $this->hasMany(AssetAssignment::class);
+    }
 }

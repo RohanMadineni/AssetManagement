@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 interface loginform{
     username?: string | null | undefined,
+    email?: string | null | undefined,
     password?: string | null | undefined,
     role?: string | null | undefined,
 }
@@ -52,7 +53,7 @@ export class RegisterPage {
     const val: loginform = this.loginform.value;
 
     if (this.loginform.valid) {  
-      this.authService.register(val.username, val.password, val.role).subscribe({
+      this.authService.register(val.username, val.password, val.role, val.email).subscribe({
         next: () => {
           console.log("user is registered");
           // this.router.navigateByUrl('/login');

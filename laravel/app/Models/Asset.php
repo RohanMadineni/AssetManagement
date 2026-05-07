@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\AssetAssignment;
 class Asset extends Model
 {
     //
@@ -14,7 +14,7 @@ class Asset extends Model
         'user_id',
         'status',
         'price',
-        'warranty',
+        'Warranty',
     ];
 
     public function category(){
@@ -25,5 +25,32 @@ class Asset extends Model
     }
     public function attribute_values(){
         return $this->hasMany(Attribute_Value::class);
+    }
+    public function assignments(){
+        return $this->hasMany(AssetAssignment::class);
+    }
+    // public function currentAssignment(){
+    //     return $this->hasOne(AssetAssignment::class)
+    //                 ->whereNull('returned_at');
+    // }
+    // public function scopeAssignedTo($userId)
+    // {
+    //     return $this->whereHas('currentAssignment', function ($q) use ($userId) {
+    //         $q->where('user_id', $userId);
+    //     });
+    // }
+    // Current active assignment only
+    public function currentAssignment()
+    {
+        return $this->hasOne(AssetAssignment::class)
+                    ->whereNull('returned_at');
+    }
+
+    // Scope: assets currently assigned to a specific user
+    public function scopeAssignedTo($query, $userId)
+    {
+        return $query->whereHas('currentAssignment', function ($q) use ($userId) {
+            $q->where('user_id', $userId);
+        });
     }
 }

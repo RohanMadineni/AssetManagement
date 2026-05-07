@@ -71,4 +71,22 @@ export class AssetService {
     console.log({id, data});
     return this.requestService.PutRequest(`http://localhost:8000/api/parameters/${id}`, data);
   }
+
+  assignAsset(payload: any) {
+    return this.requestService.PostRequest('http://localhost:8000/api/assets/assign', payload);
+  }
+
+  returnAsset(assetId: number) {
+    return this.requestService.PostRequest('http://localhost:8000/api/assets/return', { asset_id: assetId });
+  }
+
+  // assignAsset(assetId: number){
+  //   return this.requestService.PostRequest('http://localhost:8000/api/assets/assign', { asset_id: assetId });
+  // }
+  getHistory(assetId: number) {
+    return this.requestService.GetRequest(`http://localhost:8000/api/assets/${assetId}/history`);
+  }
+  getRecentlyAssignedAssets(){
+    return this.requestService.GetRequest('http://localhost:8000/api/assets/recentlyAssigned');
+  }
 }

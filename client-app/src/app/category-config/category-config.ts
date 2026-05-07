@@ -74,6 +74,7 @@ export class CategoryConfig implements OnInit{
       };
       this.assetService.createParam(Number(this.categoryForm.value.category_id), payload).subscribe();
       this.categoryForm.reset();
+      
     }
 
     if(mode==='edit'){

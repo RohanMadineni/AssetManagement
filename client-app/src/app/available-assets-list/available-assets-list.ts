@@ -17,14 +17,14 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AssetViewDialog } from '../asset-view-dialog/asset-view-dialog';
 import { AssetEditDialog } from '../asset-edit-dialog/asset-edit-dialog';
+import { AssignAssetDialog } from '../assign-asset-dialog/assign-asset-dialog';
 @Component({
-  selector: 'app-asset-list',
+  selector: 'app-available-assets-list',
   imports: [MatTableModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatPaginatorModule, FormsModule, CommonModule, MatSelectModule, MatIconModule, MatCardModule],
-  templateUrl: './asset-list.html',
-  styleUrl: './asset-list.scss',
+  templateUrl: './available-assets-list.html',
+  styleUrl: './available-assets-list.scss',
 })
-
-export class AssetListPage implements OnInit {
+export class AvailableAssetsList {
   assets= signal<any[]>([]);
   total = signal(0);
   page = signal(1);
@@ -52,11 +52,18 @@ export class AssetListPage implements OnInit {
       selected_user: this.user?this.user:0,
       ...this.filters
     };
-    console.log(params);
-    this.assetService.getAssets(params).subscribe(res => {
+    // console.log(params);
+    // this.assetService.getAssets(params).subscribe(res => {
+    //   setTimeout(()=>{
+    //     console.log(res);
+    //     this.assets.set(res.data);
+    //     this.total.set(res.total);
+    //   });
+    // });
+    this.assetService.getAllAssets(params).subscribe(res => {
       setTimeout(()=>{
-        console.log(res);
         this.assets.set(res.data);
+        console.log(this.assets());
         this.total.set(res.total);
       });
     });
@@ -100,11 +107,17 @@ export class AssetListPage implements OnInit {
       this.loadAssets();
     });
   }
-  // assignAsset(asset_id: any){
+  assignAsset(asset: any){
 
-  //   this.assetService.assignAsset({asset_id: asset_id, user_id:this.user}).subscribe(()=>{
-  //     this.loadAssets();
-  //   });
-  // }
-  
+    // this.assetService.assignAsset({asset_id: asset_id, user_id:this.user}).subscribe(()=>{
+    //   this.loadAssets();
+    // });
+    const dialogRef = this.dialog.open(AssignAssetDialog, {data: {asset_id: asset.id, name: asset.name}, height: '350px', width: '350px'});
+
+    dialogRef.afterClosed().subscribe(result=> {
+      if (result) {
+        this.loadAssets();   
+      }
+    });
+  }
 }

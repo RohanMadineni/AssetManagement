@@ -8,6 +8,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ParameterController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\UserController;
+use App\Models\Asset;
 
 Route::get('/users', function (Request $request) {
     return $request->user();
@@ -46,6 +47,11 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::get('{id}', [AssetController::class, 'index'])->whereNumber('id');
         Route::put('{id}', [AssetController::class, 'update'])->whereNumber('id');
         Route::delete('{id}', [AssetController::class, 'destroy'])->whereNumber('id');
+        Route::post('assign', [AssetController::class, 'assign']);
+        Route::post('return', [AssetController::class, 'returnAsset']);
+        Route::get('{id}/history', [AssetController::class, 'history']);
+        Route::get('recentlyAssigned', [AssetController::class, 'recentlyAssigned']);
+        Route::get('all', [AssetController::class, 'showAll']);
     });
     // Route::get('/assets/stats', [AssetController::class, 'stats']); 
     // Route::get('/assets/allstats', [AssetController::class, 'allstats']); 
