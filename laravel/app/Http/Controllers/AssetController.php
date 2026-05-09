@@ -26,7 +26,7 @@ class AssetController extends Controller
                 $user_id = Auth::id();
         else $user_id = $request['selected_user'];
 
-        $query = Asset::with('attribute_values.parameter') 
+        $query = Asset::with('attribute_values.parameter', 'currentAssignment.user') 
             ->AssignedTo($user_id);
 
         if ($request->category_id) {
@@ -37,13 +37,16 @@ class AssetController extends Controller
             $query->where('status', $request->status);
         }
 
+        if ($request->name){
+            $query->where('name', $request->name);
+        } 
         if ($request->has('parameter_id') && $request->has('value')) {
             $query->whereHas('attribute_values', function ($q) use ($request) {
                 $q->where('parameter_id', $request->parameter_id)
                 ->where('value', $request->value);
             });
         }
-        return $query->paginate(10);
+        return $query->paginate(5);
     }
     public function showAll(Request $request){
         $query = Asset::with('attribute_values.parameter', 'currentAssignment.user');
@@ -165,7 +168,7 @@ class AssetController extends Controller
         // $assets = (array)$query; 
         // $assets = DB::select('select category_id, status, price from assets AssignedTo($user_id)');  
             // ->AssignedTo($user_id)
-        $total = count($assets);
+        // $total = count($assets);
         
         // $contvalues = array_count_values(array_column($assets, 'status'));
         // $sum = array_sum(array_column($assets, 'price'));
@@ -242,19 +245,35 @@ class AssetController extends Controller
         ->AssignedTo($user_id)
                 // ->where('user_id',$user_id)
                 ->whereBetween('Warranty', [$today, $threshold])
-                ->get()
-                ->map(function ($asset) {
-                    return [
-                        'id' => $asset->id,
-                        'name' => $asset->name,
-                        'model' => $asset->model,
-                        'Warranty' => $asset->Warranty,
-                        'status'=>$asset->status,
-                        'brand'=>$asset->brand,
-                        'days_left' => Carbon::today()->diffInDays($asset->Warranty, false),
-                    ];
-                });
-        // return $assets->paginate(10);
+                ->paginate(5);
+                // ->get()
+                // ->map(function ($asset) {
+                //     return [
+                //         'id' => $asset->id,
+                //         'name' => $asset->name,
+                //         'model' => $asset->model,
+                //         'Warranty' => $asset->Warranty,
+                //         'status'=>$asset->status,
+                //         'brand'=>$asset->brand,
+                //         'days_left' => Carbon::today()->diffInDays($asset->Warranty, false),
+                //         // 'total'=>$asset->count(),
+                //     ];
+                // });
+        
+        $assets->getCollection()->transform(function ($asset) {
+            return [
+                'id' => $asset->id,
+                'name' => $asset->name,
+                'model' => $asset->model,
+                'Warranty' => $asset->Warranty,
+                'status' => $asset->status,
+                'brand' => $asset->brand,
+
+                'days_left' => Carbon::today()
+                    ->diffInDays($asset->Warranty, false),
+            ];
+        });
+
         return response()->json($assets);
     }
 
@@ -263,18 +282,20 @@ class AssetController extends Controller
         $threshold = Carbon::today()->addDays(15);
         $assets = Asset::whereNotNull('Warranty')
                 ->whereBetween('Warranty', [$today, $threshold])
-                ->get()
-                ->map(function ($asset) {
-                    return [
-                        'id' => $asset->id,
-                        'name' => $asset->name,
-                        'model' => $asset->model,
-                        'Warranty' => $asset->Warranty,
-                        'status'=>$asset->status,
-                        'brand'=>$asset->brand,
-                        'days_left' => Carbon::today()->diffInDays($asset->Warranty, false),
-                    ];
-                });
+                ->paginate(5);
+        $assets->getCollection()->transform(function ($asset) {
+            return [
+                'id' => $asset->id,
+                'name' => $asset->name,
+                'model' => $asset->model,
+                'Warranty' => $asset->Warranty,
+                'status' => $asset->status,
+                'brand' => $asset->brand,
+
+                'days_left' => Carbon::today()
+                    ->diffInDays($asset->Warranty, false),
+            ];
+        });
         
         return response()->json($assets);
     }
@@ -341,18 +362,37 @@ class AssetController extends Controller
 
     public function recentlyAssigned(){
         $user_id = Auth::id();
-        $today = Carbon::today();
+        $today = Carbon::today()->addDays(1);
         $threshold = Carbon::today()->subDays(10);
-        $alreadyAssigned = AssetAssignment::where('user_id', $user_id)
-            ->whereNull('returned_at')
-            ->whereBetween('assigned_at', [$threshold, $today])
-            ->get();
+        $query = Asset::with('attribute_values.parameter', 'currentAssignment') 
+            ->AssignedTo($user_id)
+            ->whereHas('currentAssignment', function ($q) use ($today, $threshold) {
+                        $q->whereBetween('assigned_at', [$threshold, $today]);
+                    });
+        // $alreadyAssigned = AssetAssignment::where('user_id', $user_id)
+        //     ->whereNull('returned_at')
+        //     ->whereBetween('assigned_at', [$threshold, $today])
+        //     ->get();
         
-        return $alreadyAssigned->paginate(10);
+        return $query->paginate(5);
     }
 
-    public function allrecentlyAssigned(){
-        return ;
+    public function recentlyAllAssigned(){
+        $today = Carbon::today()->addDays(1);
+        $threshold = Carbon::today()->subDays(13);
+        $query = Asset::with(['attribute_values.parameter', 'currentAssignment'])
+                    ->whereHas('currentAssignment', function ($q) use ($today, $threshold) {
+                        $q->whereBetween('assigned_at', [$threshold, $today]);
+                    });
+                    
+
+        return $query->paginate(5);
     }
     
+    public function AssetHistory($id){
+        $assignments = AssetAssignment::with('user')
+        ->where('asset_id', $id);
+
+        return $assignments->paginate(10);
+    }
 } 

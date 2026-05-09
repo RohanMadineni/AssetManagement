@@ -6,10 +6,11 @@ import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
 import { AssetViewDialog } from '../asset-view-dialog/asset-view-dialog';
 @Component({
   selector: 'app-system',
-  imports: [ MatCardModule, MatIcon, CanvasJSAngularChartsModule, CommonModule, MatTableModule],
+  imports: [ MatCardModule, MatIcon, CanvasJSAngularChartsModule, CommonModule, MatTableModule, MatPaginator],
   templateUrl: './system.html',
   styleUrl: './system.scss',
 })
@@ -22,12 +23,16 @@ export class SystemPage implements OnInit{
   categories = signal(0); 
   totalvalue = signal(0);
   upcomingWarranties = signal<any[]>([]);
+  recentlyAssigned = signal<any[]>([]);
   labels = signal<any[]>([]);
   series = signal<any[]>([]);
   catarry = signal<any[]>([]);
   stats = signal<any[]>([]);
   series2 = signal<any[]>([]);
-
+  totalRecent = signal(0);
+  totalWarr = signal(0);
+  page = signal(1);
+  page2 = signal(1);
   ngOnInit(): void {
       
       this.initForm();
@@ -102,12 +107,37 @@ export class SystemPage implements OnInit{
           });        
     });
     
-    this.assetService.getAllUpcomingAssets().subscribe(res => {
-      this.upcomingWarranties.set(res);
+    // this.assetService.getAllUpcomingAssets().subscribe(res => {
+    //   this.upcomingWarranties.set(res);
+    //   console.log(this.upcomingWarranties());
+    // });
+    const params: any = {
+      page: (this.page())
+    };
+    const params2: any = {
+      page: (this.page2())
+    };
+     this.assetService.getAllUpcomingAssets(params2).subscribe(res => {
+      this.upcomingWarranties.set(res.data);
+      this.totalWarr.set(res.total);
       console.log(this.upcomingWarranties());
+    });
+    
+    this.assetService.getRecentlyAllAssignedAssets(params).subscribe(res => {
+      this.recentlyAssigned.set(res.data);
+      console.log(this.recentlyAssigned());
+      this.totalRecent.set(res.total);
     });
   }
   viewAsset(view_Asset:any){
     this.dialog.open(AssetViewDialog, {data: view_Asset, height: '350px', width: '350px'});
+  }
+  onPageChange(event: any) {
+    this.page.set(event.pageIndex + 1);
+    this.initForm();
+  }
+  onPageChange2(event: any) {
+    this.page2.set(event.pageIndex + 1);
+    this.initForm();
   }
 }

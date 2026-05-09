@@ -1,18 +1,23 @@
 
 <mat-toolbar style="height:52px;">
-  <mat-icon style="color:white;">reorder_icon</mat-icon><div class="secondtitle">Asset Management System</div>
+  <mat-icon style="color:#e91e63;">reorder_icon</mat-icon><div class="secondtitle">Asset Management System</div>
   <div class="person" style="display:flex;">
     <mat-icon class="acc_circle">account_circle </mat-icon>
-    <span>{{role | titlecase}}  {{name}}</span> 
+    <span style="color:#e91e63; font-weight:500;">{{role() | titlecase}}  {{name()}}</span> 
   </div>
 </mat-toolbar>
+<!-- <div style="background-color:#e91e63;width:100%;height:2px;"></div> -->
 <!-- <div class = "side-contain"> -->
 <mat-drawer-container class="sidenav-container">
   
   <mat-drawer mode="side" opened class="sidenav">
     <mat-card class="sidenav-card">
     <mat-nav-list class="list">
-      
+      <!-- <a mat-list-item>
+        <p class="admincontrols" style="color:rgb(70, 69, 69); font-size:14px;font-weight:400;  margin-left:10px;">
+            
+        </p>
+      </a> -->
       <a mat-list-item routerLink="dashboard" routerLinkActive="active-link">
         <p>
         <mat-icon>dashboard</mat-icon>
@@ -38,9 +43,14 @@
         Asset Details
       </a> -->
       <span *ngIf="isadmin()">
-      <a mat-list-item>
+      <!-- <a mat-list-item>
         <p class="admincontrols" style="color:rgb(70, 69, 69); font-size:14px;font-weight:400;  margin-left:10px;">
           ADMINISTRATION
+        </p>
+      </a> -->
+      <a mat-list-item>
+        <p class="admincontrols" style="color:rgb(70, 69, 69); font-size:14px;font-weight:400;  margin-left:10px;">
+          ASSET MANAGEMENT
         </p>
       </a>
       </span>
@@ -59,6 +69,21 @@
           Available Assets
           </p>
         </a>
+      </span>
+      <!-- <span *ngIf="isadmin()">
+        <a mat-list-item  routerLink="" routerLinkActive="active-link">
+          <p>
+          <mat-icon>history</mat-icon>
+          Assignment History
+          </p>
+        </a>
+      </span> -->
+      <span *ngIf="isadmin()">
+      <a mat-list-item>
+        <p class="admincontrols" style="color:rgb(70, 69, 69); font-size:14px;font-weight:400;  margin-left:10px;">
+          USER MANAGEMENT
+        </p>
+      </a>
       </span>
       <span *ngIf="isadmin()">
         <a mat-list-item routerLink="register" routerLinkActive="active-link">
@@ -86,7 +111,13 @@
             </p>
           </a>
       </span>
-
+      <a>
+      <a mat-list-item>
+        <p class="admincontrols" style="color:rgb(70, 69, 69); font-size:14px;font-weight:400;  margin-left:10px;">
+          SYSTEM MANAGEMENT 
+        </p>
+      </a>
+      </a>
       <a mat-list-item (click)="onLogout()">
         <mat-icon>logout</mat-icon>
         Log Out

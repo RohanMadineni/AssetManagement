@@ -1,97 +1,3 @@
-<!-- <div class="assetlist-page">
-  
-  <mat-card class="filters">
-
-    <mat-card-header>
-      <div style="color: rgb(71, 70, 70);">
-        <mat-card-title>
-          Filters
-        </mat-card-title>
-      </div>
-
-    </mat-card-header>
-
-    <mat-card-content class = "filter-content">
-    
-      <mat-form-field class = "full-width">
-        <mat-label>Category</mat-label>
-        <mat-select [(ngModel)]="filters.category_id">
-          <mat-option value="">All</mat-option>
-          <mat-option *ngFor="let cat of categories()" [value]="cat.id">
-            {{ cat.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field class = "full-width">
-        <mat-label>status</mat-label>
-        <mat-select [(ngModel)]="filters.status">
-          <mat-option value="">All</mat-option>
-          <mat-option value="assigned">Assigned</mat-option>
-          <mat-option value="available">Available</mat-option>
-          <mat-option value="under maintenance">Under Maintenance</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <button mat-raised-button (click)="onFilter()">
-        <mat-icon>filter_list</mat-icon>
-        Apply Filters
-      </button>
-
-    </mat-card-content>
-
-  </mat-card>
-
-  <mat-card class="asset-table">
-
-    <mat-card-header>
-
-      <div style="color: rgb(71, 70, 70);">
-        <mat-card-title>
-          Assets
-        </mat-card-title>
-      </div>
-
-    </mat-card-header>
-
-    <mat-card-content class = "Assetlist-content">
-      
-      <table mat-table [dataSource]="assets()" class="mat-elevation-z8">
-
-        <ng-container matColumnDef="name" class="action-column">
-          <th mat-header-cell *matHeaderCellDef> Name </th>
-          <td mat-cell *matCellDef="let asset"> {{ asset.name }} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef> Status </th>
-          <td mat-cell *matCellDef="let asset"> {{ asset.status }} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="actions" class="action-column">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 75px;"> Actions </th>
-          <td mat-cell *matCellDef="let asset">
-            <button mat-button color="primary" (click)="viewAsset(asset)"><mat-icon>visibility</mat-icon></button>
-            <button mat-button color="primary" (click)="editAsset(asset)"><mat-icon>edit</mat-icon></button>
-            <button mat-button color="warn" (click)="deleteAsset(asset.id)"><mat-icon>delete</mat-icon></button>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-      </table>
-
-      <mat-paginator
-        [length]="total()"
-        [pageSize]="10"
-        (page)="onPageChange($event)" class="paginator-class">
-      </mat-paginator>
-
-    </mat-card-content>
-
-  </mat-card>
-</div> -->
 <div class="page-container">
 
   <!-- HEADER -->
@@ -101,10 +7,6 @@
       <div class="welcome">
       <p>Manage and monitor all assets in the system</p>
       </div>
-    <!-- <button mat-raised-button color="primary" class="add-btn">
-      <mat-icon>add</mat-icon>
-      Add Asset
-    </button> -->
   </div>
 
 
@@ -133,7 +35,6 @@
         <mat-label>Status</mat-label>
         <mat-select [(ngModel)]="filters.status">
           <mat-option value="">All Status</mat-option>
-          <!-- <mat-option value="available">Available</mat-option> -->
           <mat-option value="assigned">Assigned</mat-option>
           <mat-option value="under maintenance">Under Maintenance</mat-option>
         </mat-select>
@@ -186,6 +87,7 @@
               'assigned': element.status === 'assigned',
               'maintenance': element.status === 'maintenance'
             }"
+            style="font-weight:500;"
           >
             {{element.status | titlecase}}
           </span>

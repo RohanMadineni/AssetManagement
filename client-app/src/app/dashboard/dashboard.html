@@ -15,10 +15,10 @@
 </div> -->
 
 <div class="DashboardPage">
-  <div>
+  <!-- <div> -->
     <h1 class="page-title">Dashboard</h1>
-    <p class="welcome">Welcome back, Admin User!</p>
-  </div>
+    <!-- <p class="welcome">Welcome back, Admin User!</p> -->
+  <!-- </div> -->
 
 <!-- STAT CARDS -->
   <div class="stats-grid">
@@ -92,39 +92,64 @@
   </div>
 
   <div class="chart-grid">
-    <!-- <div class="card warranty-card" style="height: 300px;">
-      
-      <h3 style="font-weight:500;">Upcoming Warranty Expiry</h3>
-      <div *ngFor="let asset of upcomingWarranties()">
-        <div class="warranty-item">
-          <div class="icon">
-            <mat-icon>devices</mat-icon>    {{asset.id}}
-          </div>
-          <div>
-            <strong>{{asset.name}}</strong>
-            <p>{{asset.model}}</p>
-          </div>
+    <div>
+      <div class="warranty-card" style="height: 300px;">
+        <h4>Upcoming Warranty Expirations</h4>
+          <table mat-table [dataSource]="upcomingWarranties()">
+              <!-- <ng-container matColumnDef="index">
+                <th mat-header-cell *matHeaderCellDef>Index</th>
+                <td mat-cell *matCellDef="let element; let i = index">
+                  <mat-icon>devices</mat-icon> 
+                  {{i + 1}}
+                </td>
+              </ng-container> -->
 
-          <div class="expiry">
-            <span >
-              {{asset.days_left}} Days Left
-            </span>
-          </div>
-        </div>
+
+              <!-- NAME -->
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td mat-cell *matCellDef="let element">
+                  <p style="font-weight: 500;">{{element.name}}</p>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="daysleft">
+                <th mat-header-cell *matHeaderCellDef>Days left</th>
+                <td mat-cell *matCellDef="let element">
+                  <p style="color: #e91e63; font-weight: 500;">{{element.days_left}} days left</p>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let element">
+
+                  <button mat-icon-button (click)="viewAsset(element)"  style="border:none;">
+                    <mat-icon style="color:blueviolet;">visibility</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+            <tr mat-header-row *matHeaderRowDef="['name', 'daysleft', 'actions']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['name', 'daysleft', 'actions'];"></tr>
+          </table>
+          <mat-paginator
+            [length]="totalWarr()"
+            [pageSize]="5"
+            (page)="onPageChange2($event)">
+          </mat-paginator>
       </div>
-    </div> -->
-    <div class="warranty-card" style="height: 300px;">
-      <h3>Upcoming Warranty Expirations</h3>
-        <table mat-table [dataSource]="upcomingWarranties()">
-            <ng-container matColumnDef="index">
+      
+      <div class="history-card" style="height: 300px;">
+
+        <h4>Recently Assigned Assets</h4>
+          <table mat-table [dataSource]="recentlyAssigned()">
+        
+            <!-- <ng-container matColumnDef="index">
               <th mat-header-cell *matHeaderCellDef>Index</th>
               <td mat-cell *matCellDef="let element; let i = index">
-                <mat-icon>devices</mat-icon> {{i + 1}}
+                <mat-icon>devices</mat-icon>{{i + 1}}
               </td>
-            </ng-container>
+            </ng-container> -->
 
-
-            <!-- NAME -->
             <ng-container matColumnDef="name">
               <th mat-header-cell *matHeaderCellDef>Name</th>
               <td mat-cell *matCellDef="let element">
@@ -132,25 +157,47 @@
               </td>
             </ng-container>
 
-            <ng-container matColumnDef="daysleft">
-              <th mat-header-cell *matHeaderCellDef>Days left</th>
-              <td mat-cell *matCellDef="let element">
-                <p style="color: #e91e63; font-weight: 500;">{{element.days_left}} days left</p>
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef></th>
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Assigned at</th>
               <td mat-cell *matCellDef="let element">
 
-                <button mat-icon-button (click)="viewAsset(element)"  style="border:none;">
-                  <mat-icon style="color:blueviolet;">visibility</mat-icon>
-                </button>
+                <span class="status-chip" style="font-weight:500;color: #e91e63;">
+                  {{element.current_assignment.assigned_at}}
+                </span>
+
               </td>
             </ng-container>
-          <tr mat-header-row *matHeaderRowDef="['index','name', 'daysleft', 'actions']"></tr>
-          <tr mat-row *matRowDef="let row; columns: ['index','name', 'daysleft', 'actions'];"></tr>
-        </table>
+
+
+            <!-- ACTIONS -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef></th>
+
+              <td mat-cell *matCellDef="let element">
+
+                <button mat-icon-button (click)="viewAsset(element)" style="border:none;">
+                  <mat-icon style="color:blueviolet;">visibility</mat-icon>
+                </button>
+
+                <!-- <button mat-icon-button (click)="returnAsset(element.id)" style="color: green; background-color: white;height:70%;"><mat-icon>assignment_return</mat-icon></button>
+                
+                <button mat-icon-button (click)="editAsset(element)">
+                  <mat-icon style="color:blueviolet;">edit</mat-icon>
+                </button> -->
+
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="['name','status','actions']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['name','status','actions'];"></tr>
+          </table>
+          <mat-paginator
+            [length]="totalRecent()"
+            [pageSize]="5"
+            (page)="onPageChange($event)">
+          </mat-paginator>
+      </div>
     </div>
+
     <div style="height:500px;">
       <mat-card class="chart-card">
         

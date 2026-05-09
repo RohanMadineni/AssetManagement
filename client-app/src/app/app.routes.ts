@@ -7,6 +7,7 @@ import { AssetListPage } from './asset-list/asset-list';
 import { SystemPage } from './system/system';
 import { AddAssetComponent } from './add-asset/add-asset';
 import { AssetDetail } from './asset-detail/asset-detail';
+import { AssetAssignmentHistory } from './asset-assignment-history/asset-assignment-history';
 export const routes: Routes = [
     {
         path: 'login',
@@ -31,6 +32,7 @@ export const routes: Routes = [
             {path: 'categoryConfig', loadComponent: () => import('./category-config/category-config').then(m => m.CategoryConfig),},
             {path: 'usermanagement', loadComponent: () => import('./user-management/user-management').then(m => m.UserManagement),},
             {path: 'availableAssets', loadComponent: () => import('./available-assets-list/available-assets-list').then(m => m.AvailableAssetsList),},
+            {path: 'assetHistory', loadComponent: () => import('./asset-assignment-history/asset-assignment-history').then(m => m.AssetAssignmentHistory),},
         ]
     },
 

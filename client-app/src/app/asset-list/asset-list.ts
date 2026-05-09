@@ -31,7 +31,8 @@ export class AssetListPage implements OnInit {
   categories = signal<any[]>([]);
   filters = {
     category_id: '',
-    status: ''
+    status: '',
+    search:''
   };
 
   @Input() user:any;

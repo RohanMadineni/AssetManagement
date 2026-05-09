@@ -47,11 +47,11 @@ export class AssetService {
     // return this.http.get<any>('http://localhost:8000/api/assets', {params});
     return this.requestService.GetRequest('http://localhost:8000/api/assets/all', params);
   }
-  getUpcomingAssets(){
-    return this.requestService.GetRequest('http://localhost:8000/api/assets/warranty/upcoming');
+  getUpcomingAssets(params: any){
+    return this.requestService.GetRequest('http://localhost:8000/api/assets/warranty/upcoming', params);
   }
-  getAllUpcomingAssets(){
-    return this.requestService.GetRequest('http://localhost:8000/api/assets/allwarranty/upcoming');
+  getAllUpcomingAssets(params: any){
+    return this.requestService.GetRequest('http://localhost:8000/api/assets/allwarranty/upcoming', params);
   }
   updateAsset(id: number, data:any){
     return this.requestService.PutRequest(`http://localhost:8000/api/assets/${id}`, data);
@@ -86,7 +86,14 @@ export class AssetService {
   getHistory(assetId: number) {
     return this.requestService.GetRequest(`http://localhost:8000/api/assets/${assetId}/history`);
   }
-  getRecentlyAssignedAssets(){
-    return this.requestService.GetRequest('http://localhost:8000/api/assets/recentlyAssigned');
+  getRecentlyAssignedAssets(params: any){
+    return this.requestService.GetRequest('http://localhost:8000/api/assets/recentlyAssigned', params);
+  }
+  getRecentlyAllAssignedAssets(params: any){
+    return this.requestService.GetRequest('http://localhost:8000/api/assets/allrecentlyAssigned', params);
+  }
+  getAssetHistory(params: any){
+    const id = params.asset_id;
+    return this.requestService.GetRequest(`http://localhost:8000/api/assets/history/${id}`, params);
   }
 }

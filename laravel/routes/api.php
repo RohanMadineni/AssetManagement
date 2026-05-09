@@ -49,9 +49,11 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::delete('{id}', [AssetController::class, 'destroy'])->whereNumber('id');
         Route::post('assign', [AssetController::class, 'assign']);
         Route::post('return', [AssetController::class, 'returnAsset']);
-        Route::get('{id}/history', [AssetController::class, 'history']);
+        // Route::get('{id}/history', [AssetController::class, 'history']);
         Route::get('recentlyAssigned', [AssetController::class, 'recentlyAssigned']);
+        Route::get('allrecentlyAssigned', [AssetController::class, 'recentlyAllAssigned']);
         Route::get('all', [AssetController::class, 'showAll']);
+        Route::get('history/{id}', [AssetController::class, 'AssetHistory']);
     });
     // Route::get('/assets/stats', [AssetController::class, 'stats']); 
     // Route::get('/assets/allstats', [AssetController::class, 'allstats']); 

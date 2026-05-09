@@ -18,6 +18,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AssetViewDialog } from '../asset-view-dialog/asset-view-dialog';
 import { AssetEditDialog } from '../asset-edit-dialog/asset-edit-dialog';
 import { AssignAssetDialog } from '../assign-asset-dialog/assign-asset-dialog';
+import { AssetAssignmentHistory } from '../asset-assignment-history/asset-assignment-history';
 @Component({
   selector: 'app-available-assets-list',
   imports: [MatTableModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatPaginatorModule, FormsModule, CommonModule, MatSelectModule, MatIconModule, MatCardModule],
@@ -94,7 +95,7 @@ export class AvailableAssetsList {
   }
 
   editAsset(edit_Asset: any){
-    const dialogRef = this.dialog.open(AssetEditDialog, {data: edit_Asset, height: '700px', width: '600px'});
+    const dialogRef = this.dialog.open(AssetEditDialog, {data: edit_Asset, height: '730px', width: '700px'});
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -119,5 +120,9 @@ export class AvailableAssetsList {
         this.loadAssets();   
       }
     });
+  }
+  assetHistory(asset: any){
+    const dialogRef = this.dialog.open(AssetAssignmentHistory, {data: {asset_id: asset.id, name: asset.name}, height: '700px', width: '900px'});
+    dialogRef.afterClosed().subscribe();
   }
 }

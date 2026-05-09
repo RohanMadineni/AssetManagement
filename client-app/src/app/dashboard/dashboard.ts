@@ -1,136 +1,16 @@
-// import { Component, OnInit } from '@angular/core';
-// import { MatSidenavModule } from '@angular/material/sidenav';
-// import { MatToolbarModule } from '@angular/material/toolbar';
-
-// import {signal} from '@angular/core';
-
-// import { MatCardModule } from '@angular/material/card';
-// import { MatIconModule } from '@angular/material/icon';
-// import { AuthService } from '../auth-service';
-// import { Router } from '@angular/router';
-// import { AssetService } from '../asset-service';
-
-// import { ChangeDetectorRef, NgZone  } from '@angular/core';
-// @Component({
-//   selector: 'app-dashboard',
-//   imports: [MatCardModule, MatSidenavModule, MatToolbarModule, MatIconModule],
-//   templateUrl: './dashboard.html',
-//   styleUrl: './dashboard.scss',
- 
-// })
-// export class DashboardPage implements OnInit {
-//   // private apiUrl = 'https://localhost:8000/api/assets/stats';
-//   public totalAssets = signal(0);
-//   assignedAssets = signal(0);
-//   unassignedAssets = signal(0);
- 
-//   constructor( private assetService: AssetService, private cd: ChangeDetectorRef){
-
-
-//   }
-
-//   ngOnInit(): void {
-//     setTimeout(() => {
-//       this.initForm();
-
-//     }, 100);
-
-      
-//       // });
-    
-//   }
-
-//   initForm(){
-//     this.assetService.getStats().subscribe(res=>{
-//           // this.zone.run(()=>{
-//           console.log('API RESPONSE:', res);
-//           this.totalAssets.set(res.total_assets) ;
-//           this.assignedAssets.set(res.assigned_assets);
-//           this.unassignedAssets.set(res.unassigned_assets);
-          
-//         //  this.cd.detectChanges();
-//         }
-//       );
-//   }
-// }
-
-// import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-// import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-// import { MatFormFieldModule } from '@angular/material/form-field';
-// import { AssetService } from '../asset-service';
-// import { MatSelectModule } from '@angular/material/select';
-// import { MatButtonModule } from '@angular/material/button';
-// import { MatIconModule } from '@angular/material/icon';
-// import { MatCardModule } from '@angular/material/card';
-// import { CommonModule } from '@angular/common';
-// import { MatInputModule } from '@angular/material/input';
-// import {signal} from '@angular/core';
-// @Component({
-//   selector: 'app-asset-detail',
-//   imports: [ReactiveFormsModule, MatFormFieldModule, MatSelectModule, CommonModule, FormsModule, MatButtonModule, MatIconModule, MatCardModule, MatInputModule],
-//   templateUrl: './asset-detail.html',
-//   styleUrl: './asset-detail.scss',
-// })
-// export class AssetDetail implements OnInit{
-  
-//   categories = signal<any[]>([]);
-//   assets = signal<any[]>([]);
-//   filters = {
-//     category_id: '',
-//     status: '',
-//     asset: '',
-//   };
-//   assetForm = new FormGroup({
-//       param_name: new FormControl(''),
-//       param_value: new FormControl('')
-//   });
-//   constructor(private assetService: AssetService, private fb: FormBuilder) {};
-  
-//   ngOnInit(): void {
-//     this.initForm();
-//     setTimeout(() => {
-//       this.loadCategories();
-//       this.loadAssets();
-      
-//     }, 1000);
-//   }
-//   initForm(){
-//     this.categories.set([[]])
-//      this.assets.set([]);
-//     // this.cd.detectChanges()
-//   }
-//   loadCategories(){{
-//     this.assetService.getCategories().subscribe(res => {this.categories.set(res)});
-  
-//   }}
-//   onSubmit()
-//   {this.assetForm.reset();}
-
-//   loadAssets(){
-//     const params: any = {
-//       ...this.filters
-//     };
-//     this.assetService.getAssets(params).subscribe(res=>{
-//       this.assets.set(res.data);
-//       console.log(res);
-//       console.log(this.assets);
-//     });
-    
-//   }
-// }
-
 import {Component, OnInit, signal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
 import { AssetService } from '../asset-service';
 import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
 import { AssetViewDialog } from '../asset-view-dialog/asset-view-dialog';
 @Component({
   selector: 'app-dashboard',
-  imports: [ MatCardModule, MatIconModule, CanvasJSAngularChartsModule, CommonModule, MatTableModule],
+  imports: [ MatCardModule, MatIconModule, CanvasJSAngularChartsModule, MatPaginator, CommonModule, MatTableModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
@@ -141,6 +21,7 @@ export class DashboardPage implements OnInit{
   availableAssets = signal(0);
   maintenanceAssets = signal(0);
   upcomingWarranties = signal<any[]>([]);
+  recentlyAssigned = signal<any[]>([]);
   totalvalue = signal(0);
   categories = signal(0); 
   labels = signal<any[]>([]);
@@ -148,7 +29,10 @@ export class DashboardPage implements OnInit{
   catarry = signal<any[]>([]);
   stats = signal<any[]>([]);
   series2 = signal<any[]>([]);
-
+  totalRecent = signal(0);
+  totalWarr = signal(0);
+  page = signal(1);
+  page2 = signal(1);
   ngOnInit(): void {
       // setTimeout(() => {
       this.initForm();
@@ -189,6 +73,9 @@ export class DashboardPage implements OnInit{
   constructor(private assetService: AssetService, private dialog: MatDialog){}
 
   initForm(){
+    const params: any = {
+      page: (this.page())
+    };
 
     this.assetService.getStats().subscribe(res=>{
           this.totalAssets.set(res.total_assets) ;
@@ -224,15 +111,34 @@ export class DashboardPage implements OnInit{
              }]
           });        
     });
-    
-    this.assetService.getUpcomingAssets().subscribe(res => {
-      this.upcomingWarranties.set(res);
+    const params2: any = {
+      page: (this.page2())
+    };
+    this.assetService.getUpcomingAssets(params2).subscribe(res => {
+      this.upcomingWarranties.set(res.data);
+      this.totalWarr.set(res.total);
       console.log(this.upcomingWarranties());
     });
     
+    this.assetService.getRecentlyAssignedAssets(params).subscribe(res => {
+      this.recentlyAssigned.set(res.data);
+      this.totalRecent.set(res.total);
+    });
   }
   viewAsset(view_Asset:any){
     this.dialog.open(AssetViewDialog, {data: view_Asset, height: '350px', width: '350px'});
   }
-  
+  returnAsset(asset_id: any){
+    this.assetService.returnAsset(asset_id).subscribe(()=>{
+      this.initForm();
+    });
+  }
+  onPageChange(event: any) {
+    this.page.set(event.pageIndex + 1);
+    this.initForm();
+  }
+  onPageChange2(event: any) {
+    this.page2.set(event.pageIndex + 1);
+    this.initForm();
+  }
 }

@@ -23,7 +23,9 @@ html {
   @include mat.toolbar-overrides((
     // container-background-color: linear-gradient(to right, rgb(180, 30, 106), rgb(243, 109, 161))
     // container-background-color: linear-gradient(to bottom, rgb(205, 67, 143), rgb(246, 129, 174))
-    container-background-color: linear-gradient(to bottom, rgb(250, 62, 142), rgb(246, 129, 174))
+    // container-background-color: linear-gradient(to bottom, rgb(224, 1, 98), rgb(246, 129, 174))
+    // container-background-color: white
+    container-background-color: #f6e9ff
   ));
 }
 :root{

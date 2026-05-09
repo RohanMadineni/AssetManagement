@@ -75,8 +75,8 @@
   grid-template-columns: repeat(5, 1fr);
   width: 95%;
   gap: 16px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 5px;
+  margin-bottom: 1px;
    padding-left: 20px;
   // margin-left: 15px;
   //  margin-right: 20px;
@@ -88,12 +88,12 @@
   padding-left: 13px !important;
    box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
   border-left: 5px solid transparent;
-  min-height: 100%;
+  min-height: 70%;
   max-height: 100%;
 }
 .stat-content {
   display: flex;
-  max-height: 100%;
+  max-height: 80%;
   align-items: center;
   padding-top: 10px;
   padding-left: 8px;
@@ -114,7 +114,7 @@
   // background: white;
   background: linear-gradient(
     to bottom,
-    rgb(251, 196, 229),
+    rgb(250, 209, 233),
     rgb(248, 241, 243)
   );
   max-height: 100%;
@@ -129,7 +129,7 @@
 .stat-card.blue{
   background: linear-gradient(
     to bottom,
-    rgb(176, 232, 254),
+    rgb(190, 234, 252),
     rgb(243, 248, 250),
   );
 }
@@ -150,7 +150,7 @@
 .stat-card.orange{
   background: linear-gradient(
     to bottom,
-    #fff281,
+    #fdf294,
     #fdf7ef,
     )
 }
@@ -160,7 +160,7 @@
 .stat-card.purple{
   background: linear-gradient(
     to bottom,
-    rgb(206, 153, 253),
+    rgb(214, 179, 244),
     rgb(251, 241, 253)
   )
 }
@@ -201,27 +201,15 @@
   grid-template-columns: 50% 50%;
   max-height: 60%;
   margin-top:10px;
-//   grid-template-columns: repeat(2,1fr);
-// height:400px;
-  // gap: 20px;
-  // padding-top: 20px;
-  // padding-left: 15px;
-  // margin-bottom: 30px;
-  // justify-content: center;
 }
 
 .chart-card{
-  // padding: 16px;
   height: 45%; 
   width: 80%;
   margin-bottom: 15px;
  border-radius: 14px !important;
  box-shadow: 0px 0px 0px 0px;
-  // box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
-  // background-color: rgb(249, 196, 235);
-  // background-color: rgb(239, 142, 210);
   background-color: white;
-  // margin-right: 30px;
 }
 
 .card-title{
@@ -257,7 +245,7 @@
 /* ===================== */
 
 .table-card{
-  padding: 16px;
+  // padding: 16px;
   border-radius: 14px !important;
   box-shadow: 0px 0px 0px 0px;
 }
@@ -341,10 +329,7 @@ mat-chip.Assigned{
 
 @media (max-width:1200px){
 
-.stats-grid{
-  display: flex;
-grid-template-columns: repeat(2,1fr);
-}
+
 
 // .chart-grid{
 
@@ -359,10 +344,11 @@ grid-template-columns: 1fr;
 }
 
 .warranty-card {
-  padding: 16px;
+  // padding: 16px;
   border-radius: 12px;
   background: white;
-  height: 260px;
+  // height: 200px;
+  height: 25%;
   // margin-top: 26px;
   margin-right:5px;
   margin-left:10px;
@@ -373,12 +359,22 @@ grid-template-columns: 1fr;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  // padding: 3px;
   // margin-bottom: 10px;
   border-bottom: 1px solid #080808;
   font-weight:330;
 }
-
+.history-card {
+  //  padding: 16px;
+  border-radius: 12px;
+  background: white;
+  height:25%;
+  // height: 200px;
+  // margin-top: 26px;
+  margin-right:5px;
+  margin-left:10px;
+  width: 80%;
+}
 // .warranty-card{
 //   padding:15px;
 //   max-height: 100%;
@@ -388,7 +384,7 @@ grid-template-columns: 1fr;
 
 table{
   width:80%;
-  height: 50%;
+  // height: 50%;
   background: white;
 }
 th{
@@ -397,11 +393,20 @@ th{
 }
 
 td, th{
-  padding:10px !important;
+  padding:0px !important;
 }
 th.mat-mdc-header-cell,
 td.mat-mdc-cell {
   text-align: center;
   justify-content: center;
   font-size: 14px;
+}
+table .mat-mdc-header-row{
+    height: 40px;
+    background:#fafafa;
+}
+
+table .mat-mdc-row{
+    height:30px;
+    transition:0.2s;
 }

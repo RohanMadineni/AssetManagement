@@ -18,25 +18,29 @@ import { signal } from '@angular/core';
 })
 export class LayoutPage {
   
-  role: string = "";
+  // role: string = "";
+  role = signal<string>("");
   isadmin = signal(false);
-  name: string = "";
+  name = signal<string>("");
   constructor(private authService: AuthService, private router: Router){
    
     this.authService.getRole().subscribe(
       res => {
         console.log(res);
-        this.role=res.role;
-        this.name=res.username;
-        this.isAdmin();
+        this.role.set(res.role);
+        this.name.set(res.username);
+        if (res) {
+        this.isAdmin();   
+      }
+        // this.isAdmin();
       }
     );
     
   }
 
   isAdmin(){
-    console.log(this.role);
-    if(this.role=='admin') this.isadmin.set(true);
+    console.log(this.role());
+    if(this.role()=='admin') this.isadmin.set(true);
     
   }
  onLogout(): void{

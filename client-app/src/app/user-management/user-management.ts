@@ -47,9 +47,10 @@ export class UserManagement implements OnInit{
     });
   }
 
-  onPageChange(event: any) {
-    this.page.set(event.pageIndex + 1);
-  }
+  // onPageChange(event: any) {
+  //   this.page.set(event.pageIndex + 1);
+  //   this.initTable();
+  // }
 
   deleteUser(id: any) {
     this.userservice.deleteUser(id).subscribe({
