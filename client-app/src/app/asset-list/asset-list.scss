@@ -117,7 +117,7 @@
 }
 .filter-actions button{
     color: white;
-    background-color: #fa4d8d;
+    background-color: #4f46e5;
 }
 
 // .table-card{
@@ -140,7 +140,7 @@ table{
 }
 th{
   font-weight:500;
-  background: rgb(245, 194, 245) !important;
+  background: #c0cbf5 !important;
 }
 
 td, th{
@@ -152,8 +152,13 @@ td.mat-mdc-cell {
   justify-content: center;
   font-size: 14px;
 }
+.status-chip.available {
+  color:  #EF4444;
+}
+
+/* assigned → blue (optional) */
 .status-chip.assigned {
-  color: green;
+  color: #10B981;
 }
 
 /* maintenance → yellow */

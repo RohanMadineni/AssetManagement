@@ -25,7 +25,8 @@ html {
     // container-background-color: linear-gradient(to bottom, rgb(205, 67, 143), rgb(246, 129, 174))
     // container-background-color: linear-gradient(to bottom, rgb(224, 1, 98), rgb(246, 129, 174))
     // container-background-color: white
-    container-background-color: #f6e9ff
+    // container-background-color: #f6e9ff
+    container-background-color: #6366F1
   ));
 }
 :root{
@@ -59,7 +60,11 @@ html {
     container-color: rgb(250, 211, 243)
   ));
 }
-
+:root {
+  @include mat.form-field-overrides((
+    filled-container-color: #dce3ff
+  ));
+}
 body {
   // Default the application to a light color theme. This can be changed to
   // `dark` to enable the dark color theme, or to `light dark` to defer to the
