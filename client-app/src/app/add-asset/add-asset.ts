@@ -77,14 +77,14 @@ export class AddAssetComponent implements OnInit{
 
       this.attributes.clear();
 
-      params.forEach((param: any) => {
-        this.attributes.push(
-          this.fb.group({
-            parameter_id: [param.id],
-            value: ['', param.is_required ? Validators.required : []]
-          })
-        );
-      });
+      // params.forEach((param: any) => {
+      //   this.attributes.push(
+      //     this.fb.group({
+      //       parameter_id: [param.id],
+      //       value: ['', param.is_required ? Validators.required : []]
+      //     })
+      //   );
+      // });
     });
   }
 

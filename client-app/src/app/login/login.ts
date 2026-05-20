@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth-service';
+import { NotificationService } from '../services/notification';
 // import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-login',
@@ -19,7 +20,8 @@ export class LoginPage {
 
   constructor(private fb: FormBuilder,
               private authService: AuthService,
-              private router: Router
+              private router: Router,
+              private notificationService: NotificationService,
               ) {
       console.log('LoginPage constructor running');
     this.loginform = this.fb.group({
@@ -32,9 +34,12 @@ export class LoginPage {
     const val = this.loginform.value;
     if (this.loginform.valid) {  
       this.authService.login(val.username, val.password).subscribe({
-        next: () => {
+        next: (res) => {
+          console.log(res);
           console.log("user is logged in");
+          // this.notificationService.loadNotifications();
           // setTimeout(() => {
+
           this.router.navigateByUrl('/dashboard');
         // });
         },

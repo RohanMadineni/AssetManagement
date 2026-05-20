@@ -1,12 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use App\Models\Asset;
 use App\Models\AssetAssignment;
 use App\Models\Attribute_value;
 use App\Models\Category;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -104,7 +105,13 @@ class AssetController extends Controller
                 ]);
             }
         }
-
+        $notification = Notification::create([
+            'user_id' => $asset->user_id,
+            'title' => 'Asset Created',
+            'message' => $request->name,
+            'type' => 'success'
+        ]);
+        Http::post('localhost:3000/AssetCreated', $notification);
         return response()->json($asset, 201);} catch (\Exception $e) {
 
         return response()->json([
@@ -142,6 +149,14 @@ class AssetController extends Controller
             }
         }
 
+        $notification = Notification::create([
+            'user_id' => $asset->user_id,
+            'title' => 'Asset Updated',
+            'message' => $asset->name,
+            'type' => 'success'
+        ]);
+        Http::post('localhost:3000/AssetCreated', $notification);
+
         return response()->json($request->input('attributes'));
     }
 
@@ -149,8 +164,16 @@ class AssetController extends Controller
         $asset = Asset::findorFail($id);
 
         $asset->attribute_values()->delete();
+        $notification = Notification::create([
+            'user_id' => $asset->user_id,
+            'title' => 'Asset Deleted',
+            'message' => $asset->name,
+            'type' => 'success'
+        ]);
         $asset->delete();
-
+        
+        
+        Http::post('localhost:3000/AssetCreated', $notification);
         return response()->json([
             'message' => 'Asset deleted'
         ]);
@@ -304,6 +327,7 @@ class AssetController extends Controller
         $request->validate([
             'asset_id' => 'required|exists:assets,id',
             'user_id' => 'required|exists:users,id',
+            'username' => 'required',
         ]);
         $alreadyAssigned = AssetAssignment::where('asset_id', $request->asset_id)
         ->whereNull('returned_at')
@@ -322,7 +346,13 @@ class AssetController extends Controller
         // Optional: update asset status
         Asset::where('id', $request->asset_id)
             ->update(['status' => 'assigned']);
-
+        $notif = Notification::create([
+            'user_id' => $assignment->user_id,
+            'title' => 'Asset Assigned To',
+            'message' => $request->username,
+            'type' => 'success'
+        ]);
+        Http::post('localhost:3000/AssetAssigned', $notif);
         return response()->json($assignment);
     
     }
@@ -332,21 +362,32 @@ class AssetController extends Controller
             'asset_id'=> 'required',
         ]);
 
-        $assignment = AssetAssignment::where('asset_id',$request->asset_id)
+        $assignment = AssetAssignment::with('user')
+            ->where('asset_id',$request->asset_id)
             ->whereNull('returned_at')
             ->first();
 
         if (!$assignment) {
+            Asset::where('id', $request->asset_id)
+            ->update(['status' => 'available']);
             return response()->json(['message' => 'Asset is not assigned'], 400);
         }
 
         $assignment->update([
             'returned_at' => now()
         ]);
-
+        
         Asset::where('id', $request->asset_id)
             ->update(['status' => 'available']);
+        
 
+        $notification = Notification::create([
+            'user_id' => $assignment->user_id,
+            'title' => "Asset {$assignment->asset_id}",
+            'message' => "Returned by {$request->username}",
+            'type' => "success" 
+        ]);
+        Http::post('http://localhost:3000/AssetReturned', $notification);
         return response()->json(['message' => 'Asset returned']);
     }
 
@@ -395,4 +436,6 @@ class AssetController extends Controller
 
         return $assignments->paginate(10);
     }
+
+    
 } 

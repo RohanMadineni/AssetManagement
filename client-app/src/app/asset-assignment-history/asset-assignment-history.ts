@@ -2,13 +2,13 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
-import { MatIcon } from '@angular/material/icon';
+// import { MatIcon } from '@angular/material/icon';
 import { MatPaginator } from '@angular/material/paginator';
 import { AssetService } from '../asset-service';
 
 @Component({
   selector: 'app-asset-assignment-history',
-  imports: [MatTableModule, MatIcon, MatDialogTitle, MatPaginator, CommonModule],
+  imports: [MatTableModule, MatDialogTitle, MatPaginator, CommonModule],
   templateUrl: './asset-assignment-history.html',
   styleUrl: './asset-assignment-history.scss',
 })

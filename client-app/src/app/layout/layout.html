@@ -2,6 +2,12 @@
 <mat-toolbar style="height:52px;">
   <mat-icon style="color:white;">reorder_icon</mat-icon><div class="secondtitle">Asset Management System</div>
   <div class="person" style="display:flex;">
+    <button [matMenuTriggerFor]="notificationMenu" matBadge="{{notificationService.unreadCount()}}" class="Notifbutton">
+      <mat-icon style="color:white;">notifications</mat-icon>
+      <!-- <span class="badge">
+        {{ notificationService.unreadCount() }}
+      </span> -->
+    </button>
     <mat-icon class="acc_circle">account_circle </mat-icon>
     <span style="color:white; font-weight:500;">{{role() | titlecase}}  {{name()}}</span> 
   </div>
@@ -137,3 +143,21 @@
 </mat-drawer-container>
 <!-- </div> -->
 
+<mat-menu #notificationMenu="matMenu">
+
+  <!-- <div *ngIf="!n.is_read" *ngFor="let n of notificationService.notifications()"> -->
+
+    <button *ngFor="let n of notificationService.notifications()"  mat-menu-item (click)="onRead(n.id)" style="width:200px;">
+
+      <!-- <div> -->
+        <!-- <strong></strong> -->
+        <p>{{ n.title }}: {{ n.message }}</p>
+      <!-- </div> -->
+
+    </button>
+    <button mat-menu-item (click)="markallRead()" style="width:200px;">
+      <mat-icon>visibility</mat-icon>Mark all as read
+    </button>
+  <!-- </div> -->
+
+</mat-menu>

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Notification;
 
 class AuthController extends Controller
 {
@@ -24,6 +26,7 @@ class AuthController extends Controller
         $user = Auth::user();
         
         $token = $request->user()->createToken('token');
+        
         return response()->json([
                 'status' => 'success',
                 'user' => $user,
@@ -47,6 +50,15 @@ class AuthController extends Controller
         ]);
 
         $token = $user->createToken('token')->plainTextToken;
+
+        $notification = Notification::create([
+            'user_id' => Auth::id(),
+            'title' => 'User Created',
+            'message' => $user->username,
+            'type' => 'success'
+        ]);
+        Http::post('localhost:3000/UserCreated', $notification);
+        
         return response()->json([
             'status' => 'success',
             'message' => 'User created successfully',

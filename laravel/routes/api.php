@@ -9,6 +9,8 @@ use App\Http\Controllers\ParameterController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\UserController;
 use App\Models\Asset;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Notification;
 
 Route::get('/users', function (Request $request) {
     return $request->user();
@@ -69,6 +71,21 @@ Route::middleware('auth:sanctum')->group(function(){
     
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
     
+});
+Route::get('/notifications', function () {
+    return Notification::where('user_id', Auth::id())
+        ->where('is_read', 0)
+        // ->latest()
+        ->get();
+})->middleware('auth:sanctum');
+
+Route::put('/notifications/{id}', function ($id) {
+    $notification = Notification::findorFail($id);
+    $notification->update([
+        'is_read' => 1
+    ]);
+
+    return response()->json($notification);
 });
 
 Route::get('auth/role', [AuthController::class, 'getrole'])->middleware('auth:sanctum');

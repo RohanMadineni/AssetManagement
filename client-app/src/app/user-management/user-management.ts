@@ -1,7 +1,7 @@
 import { Component, signal, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
+// import { MatPaginator } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
@@ -16,7 +16,7 @@ import { AddAssetComponent } from '../add-asset/add-asset';
 import { AssetListPage } from '../asset-list/asset-list';
 @Component({
   selector: 'app-user-management',
-  imports: [MatCardModule, MatTableModule, MatPaginator, MatButtonModule, MatIcon, CommonModule, ReactiveFormsModule, AddAssetComponent, AssetListPage],
+  imports: [MatCardModule, MatTableModule, MatButtonModule, MatIcon, CommonModule, ReactiveFormsModule, AddAssetComponent, AssetListPage],
   templateUrl: './user-management.html',
   styleUrl: './user-management.scss',
 })

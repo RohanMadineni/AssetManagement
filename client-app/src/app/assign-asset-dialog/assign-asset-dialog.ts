@@ -22,6 +22,7 @@ export class AssignAssetDialog implements OnInit{
 
   assignForm = new FormGroup({
     user_id: new FormControl('', Validators.required),
+    // username: new FormControl('', Validators.required),
   });
   constructor(private assetService: AssetService, private userService: UserService){}
 
@@ -35,7 +36,11 @@ export class AssignAssetDialog implements OnInit{
     });
   }
   onSubmit(){
-    this.assetService.assignAsset({asset_id: this.data.asset_id, user_id:this.assignForm.value.user_id}).subscribe(()=>{
+    const userId = this.assignForm.value.user_id;
+    const find = this.users().find(user=>user.id===userId);
+    const uname = find.username;
+    console.log(uname);
+    this.assetService.assignAsset({asset_id: this.data.asset_id, user_id:this.assignForm.value.user_id, username: uname}).subscribe(()=>{
       this.dialogRef.close("closed");
     });
   }

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Notification;
 use App\Models\Category;
 
 class CategoryController extends Controller
@@ -23,7 +26,13 @@ class CategoryController extends Controller
         ]);
 
         $category = Category::create($validated);
-
+        $notification = Notification::create([
+            'user_id' => Auth::id(),
+            'title' => 'Category Created',
+            'message' => $category->name,
+            'type' => 'success'
+        ]);
+        Http::post('localhost:3000/UserCreated', $notification);
         return response()->json($category, 201);    
     }
     
@@ -36,6 +45,13 @@ class CategoryController extends Controller
         ]);
 
         $category->update($validated);
+        $notification = Notification::create([
+            'user_id' => Auth::id(),
+            'title' => 'Category Updated',
+            'message' => $category->name,
+            'type' => 'success'
+        ]);
+        Http::post('localhost:3000/UserCreated', $notification);
         return response()->json($category);
     } 
 
@@ -50,7 +66,13 @@ class CategoryController extends Controller
         }
 
         $category->delete();
-
+        $notification = Notification::create([
+            'user_id' => Auth::id(),
+            'title' => 'Category Deleted',
+            'message' => $category->name,
+            'type' => 'success'
+        ]);
+        Http::post('localhost:3000/UserCreated', $notification);
         return response()->json([
             'message' => 'Category deleted successfully'
         ]);
