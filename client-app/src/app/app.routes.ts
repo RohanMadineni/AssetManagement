@@ -8,6 +8,8 @@ import { SystemPage } from './system/system';
 import { AddAssetComponent } from './add-asset/add-asset';
 import { AssetDetail } from './asset-detail/asset-detail';
 import { AssetAssignmentHistory } from './asset-assignment-history/asset-assignment-history';
+import { Settings } from './settings/settings';
+
 export const routes: Routes = [
     {
         path: 'login',
@@ -33,6 +35,7 @@ export const routes: Routes = [
             {path: 'usermanagement', loadComponent: () => import('./user-management/user-management').then(m => m.UserManagement),},
             {path: 'availableAssets', loadComponent: () => import('./available-assets-list/available-assets-list').then(m => m.AvailableAssetsList),},
             {path: 'assetHistory', loadComponent: () => import('./asset-assignment-history/asset-assignment-history').then(m => m.AssetAssignmentHistory),},
+            {path: 'settings', loadComponent: () => import('./settings/settings').then(m => m.Settings),},
         ]
     },
 

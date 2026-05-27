@@ -1,5 +1,6 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import {ToastrService}  from 'ngx-toastr';
 export interface Notification {
   id: number;
   title: string;
@@ -15,7 +16,7 @@ export interface Notification {
 
 export class NotificationService {
   notifications = signal<Notification[]>([]);
-
+toastr = inject(ToastrService)!;
   constructor(private http:HttpClient){
     this.loadNotifications();
   }
@@ -35,7 +36,8 @@ export class NotificationService {
   }
   add(notification: Notification) {
     this.notifications.update(n => [notification, ...n]);
-    
+
+    this.toastr.success(notification.title + " " + notification.message);
     console.log(this.notifications());
   }
 

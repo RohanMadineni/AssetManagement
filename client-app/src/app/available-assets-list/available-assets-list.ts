@@ -34,7 +34,7 @@ export class AvailableAssetsList {
     category_id: '',
     status: ''
   };
-
+  searchterm = "";
   @Input() user:any;
   @Input() use_name:any;
   @Output() back = new EventEmitter<void>();
@@ -45,6 +45,7 @@ export class AvailableAssetsList {
   ngOnInit() {
     this.loadAssets();
     this.loadCategories();
+    // this.onSearch();
   }
   
   loadAssets() {
@@ -125,4 +126,12 @@ export class AvailableAssetsList {
     const dialogRef = this.dialog.open(AssetAssignmentHistory, {data: {asset_id: asset.id, name: asset.name}, height: '700px', width: '900px'});
     dialogRef.afterClosed().subscribe();
   }
+
+  onSearch() {
+  this.assetService.searchAssets(this.searchterm)
+    .subscribe(results => {
+      // this.assets = results;
+      console.log(results);
+    });
+}
 }

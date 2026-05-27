@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\AssetAssignment;
+use App\Http\Controllers\ElasticsearchTestController;
 class Asset extends Model
 {
     //
@@ -53,4 +54,20 @@ class Asset extends Model
             $q->where('user_id', $userId);
         });
     }
+    // protected static function boot()
+    // {
+    //     parent::boot();
+
+    //     static::created(function ($asset) {
+    //         app(ElasticsearchTestController::class)->indexAsset($asset);
+    //     });
+
+    //     static::updated(function ($asset) {
+    //         app(ElasticsearchTestController::class)->indexAsset($asset);
+    //     });
+
+    //     static::deleted(function ($asset) {
+    //         app(ElasticsearchTestController::class)->deleteAsset($asset->id);
+    //     });
+    // }
 }

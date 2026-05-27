@@ -26,6 +26,7 @@ export class AssetAssignmentHistory implements OnInit {
       this.loadAssets();
       
   }
+
   loadAssets(){
     const params: any = {
         page: (this.page()),
@@ -37,9 +38,11 @@ export class AssetAssignmentHistory implements OnInit {
         this.total.set(res.total);
       });
   }
+
   onNoClick(): void {
     this.dialogRef.close();
   }
+  
   onPageChange(event: any) {
     this.page.set(event.pageIndex + 1);
     this.loadAssets();

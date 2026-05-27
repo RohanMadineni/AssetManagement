@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, viewChild } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
@@ -14,6 +14,7 @@ import { CommonModule } from '@angular/common';
 import { signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SocketService } from '../services/socket';
+import { ToastrModule, ToastrService, ToastContainerDirective } from 'ngx-toastr';
 @Component({
   selector: 'app-layout',
   imports: [MatCardModule, MatListModule, MatSidenavModule, MatTableModule, MatToolbarModule, MatIconModule, MatMenuModule, MatBadgeModule, RouterOutlet, RouterLink, RouterLinkActive, CommonModule],
@@ -28,6 +29,11 @@ export class LayoutPage {
   name = signal<string>("");
   notificationService = inject(NotificationService);
   socketService = inject(SocketService);
+  toastContainer = viewChild(ToastContainerDirective);
+  toastr = inject(ToastrService)!;
+  showSuccess() {
+    this.toastr.success('Hello world!', 'Toastr fun!');
+}
   
   constructor(private authService: AuthService, private router: Router, private http:HttpClient){
    
@@ -42,6 +48,7 @@ export class LayoutPage {
       }
       }
     );
+    this.toastr.overlayContainer = this.toastContainer();
     this.notificationService.loadNotifications();
   }
 
@@ -63,4 +70,7 @@ export class LayoutPage {
   markallRead(){
     this.notificationService.notifications().forEach(n => {this.onRead(n.id)});
   }
+  // onClick() {
+  //   this.toastr.success('in div');
+  // }
 }

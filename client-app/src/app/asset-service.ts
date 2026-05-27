@@ -12,7 +12,8 @@ export class AssetService {
   // users = signal<any[]>([]);
   getStats() {
     // return this.http.get<any>('http://localhost:8000/api/assets/stats');
-    
+    console.log(this.requestService.GetRequest('http://localhost:8000/api/es-test'));
+    // console.log(res->getody());
     return this.requestService.GetRequest('http://localhost:8000/api/assets/stats');
   }
   
@@ -95,5 +96,9 @@ export class AssetService {
   getAssetHistory(params: any){
     const id = params.asset_id;
     return this.requestService.GetRequest(`http://localhost:8000/api/assets/history/${id}`, params);
+  }
+
+  searchAssets(query: string) {
+    return this.requestService.GetRequest(`http://localhost:8000/api/search?q=${query}`);
   }
 }

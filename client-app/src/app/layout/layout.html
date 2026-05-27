@@ -1,5 +1,6 @@
 
 <mat-toolbar style="height:52px;">
+  <div aria-live="polite" toastContainer></div>
   <mat-icon style="color:white;">reorder_icon</mat-icon><div class="secondtitle">Asset Management System</div>
   <div class="person" style="display:flex;">
     <button [matMenuTriggerFor]="notificationMenu" matBadge="{{notificationService.unreadCount()}}" class="Notifbutton">
@@ -123,6 +124,10 @@
           SYSTEM MANAGEMENT 
         </p>
       </a>
+      </a>
+      <a mat-list-item routerLink = "settings" routerLinkActive="active-link">
+        <mat-icon>settings</mat-icon>
+        Settings
       </a>
       <a mat-list-item (click)="onLogout()">
         <mat-icon>logout</mat-icon>

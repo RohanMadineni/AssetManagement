@@ -19,4 +19,17 @@ export class UserService {
     console.log(data);  
     return this.requestService.PutRequest(`http://localhost:8000/api/putusers/${id}`, data);
   }
+
+  getUserProfile(){
+    return this.requestService.GetRequest('http://localhost:8000/api/user/profile');
+  }
+
+  updateUserProfile(data:any){
+    return this.requestService.PutRequest('http://localhost:8000/api/user/profile', data);
+  }
+  setUserPassword(data:any){
+    return this.requestService.PutRequest('http://localhost:8000/api/user/password', data);
+  }
+
+
 }

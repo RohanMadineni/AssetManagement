@@ -7,10 +7,12 @@ use App\Http\Middleware\EnsureHasRole;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ParameterController;
 use App\Http\Controllers\AssetController;
+use App\Http\Controllers\AssetSearchController;
 use App\Http\Controllers\UserController;
 use App\Models\Asset;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Notification;
+use App\Models\User;
 
 Route::get('/users', function (Request $request) {
     return $request->user();
@@ -68,7 +70,6 @@ Route::middleware('auth:sanctum')->group(function(){
 Route::put('/putusers/{id}', [UserController::class, 'update'])->middleware('auth:sanctum');
 Route::middleware('auth:sanctum')->group(function(){ 
     Route::get('/users', [UserController::class, 'index']);
-    
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
     
 });
@@ -89,3 +90,12 @@ Route::put('/notifications/{id}', function ($id) {
 });
 
 Route::get('auth/role', [AuthController::class, 'getrole'])->middleware('auth:sanctum');
+
+Route::middleware('auth:sanctum')->group(function(){ 
+    Route::get('user/profile', [UserController::class, 'getProfile']);
+    Route::put('user/profile', [UserController::class, 'updateProfile']);
+    Route::put('user/password', [UserController::class, 'updatePassword']);
+});
+
+Route::get('search', [AssetSearchController::class, 'search'])->middleware('auth:sanctum');
+

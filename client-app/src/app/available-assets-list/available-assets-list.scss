@@ -98,15 +98,20 @@
   padding-bottom: 5px;
   padding-left: 10px;
 }
-.filter-grid{
+.filter-grid {
     padding-left: 15px;
     // padding-top: 4px;
     display: grid;
     grid-template-columns: repeat(3, auto);
     
 }
+.search-bar{
+  padding-left: 15px;
+  width: 100%;
+}
 .full-width {
     padding-right: 10px;
+    width:95%;
     max-height: 100%;
 }
 .filter-actions{

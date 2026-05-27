@@ -437,5 +437,4 @@ class AssetController extends Controller
         return $assignments->paginate(10);
     }
 
-    
 } 

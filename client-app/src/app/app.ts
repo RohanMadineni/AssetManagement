@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { ToastrModule, ToastContainerDirective } from 'ngx-toastr';
 // import { SocketService } from './services/socket';
 // import { NotificationService } from './services/notification';
 @Component({
@@ -10,5 +11,5 @@ import { RouterOutlet } from '@angular/router';
 })
 export class App {
   protected readonly title = signal('client-app');
-  constructor() {}
+  constructor() {ToastrModule.forRoot({ positionClass: 'inline' });}
 }

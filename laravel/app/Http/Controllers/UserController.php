@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Notification;
 
@@ -52,6 +53,52 @@ class UserController extends Controller
         Http::post('localhost:3000/UserUpdated', $notification);
 
         $user->update($validated);
-        response()->json();
+        return response()->json();
+    }
+
+    public function getProfile(){
+        $user = User::findorFail(Auth::id());
+        return response()->json($user);
+    }
+
+    public function updateProfile(Request $request){
+        $user = User::findorFail(Auth::id());
+       
+        $user->update([
+            'username' => $request->Name,
+            'email' => $request->Email,
+        ]);
+        return response()->json($user);
+    }
+
+    public function updatePassword(Request $request){
+        $request->validate([
+                'current_password' => 'required',
+                'new_password' => 'required|min:8'
+            ]);
+        $id = Auth::id();
+        $user = User::findorFail($id);
+
+        // Verify current password
+        if (!Hash::check($request->current_password, $user->password)) {
+
+            return response()->json([
+                'message' => 'Current password is incorrect',
+                'current' => $request->current_password, 
+                'correct' => $user->password,
+            ], 400);
+
+        }
+
+            // Update password
+            // $user->password = Hash::make($request->new_password);
+
+            $user->update([
+                'password'=>Hash::make($request->new_password),
+            ]);
+
+            return response()->json([
+                'message' => 'Password updated successfully'
+            ]);
     }
 }
