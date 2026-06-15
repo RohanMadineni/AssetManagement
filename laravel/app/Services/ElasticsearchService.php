@@ -22,6 +22,7 @@ class ElasticsearchService
             'body' => [
                 'name' => $asset->name,
                 'brand' => $asset->brand,
+                'price' => $asset->price,
                 'status' => $asset->status,
                 'category' => $asset->category->name,
                 'created_at' => $asset->created_at,
@@ -38,7 +39,7 @@ class ElasticsearchService
                 'query' => [
                     'multi_match' => [
                         'query'  => $query,
-                        'fields' => ['name', 'brand', 'category']
+                        'fields' => ['name', 'brand', 'category', 'status']
                     ]
                 ]
             ]
@@ -77,6 +78,9 @@ class ElasticsearchService
                         ],
                         'status' => [
                             'type' => 'keyword'
+                        ],
+                        'price' => [
+                            'type' => 'float'
                         ],
                         'category' => [
                             'type' => 'text'

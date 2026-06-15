@@ -37,7 +37,7 @@ toastr = inject(ToastrService)!;
   add(notification: Notification) {
     this.notifications.update(n => [notification, ...n]);
 
-    this.toastr.success(notification.title + " " + notification.message);
+    this.toastr.success(notification.title + " " + notification.message).onTap.subscribe(() => {this.markAsRead(notification.id);});
     console.log(this.notifications());
   }
 

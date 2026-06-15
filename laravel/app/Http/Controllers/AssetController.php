@@ -83,15 +83,12 @@ class AssetController extends Controller
         else $user_id=$validated['selected_user'];
         $asset = Asset::create([
             'name'=>$validated['name'],
-            // 'brand'=>$validated['brand'],
             'brand'=>$validated['brand'],
             'category_id'=>$validated['category_id'],
             'Warranty'=>$validated['warranty'],
             'user_id'=>$user_id,
             'status'=>$validated['status'],
             'price'=>$validated['price'], 
-            // 'user_id'=>1,
-            // 'attributes'=>'array',
             
         ]);
          
@@ -129,11 +126,18 @@ class AssetController extends Controller
             'status' => 'required',
             'brand' => 'required',
             'price' => 'required',
-            'warranty' => 'required',
+            'Warranty' => 'required',
         ]);
-        $asset->update($validated);
-        // $asset->update($request->only(['name', 'brand', 'status']));
-        
+        // $asset->update($validated);
+        $asset->update([
+            'name'=>$validated['name'],
+            'brand'=>$validated['brand'],
+            // 'category_id'=>$validated['category_id'],
+            'Warranty'=>$validated['Warranty'],
+            // 'user_id'=>$user_id,
+            'status'=>$validated['status'],
+            'price'=>$validated['price'], 
+        ]);
         if($request->has('attributes')){
             foreach($request->input('attributes') as $parameterID=>$value){
                
@@ -179,25 +183,13 @@ class AssetController extends Controller
         ]);
     }
 
-    public function stats(){
+    public function stats(Request $request){
         $user_id=Auth::id();
-
-        // $assets = DB::select('select category_id, status, price from assets where user_id = ?', [$user_id]); 
         $assets = Asset::with('currentAssignment')
         ->assignedTo($user_id)
         ->get();
-        // ->select('category_id', 'status', 'price');
-        
-        // $assets = (array)$query; 
-        // $assets = DB::select('select category_id, status, price from assets AssignedTo($user_id)');  
-            // ->AssignedTo($user_id)
-        // $total = count($assets);
-        
-        // $contvalues = array_count_values(array_column($assets, 'status'));
-        // $sum = array_sum(array_column($assets, 'price'));
-        // $maintenance = 0;
-        // $unassigned = 0;
-        // $assigned = 0;
+        //  dd($request->header('Authorization'));
+        // return $assets;
         $total = $assets->count();
 
         $contvalues = $assets->countBy('status');
@@ -210,15 +202,6 @@ class AssetController extends Controller
         $categories = $assets->countBy('category_id');
 
         $cat_names = Category::pluck('name', 'id');
-        // if(array_key_exists('available', $contvalues))
-        //     $unassigned = $contvalues['available'];
-        // if(array_key_exists('assigned', $contvalues))
-        //     $assigned = $contvalues['assigned'];
-        // if(array_key_exists('under maintenance', $contvalues))
-        //     $maintenance = $contvalues['under maintenance'];
-        // $categories = array_count_values(array_column($assets, 'category_id'));
-        
-        // $cat_names = Category::pluck('name', 'id');
         return response()->json([
             'total_assets' => $total,
             'assigned_assets' => $assigned,
@@ -269,19 +252,6 @@ class AssetController extends Controller
                 // ->where('user_id',$user_id)
                 ->whereBetween('Warranty', [$today, $threshold])
                 ->paginate(5);
-                // ->get()
-                // ->map(function ($asset) {
-                //     return [
-                //         'id' => $asset->id,
-                //         'name' => $asset->name,
-                //         'model' => $asset->model,
-                //         'Warranty' => $asset->Warranty,
-                //         'status'=>$asset->status,
-                //         'brand'=>$asset->brand,
-                //         'days_left' => Carbon::today()->diffInDays($asset->Warranty, false),
-                //         // 'total'=>$asset->count(),
-                //     ];
-                // });
         
         $assets->getCollection()->transform(function ($asset) {
             return [
@@ -384,7 +354,7 @@ class AssetController extends Controller
         $notification = Notification::create([
             'user_id' => $assignment->user_id,
             'title' => "Asset {$assignment->asset_id}",
-            'message' => "Returned by {$request->username}",
+            'message' => "Returned",
             'type' => "success" 
         ]);
         Http::post('http://localhost:3000/AssetReturned', $notification);

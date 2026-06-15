@@ -23,7 +23,7 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('auth/register', [AuthController::class, 'register'])->middleware('auth:sanctum', EnsureHasRole::class.':admin');
 
 
-Route::post('auth/logout', [AuthController::class, 'logout']);
+Route::post('auth/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('/category', [CategoryController::class, 'index']);
@@ -59,13 +59,6 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::get('all', [AssetController::class, 'showAll']);
         Route::get('history/{id}', [AssetController::class, 'AssetHistory']);
     });
-    // Route::get('/assets/stats', [AssetController::class, 'stats']); 
-    // Route::get('/assets/allstats', [AssetController::class, 'allstats']); 
-    // Route::get('/assets', [AssetController::class, 'show']);
-    // Route::post('/assets', [AssetController::class, 'store']);
-    // Route::get('/assets/{id}', [AssetController::class, 'index'])->whereNumber('id');
-    // Route::put('/assets/{id}', [AssetController::class, 'update'])->whereNumber('id');
-    // Route::delete('/assets/{id}', [AssetController::class, 'destroy'])->whereNumber('id');
 });
 Route::put('/putusers/{id}', [UserController::class, 'update'])->middleware('auth:sanctum');
 Route::middleware('auth:sanctum')->group(function(){ 

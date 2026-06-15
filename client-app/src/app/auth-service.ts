@@ -17,9 +17,6 @@ export class AuthService {
   }
 
   login(username:string, password:string){
-    // return this.http.post<User>('http://localhost:8000/api/auth/login', {username, password}).pipe(
-    //     tap(response=>{this.setSession(response);})
-    // );
     return this.requestService.PostRequest('http://localhost:8000/api/auth/login', {username, password}).pipe(
         tap(response=>{this.setSession(response);})
     );

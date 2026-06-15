@@ -128,10 +128,19 @@ export class AvailableAssetsList {
   }
 
   onSearch() {
-  this.assetService.searchAssets(this.searchterm)
-    .subscribe(results => {
-      // this.assets = results;
-      console.log(results);
-    });
-}
+    if(this.searchterm){
+      this.assetService.searchAssets(this.searchterm)
+        .subscribe(results => {
+            // this.assets = results;
+            const formattedResults = results.map((item:any)=>({
+                id:item._id, ...item._source
+              })
+            );
+            console.log(results);
+            this.assets.set(formattedResults);
+            this.total.set(formattedResults.length);
+        });
+    }
+    else this.loadAssets();
+  }
 }

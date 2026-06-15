@@ -12,7 +12,7 @@ export class AssetService {
   // users = signal<any[]>([]);
   getStats() {
     // return this.http.get<any>('http://localhost:8000/api/assets/stats');
-    console.log(this.requestService.GetRequest('http://localhost:8000/api/es-test'));
+    // console.log(this.requestService.GetRequest('http://localhost:8000/api/es-test'));
     // console.log(res->getody());
     return this.requestService.GetRequest('http://localhost:8000/api/assets/stats');
   }
