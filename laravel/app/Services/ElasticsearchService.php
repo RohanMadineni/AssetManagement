@@ -24,7 +24,7 @@ class ElasticsearchService
                 'brand' => $asset->brand,
                 'price' => $asset->price,
                 'status' => $asset->status,
-                'category' => $asset->category->name,
+                'category' => optional($asset->category)->name,
                 'created_at' => $asset->created_at,
             ]
         ];
@@ -47,10 +47,17 @@ class ElasticsearchService
     }
 
     public function delete($id){
-        return $this->client->delete([
-            'index' => 'assets',
-            'id'    => $id
-        ]);
+        try{
+            return $this->client->delete([
+                'index' => 'assets',
+                'id'    => $id
+            ]);
+        } catch (\Elastic\Elasticsearch\Exception\ClientResponseException $e) {
+            if ($e->getCode() === 404) {
+                return null; // already deleted, safe to ignore
+            }
+            throw $e;
+        }
     }
 
     public function deleteIndex(){

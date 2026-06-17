@@ -80,7 +80,7 @@ Route::put('/notifications/{id}', function ($id) {
     ]);
 
     return response()->json($notification);
-});
+})->middleware('auth:sanctum');;
 
 Route::get('auth/role', [AuthController::class, 'getrole'])->middleware('auth:sanctum');
 

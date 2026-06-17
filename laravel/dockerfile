@@ -1,10 +1,10 @@
 FROM php:8.4
-
+# FROM php:8.4-fpm
 # System dependencies
 RUN apt-get update && apt-get install -y \
-    unzip\
-    zip\
-    git\
+    unzip \
+    zip \
+    git \
     curl
 
 RUN docker-php-ext-install pdo pdo_mysql
@@ -23,3 +23,7 @@ RUN composer install --no-interaction --prefer-dist
 EXPOSE 8000
 
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# RUN chown -R www-data:www-data storage bootstrap/cache
+
+# EXPOSE 9000
+# CMD ["php-fpm"]

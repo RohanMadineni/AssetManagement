@@ -12,9 +12,11 @@ class AssetObserver
     /**
      * Handle the Asset "created" event.
      */
+    public bool $afterCommit = true;
     public function created(Asset $asset): void
     {
         //
+        // $asset->load('category');
         app(ElasticsearchService::class)->indexAsset($asset);
     }
 

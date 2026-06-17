@@ -108,7 +108,8 @@ class AssetController extends Controller
             'message' => $request->name,
             'type' => 'success'
         ]);
-        Http::post('localhost:3000/AssetCreated', $notification);
+        // Http::post('localhost:3000/AssetCreated', $notification);
+        Http::post(config('services.realtime.url') . '/AssetCreated', $notification);
         return response()->json($asset, 201);} catch (\Exception $e) {
 
         return response()->json([
@@ -159,8 +160,8 @@ class AssetController extends Controller
             'message' => $asset->name,
             'type' => 'success'
         ]);
-        Http::post('localhost:3000/AssetCreated', $notification);
-
+        // Http::post('localhost:3000/AssetCreated', $notification);
+        Http::post(config('services.realtime.url') . '/AssetCreated', $notification);
         return response()->json($request->input('attributes'));
     }
 
@@ -177,7 +178,8 @@ class AssetController extends Controller
         $asset->delete();
         
         
-        Http::post('localhost:3000/AssetCreated', $notification);
+        // Http::post('localhost:3000/AssetCreated', $notification);
+        Http::post(config('services.realtime.url') . '/AssetCreated', $notification);
         return response()->json([
             'message' => 'Asset deleted'
         ]);
@@ -322,7 +324,8 @@ class AssetController extends Controller
             'message' => $request->username,
             'type' => 'success'
         ]);
-        Http::post('localhost:3000/AssetAssigned', $notif);
+        // Http::post('localhost:3000/AssetAssigned', $notif);
+        Http::post(config('services.realtime.url') . '/AssetAssigned', $notif);
         return response()->json($assignment);
     
     }
@@ -357,7 +360,8 @@ class AssetController extends Controller
             'message' => "Returned",
             'type' => "success" 
         ]);
-        Http::post('http://localhost:3000/AssetReturned', $notification);
+        // Http::post('http://localhost:3000/AssetReturned', $notification);
+        Http::post(config('services.realtime.url') . '/AssetReturned', $notification);
         return response()->json(['message' => 'Asset returned']);
     }
 
