@@ -4,7 +4,7 @@ import { User } from './user';
 import { tap, shareReplay } from 'rxjs';
 import { RequestService } from './request-service';
 import moment from 'moment';
-
+import { environment } from '../environment';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class AuthService {
   }
 
   login(username:string, password:string){
-    return this.requestService.PostRequest('http://localhost:8000/api/auth/login', {username, password}).pipe(
+    return this.requestService.PostRequest(`${environment.apiUrl}/auth/login`, {username, password}).pipe(
         tap(response=>{this.setSession(response);})
     );
   }
@@ -30,7 +30,7 @@ export class AuthService {
     // };
 
     // return this.http.post<User>('http://localhost:8000/api/auth/register', {username, password, role});
-    return this.requestService.PostRequest('http://localhost:8000/api/auth/register', {username, password, role, email});
+    return this.requestService.PostRequest(`${environment.apiUrl}/auth/register`, {username, password, role, email});
   }
 
   logout(){
@@ -38,7 +38,7 @@ export class AuthService {
     localStorage.removeItem('user');
     localStorage.removeItem('expiresAt');
     // return this.http.post<User>('http://localhost:8000/api/auth/logout', {});
-    return this.requestService.PostRequest('http://localhost:8000/api/auth/logout', {});
+    return this.requestService.PostRequest(`${environment.apiUrl}/auth/logout`, {});
   }
 
   private setSession(authResult: any){
@@ -77,6 +77,6 @@ export class AuthService {
 
   getRole(){
     // return this.http.get<any>('http://localhost:8000/api/auth/role');
-    return this.requestService.GetRequest('http://localhost:8000/api/auth/role');
+    return this.requestService.GetRequest(`${environment.apiUrl}/auth/role`);
   }
 }

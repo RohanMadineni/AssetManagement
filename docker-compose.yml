@@ -7,8 +7,10 @@ services:
         COMMIT_SHA: ${COMMIT_SHA}
     image: asset-frontend:${COMMIT_SHA}
     container_name: angular_client
-    ports:
-      - "4200:80"
+    # ports:
+    #   - "4200:80"
+    expose:
+      - "80"
     # volumes:
     #   - ./client-app:/app
     #   - angular_node_modules:/app/node_modules
@@ -19,8 +21,10 @@ services:
     build:
       context: ./laravel
     container_name: laravel_api
-    ports:
-      - "8000:8000"
+    # ports:
+    #   - "8000:8000"
+    expose:
+      - "9000"
     volumes:
       - ./laravel:/var/www/html
       - laravel_vendor:/var/www/html/vendor
@@ -31,8 +35,10 @@ services:
     build:
       context: ./realtime-server
     container_name: realtime_server
-    ports:
-      - "3000:3000"
+    # ports:
+    #   - "3000:3000"
+    expose:
+      - "3000"
     volumes:
       - ./realtime-server:/app
       - realtime_node_modules:/app/node_modules

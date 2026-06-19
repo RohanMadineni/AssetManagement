@@ -1,9 +1,12 @@
-FROM php:8.4
-# FROM php:8.4-fpm
+# FROM php:8.4
+FROM php:8.4-fpm
 # System dependencies
+
+WORKDIR /var/www/html
+
 RUN apt-get update && apt-get install -y \
-    unzip \
-    zip \
+    git curl unzip zip \
+    libpng-dev libonig-dev \
     git \
     curl
 
@@ -11,19 +14,21 @@ RUN docker-php-ext-install pdo pdo_mysql
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-WORKDIR /var/www/html
 
-COPY composer.json composer.lock ./
+
+# COPY composer.json composer.lock ./
+
+# RUN composer install --no-interaction --prefer-dist --no-scripts
 
 COPY . .
 
 RUN composer install --no-interaction --prefer-dist
 
 
-EXPOSE 8000
+# EXPOSE 8000
 
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
-# RUN chown -R www-data:www-data storage bootstrap/cache
-
-# EXPOSE 9000
-# CMD ["php-fpm"]
+# CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+RUN chown -R www-data:www-data storage bootstrap/cache
+# CMD ["php", "artisan", "serve"]
+EXPOSE 9000
+CMD ["php-fpm"]

@@ -17,8 +17,9 @@ export class SocketService {
               this.currentUser.set(JSON.parse(user));
     }   
     
-    this.socket = io('http://localhost:3000', {query: {user_id: this.currentUser().id}});
-    
+    // this.socket = io('http://localhost:3000', {query: {user_id: this.currentUser().id}});
+    // this.socket = io('http://realtime-server:3000', {query: {user_id: this.currentUser().id}});
+    this.socket = io({query: {user_id: this.currentUser().id}});
     this.socket.on('notification', (body) => {
       console.log(body);
       this.notificationService.add({...body});

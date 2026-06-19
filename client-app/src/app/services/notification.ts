@@ -1,6 +1,7 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {ToastrService}  from 'ngx-toastr';
+import { environment } from '../../environment';
 export interface Notification {
   id: number;
   title: string;
@@ -24,7 +25,7 @@ toastr = inject(ToastrService)!;
   loadNotifications() {
 
     this.http
-      .get<Notification[]>(`http://localhost:8000/api/notifications/`)
+      .get<Notification[]>(`${environment.apiUrl}/notifications/`)
       .subscribe(data => {
 
         console.log('loaded notifications', data);
@@ -49,7 +50,7 @@ toastr = inject(ToastrService)!;
           : n
       )
     );
-    this.http.put<any>(`http://localhost:8000/api/notifications/${id}`, {}).subscribe((res)=>{console.log(res);this.loadNotifications();});
+    this.http.put<any>(`${environment.apiUrl}/notifications/${id}`, {}).subscribe((res)=>{console.log(res);this.loadNotifications();});
     
   }
 

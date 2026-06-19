@@ -5,6 +5,8 @@ namespace App\Observers;
 
 use App\Models\Asset;
 use App\Services\ElasticsearchService;
+use App\Jobs\IndexAssetToElasticsearch;
+use App\Jobs\DeleteAssetFromElasticsearch;
 // use App\Services\ElasticsearchService as ServicesElasticsearchService;
 
 class AssetObserver
@@ -16,8 +18,9 @@ class AssetObserver
     public function created(Asset $asset): void
     {
         //
-        // $asset->load('category');
-        app(ElasticsearchService::class)->indexAsset($asset);
+        // app(ElasticsearchService::class)->indexAsset($asset);
+        IndexAssetToElasticsearch::dispatch($asset);
+      
     }
 
     /**
@@ -26,7 +29,8 @@ class AssetObserver
     public function updated(Asset $asset): void
     {
         //
-        app(ElasticsearchService::class)->indexAsset($asset);
+        // app(ElasticsearchService::class)->indexAsset($asset);
+        IndexAssetToElasticsearch::dispatch($asset);
     }
 
     /**
@@ -35,7 +39,8 @@ class AssetObserver
     public function deleted(Asset $asset): void
     {
         //
-        app(ElasticsearchService::class)->delete($asset->id);
+        // app(ElasticsearchService::class)->delete($asset->id);
+        DeleteAssetFromElasticsearch::dispatch($asset);
     }
 
     /**
