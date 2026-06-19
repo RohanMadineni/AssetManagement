@@ -57,8 +57,9 @@ class AuthController extends Controller
             'message' => $user->username,
             'type' => 'success'
         ]);
-        Http::post('localhost:3000/UserCreated', $notification);
-        
+        // Http::post('localhost:3000/UserCreated', $notification);
+        Http::post(config('services.realtime.url') . '/UserCreated', $notification);
+
         return response()->json([
             'status' => 'success',
             'message' => 'User created successfully',

@@ -28,8 +28,8 @@ class UserController extends Controller
                 'message' => $user->username,
                 'type' => 'success'
             ]);
-            Http::post('localhost:3000/UserDeleted', $notification);
-
+            // Http::post('localhost:3000/UserDeleted', $notification);
+            Http::post(config('services.realtime.url') . '/UserDeleted', $notification);
             $user->delete();
         }
         
@@ -50,8 +50,8 @@ class UserController extends Controller
             'message' => $user->username,
             'type' => 'success'
         ]);
-        Http::post('localhost:3000/UserUpdated', $notification);
-
+        // Http::post('localhost:3000/UserUpdated', $notification);
+        Http::post(config('services.realtime.url') . '/UserUpdated', $notification);
         $user->update($validated);
         return response()->json();
     }

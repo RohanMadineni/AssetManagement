@@ -32,7 +32,8 @@ class CategoryController extends Controller
             'message' => $category->name,
             'type' => 'success'
         ]);
-        Http::post('localhost:3000/UserCreated', $notification);
+        // Http::post('localhost:3000/UserCreated', $notification);
+        Http::post(config('services.realtime.url') . '/UserCreated', $notification);
         return response()->json($category, 201);    
     }
     
@@ -51,7 +52,8 @@ class CategoryController extends Controller
             'message' => $category->name,
             'type' => 'success'
         ]);
-        Http::post('localhost:3000/UserCreated', $notification);
+        // Http::post('localhost:3000/UserCreated', $notification);
+        Http::post(config('services.realtime.url') . '/UserCreated', $notification);
         return response()->json($category);
     } 
 
@@ -72,7 +74,8 @@ class CategoryController extends Controller
             'message' => $category->name,
             'type' => 'success'
         ]);
-        Http::post('localhost:3000/UserCreated', $notification);
+        // Http::post('localhost:3000/UserCreated', $notification);
+        Http::post(config('services.realtime.url') . '/UserCreated', $notification);
         return response()->json([
             'message' => 'Category deleted successfully'
         ]);

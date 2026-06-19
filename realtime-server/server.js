@@ -87,4 +87,15 @@ app.post('/UserDeleted', (req, res)=>{
     });
 
 });
+app.post('/UserUpdated', (req, res)=>{
+    const body = req.body;
+
+    io.to(`${body.user_id}`).emit('notification', body);
+    
+    res.json({
+        success: true,
+        notification: body
+    });
+
+});
 server.listen(3000);
