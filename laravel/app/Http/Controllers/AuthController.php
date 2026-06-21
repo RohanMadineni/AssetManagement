@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Notification;
+use App\Jobs\SendRealtimeNotification;
 
 class AuthController extends Controller
 {
@@ -59,7 +60,7 @@ class AuthController extends Controller
         ]);
         // Http::post('localhost:3000/UserCreated', $notification);
         Http::post(config('services.realtime.url') . '/UserCreated', $notification);
-
+        // SendRealtimeNotification::dispatch('/UserCreated', $notification);
         return response()->json([
             'status' => 'success',
             'message' => 'User created successfully',

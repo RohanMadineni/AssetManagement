@@ -11,6 +11,7 @@ use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Jobs\SendRealtimeNotification;
 
 class AssetController extends Controller
 {
@@ -110,6 +111,7 @@ class AssetController extends Controller
         ]);
         // Http::post('localhost:3000/AssetCreated', $notification);
         Http::post(config('services.realtime.url') . '/AssetCreated', $notification);
+        // SendRealtimeNotification::dispatch('/AssetCreated', $notification->toArray());
         return response()->json($asset, 201);} catch (\Exception $e) {
 
         return response()->json([
@@ -162,6 +164,7 @@ class AssetController extends Controller
         ]);
         // Http::post('localhost:3000/AssetCreated', $notification);
         Http::post(config('services.realtime.url') . '/AssetCreated', $notification);
+        // SendRealtimeNotification::dispatch('/AssetCreated', $notification);
         return response()->json($request->input('attributes'));
     }
 
@@ -180,6 +183,7 @@ class AssetController extends Controller
         
         // Http::post('localhost:3000/AssetCreated', $notification);
         Http::post(config('services.realtime.url') . '/AssetCreated', $notification);
+        // SendRealtimeNotification::dispatch('/AssetCreated', $notification);
         return response()->json([
             'message' => 'Asset deleted'
         ]);
@@ -326,6 +330,9 @@ class AssetController extends Controller
         ]);
         // Http::post('localhost:3000/AssetAssigned', $notif);
         Http::post(config('services.realtime.url') . '/AssetAssigned', $notif);
+        // SendRealtimeNotification::dispatch(
+        //     '/AssetAssigned', $notif
+        // );
         return response()->json($assignment);
     
     }
@@ -362,6 +369,7 @@ class AssetController extends Controller
         ]);
         // Http::post('http://localhost:3000/AssetReturned', $notification);
         Http::post(config('services.realtime.url') . '/AssetReturned', $notification);
+        // SendRealtimeNotification::dispatch('/AssetReturned', $notification);
         return response()->json(['message' => 'Asset returned']);
     }
 
