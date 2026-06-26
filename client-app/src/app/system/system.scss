@@ -1,0 +1,387 @@
+.SystemPage{
+    width: 100%;
+    height: 100%;
+    margin-left: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display:flex;
+    flex-direction: column; 
+}
+// .page-title{
+//     font-size: 25px;
+//     font-weight: 500;
+//     margin-left: 20px;
+//     margin-top: 20px;
+//     color: rgb(27, 27, 27);
+// }
+// .welcome{
+//     font-size:15px;
+//     font-weight: 500;
+//     margin-left: 20px;
+//     margin-top: 10px;
+//     color: #3e3e3e;
+// }
+.page-title{
+    font-size: 23px;
+    font-weight: 500;
+    max-width: 80%;
+    color: rgb(27, 27, 27);
+}
+.welcome{
+    font-size:13px;
+    font-weight: 500;
+    padding-left:15px;
+    color: #3e3e3e;
+}
+
+
+/* ===================== */
+/* STATS CARDS */
+/* ===================== */
+
+.stats-grid{
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  width: 95%;
+  gap: 16px;
+  margin-top: 5px;
+  margin-bottom: 1px;
+   padding-left: 20px;
+  // margin-left: 15px;
+  //  margin-right: 20px;
+  height: 105px;
+}
+
+.stat-card{
+  border-radius: 14px !important;
+  padding-left: 13px !important;
+   box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+  border-left: 5px solid transparent;
+  min-height: 100%;
+  max-height: 100%;
+}
+.stat-content {
+  display: flex;
+  max-height: 100%;
+  align-items: center;
+  padding-top: 10px;
+  padding-left: 8px;
+  margin-right: 8px;
+  // height:100%;
+}
+.stat-content .stat-sub{
+  color: #4d4c4c;
+  font-weight: 400;
+}
+.stat-content mat-icon {
+  margin-left: auto;
+  font-size: 30px;
+  opacity: 0.7;
+}
+
+.stat-card.pink{
+  
+  background: linear-gradient(
+    to bottom,
+    rgb(250, 209, 233),
+    rgb(243, 239, 240)
+  );
+  max-height: 100%;
+}
+
+.stat-title{  
+  font-weight: 500; 
+}
+.stat-card.pink mat-icon{
+    color: #e91e63;
+}
+.stat-card.blue{
+  background: linear-gradient(
+    to bottom,
+    rgb(190, 234, 252),
+    rgb(243, 239, 240)
+  );
+}
+
+.stat-card.blue mat-icon{
+    color: #471ee9;
+}
+.stat-card.green{
+  background: linear-gradient(
+    to bottom,
+    rgb(204, 252, 232),
+    rgb(243, 239, 240)
+  );
+}
+.stat-card.green mat-icon{
+    color: rgb(53, 190, 53);
+}
+.stat-card.orange{
+  background: linear-gradient(
+    to bottom,
+    #fdf294,
+    #fdf7ef,
+    )
+}
+.stat-card.orange mat-icon{
+  color: #e1ac0d, 
+}
+.stat-card.purple{
+  background: linear-gradient(
+    to bottom,
+    rgb(214, 179, 244),
+    rgb(251, 241, 253)
+  )
+}
+.stat-card.purple mat-icon{
+    color: rgb(129, 4, 187);
+}
+.stat-card.pink .stat-title{
+  color: #e91e63;
+}
+
+.stat-card.blue .stat-title{
+  color: #1e88e5;
+}
+
+.stat-card.green .stat-title{
+  color: #2e7d32;
+}
+
+.stat-card.orange .stat-title{
+  color: #ef6c00;
+}
+
+.stat-card.purple .stat-title{
+  color: #800aa1;
+}
+.stat-number{
+    padding-top: 15px;
+    padding-bottom: 15px;
+    font-size: 32px;
+  font-weight: 500;
+}
+/* ===================== */
+/* CHARTS */
+/* ===================== */
+
+.chart-grid{
+ display: grid;
+  grid-template-columns: 50% 50%;
+  max-height: 60%;
+  margin-top:10px;
+}
+
+.chart-card{
+  // padding: 16px;
+  height: 40%; 
+  width: 80%;
+  margin-bottom: 15px;
+ border-radius: 14px !important;
+ box-shadow: 0px 0px 0px 0px;
+  // box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+  // background-color: rgb(249, 196, 235);
+  // background-color: rgb(239, 142, 210);
+  background-color: white;
+  // margin-right: 30px;
+}
+
+.card-title{
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.chart-placeholder{
+  height: 260px;
+  background: #fafafa;
+  border-radius: 10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#aaa;
+}
+
+
+/* ===================== */
+/* BOTTOM GRID */
+/* ===================== */
+
+.bottom-grid{
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+
+/* ===================== */
+/* TABLE */
+/* ===================== */
+
+.table-card{
+  padding: 16px;
+  border-radius: 14px !important;
+  box-shadow: 0px 0px 0px 0px;
+}
+
+.card-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:600;
+  margin-bottom:10px;
+}
+
+.view-all{
+  color:#e91e63;
+  cursor:pointer;
+  font-size:13px;
+}
+
+
+/* ===================== */
+/* ACTIVITY */
+/* ===================== */
+
+.activity-card{
+  padding: 16px;
+  border-radius: 14px !important;
+}
+
+.activity-item{
+  display:flex;
+  gap:12px;
+  padding:10px 0;
+  border-bottom:1px solid #eee;
+}
+
+.activity-item:last-child{
+  border-bottom:none;
+}
+
+.activity-icon{
+  color:#e91e63;
+  background:#fde7ef;
+  border-radius:50%;
+  padding:6px;
+  font-size:18px;
+}
+
+.activity-text{
+  font-size:14px;
+}
+
+.activity-time{
+  font-size:12px;
+  color:#999;
+}
+
+
+/* ===================== */
+/* STATUS CHIPS */
+/* ===================== */
+
+mat-chip.Available{
+  background:#e7f7ee !important;
+  color:#2e7d32 !important;
+}
+
+mat-chip.Assigned{
+  background:#fff4e5 !important;
+  color:#ef6c00 !important;
+}
+
+// mat-chip["Under Maintenance"]{
+//   background:#fdecea !important;
+//   color:#c62828 !important;
+// }
+
+
+/* ===================== */
+/* RESPONSIVE */
+/* ===================== */
+
+@media (max-width:1200px){
+
+.stats-grid{
+  display: flex;
+grid-template-columns: repeat(2,1fr);
+}
+
+// .chart-grid{
+
+// grid-template-columns: repeat(2,1fr);
+// }
+
+.bottom-grid{
+grid-template-columns: 1fr;
+}
+
+}
+.warranty-card {
+  // padding: 16px;
+  border-radius: 12px;
+  background: white;
+  // height: 200px;
+  height: 30%;
+  // margin-top: 26px;
+  margin-right:5px;
+  margin-left:10px;
+  width: 80%;
+}
+
+.warranty-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  // padding: 3px;
+  // margin-bottom: 10px;
+  border-bottom: 1px solid #080808;
+  font-weight:330;
+}
+.history-card {
+  //  padding: 16px;
+  border-radius: 12px;
+  background: white;
+  height:40%;
+  // height: 200px;
+  // margin-top: 26px;
+  margin-right:5px;
+  margin-left:10px;
+  width: 80%;
+}
+// .warranty-card{
+//   padding:15px;
+//   max-height: 100%;
+//   border-radius:12px !important;
+//   background-color: rgb(255, 234, 255);
+// }
+
+table{
+  width:80%;
+  height: 50%;
+  background: white;
+}
+th{
+  font-weight:500;
+  background: #c0cbf5 !important;
+}
+
+td, th{
+  padding:0px !important;
+}
+th.mat-mdc-header-cell,
+td.mat-mdc-cell {
+  text-align: center;
+  justify-content: center;
+  font-size: 14px;
+}
+table .mat-mdc-header-row{
+    height: 40px;
+    background:#fafafa;
+}
+
+table .mat-mdc-row{
+    height:30px;
+    transition:0.2s;
+}

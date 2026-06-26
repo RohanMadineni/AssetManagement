@@ -1,0 +1,168 @@
+
+<mat-toolbar style="height:52px;">
+  <div aria-live="polite" toastContainer></div>
+  <mat-icon style="color:white;">reorder_icon</mat-icon><div class="secondtitle">Asset Management System</div>
+  <div class="person" style="display:flex;">
+    <button [matMenuTriggerFor]="notificationMenu" matBadge="{{notificationService.unreadCount()}}" class="Notifbutton">
+      <mat-icon style="color:white;">notifications</mat-icon>
+      <!-- <span class="badge">
+        {{ notificationService.unreadCount() }}
+      </span> -->
+    </button>
+    <mat-icon class="acc_circle">account_circle </mat-icon>
+    <span style="color:white; font-weight:500;">{{role() | titlecase}}  {{name()}}</span> 
+  </div>
+</mat-toolbar>
+<!-- <div style="background-color:#e91e63;width:100%;height:2px;"></div> -->
+<!-- <div class = "side-contain"> -->
+<mat-drawer-container class="sidenav-container">
+  
+  <mat-drawer mode="side" opened class="sidenav">
+    <mat-card class="sidenav-card">
+    <mat-nav-list class="list">
+      <!-- <a mat-list-item>
+        <p class="admincontrols" style="color:rgb(70, 69, 69); font-size:14px;font-weight:400;  margin-left:10px;">
+            
+        </p>
+      </a> -->
+      <a mat-list-item routerLink="dashboard" routerLinkActive="active-link">
+        <p>
+        <mat-icon>dashboard</mat-icon>
+        Dashboard
+        </p>
+      </a>
+
+      <a mat-list-item  routerLink="assets" routerLinkActive="active-link">
+        <p>
+        <mat-icon>inventory</mat-icon>
+        My Assets
+        </p>
+      </a>
+
+      <a mat-list-item routerLink="addAsset" routerLinkActive="active-link">
+        <p>
+        <mat-icon>add-box</mat-icon>
+        Add Asset
+        </p>
+      </a>
+      <!-- <a mat-list-item routerLink="assetdetail" routerLinkActive="active-link">
+        <mat-icon>build</mat-icon>
+        Asset Details
+      </a> -->
+      <span *ngIf="isadmin()">
+      <!-- <a mat-list-item>
+        <p class="admincontrols" style="color:rgb(70, 69, 69); font-size:14px;font-weight:400;  margin-left:10px;">
+          ADMINISTRATION
+        </p>
+      </a> -->
+      <a mat-list-item>
+        <p class="admincontrols" style="color:rgb(70, 69, 69); font-size:14px;font-weight:400;  margin-left:10px;">
+          ASSET MANAGEMENT
+        </p>
+      </a>
+      </span>
+      <span *ngIf="isadmin()">
+        <a mat-list-item routerLink="system" routerLinkActive="active-link">
+          <p>
+            <mat-icon>dashboard</mat-icon>
+            System Dashboard
+          </p>
+        </a>
+      </span> 
+      <span *ngIf="isadmin()">
+        <a mat-list-item  routerLink="availableAssets" routerLinkActive="active-link">
+          <p>
+          <mat-icon>inventory</mat-icon>
+          Available Assets
+          </p>
+        </a>
+      </span>
+      <!-- <span *ngIf="isadmin()">
+        <a mat-list-item  routerLink="" routerLinkActive="active-link">
+          <p>
+          <mat-icon>history</mat-icon>
+          Assignment History
+          </p>
+        </a>
+      </span> -->
+      <span *ngIf="isadmin()">
+      <a mat-list-item>
+        <p class="admincontrols" style="color:rgb(70, 69, 69); font-size:14px;font-weight:400;  margin-left:10px;">
+          USER MANAGEMENT
+        </p>
+      </a>
+      </span>
+      <span *ngIf="isadmin()">
+        <a mat-list-item routerLink="register" routerLinkActive="active-link">
+          <p>
+            <mat-icon>person_add</mat-icon>
+            Register User
+          </p>
+        </a>
+      </span> 
+      
+      <span *ngIf="isadmin()">
+        <a mat-list-item routerLink="usermanagement" routerLinkActive="active-link">
+          <p>
+            <mat-icon>supervised_user_circle</mat-icon>
+            User Management
+          </p>
+        </a>
+      </span> 
+
+      <span *ngIf="isadmin()">
+          <a mat-list-item routerLink="categoryConfig" routerLinkActive="active-link">
+            <p>
+              <mat-icon>add</mat-icon>
+              Category Config
+            </p>
+          </a>
+      </span>
+      <a>
+      <a mat-list-item>
+        <p class="admincontrols" style="color:rgb(70, 69, 69); font-size:14px;font-weight:400;  margin-left:10px;">
+          SYSTEM MANAGEMENT 
+        </p>
+      </a>
+      </a>
+      <a mat-list-item routerLink = "settings" routerLinkActive="active-link">
+        <mat-icon>settings</mat-icon>
+        Settings
+      </a>
+      <a mat-list-item (click)="onLogout()">
+        <mat-icon>logout</mat-icon>
+        Log Out
+      </a>
+
+    </mat-nav-list>
+    </mat-card>
+  </mat-drawer>
+  <mat-drawer-content class = "main">
+    <div class="content">
+        <router-outlet class="outlet">
+
+        </router-outlet>
+    </div>
+  </mat-drawer-content>
+
+</mat-drawer-container>
+<!-- </div> -->
+
+<mat-menu #notificationMenu="matMenu">
+
+  <!-- <div *ngIf="!n.is_read" *ngFor="let n of notificationService.notifications()"> -->
+
+    <button *ngFor="let n of notificationService.notifications()"  mat-menu-item (click)="onRead(n.id)" style="width:200px;">
+
+      <!-- <div> -->
+        <!-- <strong></strong> -->
+        <p>{{ n.title }}: {{ n.message }}</p>
+      <!-- </div> -->
+
+    </button>
+    <button mat-menu-item (click)="markallRead()" style="width:200px;">
+      <mat-icon>visibility</mat-icon>Mark all as read
+    </button>
+  <!-- </div> -->
+
+</mat-menu>

@@ -1,0 +1,49 @@
+{
+  "name": "assetmanagement",
+  "version": "1.0.0",
+  "description": "",
+  "main": "electron/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "electron": "electron .",
+    "build:ng": "cd client-app && ng build --configuration production --base-href ./ --deploy-url ./",
+    "dist": "npm run build:ng && electron-builder"
+  },
+  "build": {
+    "appId": "com.assetmanagement.desktop",
+    "productName": "Asset Management",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "electron/**/*",
+      "client-app/dist/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "target": "dmg"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RohanMadineni/AssetManagement.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/RohanMadineni/AssetManagement/issues"
+  },
+  "homepage": "https://github.com/RohanMadineni/AssetManagement#readme",
+  "devDependencies": {
+    "electron": "^42.4.1",
+    "electron-builder": "^26.15.3"
+  }
+}

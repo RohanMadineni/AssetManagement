@@ -1,0 +1,86 @@
+<div class="add-asset-page">
+
+  <h1 class="page-title">Add Asset</h1>
+  <p class="welcome">Fill in information for a new asset!</p>
+  
+  <!-- <mat-card class="asset-card"> -->
+  <form [formGroup]="assetForm" (ngSubmit)="onSubmit()">
+    <!-- <mat-card class="form-card"> -->
+    <div class="section-title" style="display:flex; align-content: center; padding-bottom: 10px;">
+      <mat-icon class="icon-circle">info</mat-icon>
+      <span style="align-content: center; margin-left:5px; font-weight:500;">Asset Information</span>
+    </div>
+
+    <div class="form-grid">
+      <div>
+        <span style="font-weight: 500;">Asset Name</span>
+        <mat-form-field class="full-width" type="string">
+          <mat-label>Enter asset name</mat-label>
+          <input matInput formControlName="name">
+        </mat-form-field>
+      </div>
+      <div>
+        <span style="font-weight: 500;">Model</span>
+        <mat-form-field class="full-width" type="string">
+          <mat-label>Enter model</mat-label>
+          <input matInput formControlName="model">
+        </mat-form-field>
+      </div>
+      <div>
+        <span style="font-weight: 500;">Category</span>
+        <mat-form-field class="full-width">
+          <mat-label>Select category</mat-label>
+          <mat-select formControlName="category_id"
+                      (selectionChange)="onCategoryChange($event.value)">
+            <mat-option *ngFor="let cat of categories" [value]="cat.id">
+              {{ cat.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      
+    </div>
+    
+    <div class="form-grid2">
+      <div>
+        <span style="font-weight: 500;">Brand</span>
+        <mat-form-field class="full-width">
+          <mat-label>Enter brand</mat-label> 
+          <input matInput formControlName="brand">
+        </mat-form-field>
+      </div>
+
+      <div>
+        <span style="font-weight: 500;">Purchase Price</span>
+        <mat-form-field class="full-width">
+          <mat-label>Enter price</mat-label>
+          <input matInput formControlName="brand">
+        </mat-form-field>
+      </div>
+
+      <div>
+        <span style="font-weight: 500;">Status</span>
+        <mat-form-field class="full-width">
+          <mat-label>Select Status</mat-label>
+          <mat-select formControlName="status">
+            <mat-option value="available">Available</mat-option>
+            <mat-option value="assigned">Assigned</mat-option>
+            <mat-option value="maintenance">Under Maintenance</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="form-grid3">
+      <span style="font-weight: 500;">Description</span>
+      <mat-form-field class="hun-width">
+          <mat-label>Enter asset description</mat-label>
+          <input matInput formControlName="description">
+      </mat-form-field>
+    </div>
+    <button mat-raised-button color="primary" type="submit">
+      Create Asset
+    </button>
+        <!-- </mat-card> -->
+  </form>
+  <!-- </mat-card> -->
+</div>

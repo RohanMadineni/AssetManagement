@@ -1,0 +1,100 @@
+<!-- <div class = "register-page">
+
+  <mat-card class = "register-card">
+
+    <mat-card-header>
+        <div style="color: rgb(71, 70, 70);">
+          <mat-card-title class="login-title">
+            Register Page
+          </mat-card-title> 
+        </div>
+
+    </mat-card-header>  
+
+    <mat-card-content class = "register-content">
+
+      <form [formGroup]="loginform" (submit)="onLogin()">
+        <mat-form-field class="full-width-input">
+          <input matInput placeholder="Username" formControlName="username" required > 
+        </mat-form-field>
+
+        <mat-form-field class="full-width-input">
+          <input  matInput  type="password" placeholder="Password" formControlName="password" required>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-select formControlName = "role" placeholder="role">
+            <mat-option value="viewer">Viewer</mat-option>
+            <mat-option value="manager">Manager</mat-option>
+            <mat-option value="admin">Admin</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div>
+        <button  matButton="filled" type="submit" color="primary" [disabled]="!loginform.valid">Register</button>  
+        </div>
+      </form>
+
+    </mat-card-content>
+
+  </mat-card>
+
+</div>  -->
+
+<div class="register-page">
+
+  <div>
+    <h1 class="page-title">Register User</h1>
+    <p class="welcome">Fill in information for a new user!</p>
+  </div>
+
+  <div class="register-card">
+  <form [formGroup]="loginform" (submit)="onLogin()">
+   
+    
+
+    <div class="form-grid">
+      <div style="display:flex; flex-direction:column">
+        <span style="font-weight: 500;">Name</span>
+        <mat-form-field class="full-width" type="string">
+          <mat-label>Enter asset name</mat-label>
+          <input matInput formControlName="username">
+        </mat-form-field>
+      </div>
+      <div style="display:flex; flex-direction:column">
+        <span style="font-weight: 500;">Email</span>
+        <mat-form-field class="full-width" type="string">
+          <mat-label>Enter email</mat-label>
+          <input matInput formControlName="email">
+        </mat-form-field>
+      </div>
+      <div style="display:flex; flex-direction:column">
+        <span style="font-weight: 500;">Password</span>
+        <mat-form-field class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput formControlName="password">
+        </mat-form-field>
+      </div>
+      <div style="display:flex; flex-direction:column">
+        <span style="font-weight: 500;">Role</span>
+        <mat-form-field class="full-width">
+          <mat-select formControlName = "role" placeholder="role">
+            <mat-option value="viewer">Viewer</mat-option>
+            <mat-option value="manager">Manager</mat-option>
+            <mat-option value="admin">Admin</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      
+    </div>
+    
+    
+    <!-- <button mat-raised-button style="margin-top:5px;color: white;background-color: #ff48e7;font-size: 12px;" type="submit">
+      Register User
+    </button> -->
+    <button mat-raised-button class="add-user-btn" type="submit">
+                <mat-icon>account_box</mat-icon>Register User
+      </button>
+  </form>
+</div>
+
+</div>

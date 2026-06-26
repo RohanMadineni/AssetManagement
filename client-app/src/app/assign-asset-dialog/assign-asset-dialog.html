@@ -1,0 +1,38 @@
+<form [formGroup]="assignForm" (ngSubmit)="onSubmit()">
+    <h2 mat-dialog-title>Assign Asset</h2>
+
+    <mat-dialog-content class="DialogContent">
+            
+        <p style="display:flex;flex-direction:column;">
+            <span style="font-weight:400; font-size:15px;">Asset</span>
+            <span style="font-weight:430; font-size:19px; margin-top:3px;">{{data.name}}</span>
+        </p>
+            
+       
+        <div style="display:flex;flex-direction:column;">
+            <span style="font-weight:400; font-size:17px;">Assign To</span>
+            <p>
+                <mat-form-field>
+                    <mat-label>Select User</mat-label>
+                    <mat-select formControlName="user_id">
+                        <mat-option *ngFor = "let user of users()" [value]="user.id">
+                            {{ user.username }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </p>
+        </div>
+        
+        <div style="display:flex; justify-content:right;">
+
+            <button mat-raised-button style="margin-right:10px;color: black;background-color: white;font-size: 12px;" type="button" mat-dialog-close>
+                Cancel
+            </button>
+
+            <button mat-raised-button style="color: white;background-color: #f16ddf;font-size: 12px;" type="submit">
+                Assign Asset
+            </button>
+            
+        </div>
+    </mat-dialog-content>
+</form>

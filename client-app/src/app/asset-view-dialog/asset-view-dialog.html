@@ -1,0 +1,17 @@
+<h2 mat-dialog-title class="DialogTitle">Asset {{data.id}}</h2>
+
+<mat-dialog-content class="DialogContent">
+    <p><strong>Name:</strong> {{data.name}}</p>
+    <p><strong>Status:</strong> {{data.status}}</p>
+    <p><strong>Brand:</strong> {{data.brand}}</p>
+    <p><strong>Assigned To:</strong> {{data.current_assignment?.user?.username|| '....'}}</p>
+    <p><strong>Price:</strong> {{data.price}}</p>
+    <p><strong>Warranty Expiration:</strong> {{data.Warranty}}</p>
+    <div *ngFor="let p of data.attribute_values">
+      <p><strong>{{p.parameter.name}}:</strong> {{p.value}}</p>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button matButton="elevated" (click)="onNoClick()">Close View</button>
+</mat-dialog-actions>

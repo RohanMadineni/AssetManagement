@@ -1,0 +1,19 @@
+table{
+  width:80%;
+  height: 50%;
+  background: white;
+}
+th{
+  font-weight:500;
+  background: rgb(245, 194, 245) !important;
+}
+
+td, th{
+  padding:0px !important;
+}
+th.mat-mdc-header-cell,
+td.mat-mdc-cell {
+  text-align: center;
+  justify-content: center;
+  font-size: 14px;
+}

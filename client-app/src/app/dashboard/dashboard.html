@@ -1,0 +1,247 @@
+<!-- <div class="dash">
+  <mat-card class="dashboard-card">
+    
+    <mat-card-header>
+      <mat-card-title class="DashTitle">Dashboard</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content class="DashCont">
+      <p>Total Number of Assets : {{ totalAssets() }}</p>
+      <p>Assigned : {{ assignedAssets() }}</p>
+      <p>Available : {{ unassignedAssets() }}</p>
+    </mat-card-content>
+
+  </mat-card>
+</div> -->
+
+<div class="DashboardPage">
+  <!-- <div> -->
+    <h1 class="page-title">Dashboard</h1>
+    <!-- <p class="welcome">Welcome back, Admin User!</p> -->
+  <!-- </div> -->
+
+<!-- STAT CARDS -->
+  <div class="stats-grid">
+
+    <mat-card class="stat-card pink">
+      <div class="stat-content">
+        <div>
+          <div class="stat-title">Total Assets</div>
+          <div class="stat-number">{{totalAssets()}}</div>
+          <div class="stat-sub">All assets in system</div>
+        </div>
+        <mat-icon >inventory_2</mat-icon>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card blue">
+      <div class="stat-content">
+        <div>
+          <div class="stat-title">Assigned Assets</div>
+          <div class="stat-number">{{assignedAssets()}}</div>
+          <div class="stat-sub">Currently assigned</div>
+        </div>
+        <mat-icon>person</mat-icon>
+      </div>
+    </mat-card>
+
+    <!-- <mat-card class="stat-card green">
+      <div class="stat-content">
+        <div>
+          <div class="stat-title">Available Assets</div>
+          <div class="stat-number">{{availableAssets()}}</div>
+          <div class="stat-sub">Ready to assign</div>
+        </div>
+        <mat-icon>check_circle</mat-icon>
+      </div>
+    </mat-card> -->
+
+    <mat-card class="stat-card orange">
+      <div class="stat-content">
+        <div>
+          <div class="stat-title">Under Maintenance</div>
+          <div class="stat-number">{{maintenanceAssets()}}</div>
+          <div class="stat-sub">Under maintenance</div>
+        </div>
+        <mat-icon>build</mat-icon>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card purple">
+      <div class="stat-content">
+        <div>
+          <div class="stat-title">Categories</div>
+          <div class="stat-number">{{categories()}}</div>
+          <div class="stat-sub">Asset categories</div>
+        </div>
+        <mat-icon>category</mat-icon>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card green">
+      <div class="stat-content">
+        <div>
+          <div class="stat-title">Total Asset Value</div>
+          <div class="stat-number">{{totalvalue()}}</div>
+          <div class="stat-sub">Total value of assets</div>
+        </div>
+        <mat-icon>attach_money</mat-icon>
+      </div>
+    </mat-card>
+
+  </div>
+
+  <div class="chart-grid">
+    <div>
+      <div class="warranty-card" style="height: 300px;">
+        <h4>Upcoming Warranty Expirations</h4>
+          <table mat-table [dataSource]="upcomingWarranties()">
+              <!-- <ng-container matColumnDef="index">
+                <th mat-header-cell *matHeaderCellDef>Index</th>
+                <td mat-cell *matCellDef="let element; let i = index">
+                  <mat-icon>devices</mat-icon> 
+                  {{i + 1}}
+                </td>
+              </ng-container> -->
+
+
+              <!-- NAME -->
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td mat-cell *matCellDef="let element">
+                  <p style="font-weight: 500;">{{element.name}}</p>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="daysleft">
+                <th mat-header-cell *matHeaderCellDef>Days left</th>
+                <td mat-cell *matCellDef="let element">
+                  <p style="color: #e91e63; font-weight: 500;">{{element.days_left}} days left</p>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let element">
+
+                  <button mat-icon-button (click)="viewAsset(element)"  style="border:none;">
+                    <mat-icon style="color:blueviolet;">visibility</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+            <tr mat-header-row *matHeaderRowDef="['name', 'daysleft', 'actions']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['name', 'daysleft', 'actions'];"></tr>
+          </table>
+          <mat-paginator
+            [length]="totalWarr()"
+            [pageSize]="5"
+            (page)="onPageChange2($event)">
+          </mat-paginator>
+      </div>
+      
+      <div class="history-card" style="height: 300px;">
+
+        <h4>Recently Assigned Assets</h4>
+          <table mat-table [dataSource]="recentlyAssigned()">
+        
+            <!-- <ng-container matColumnDef="index">
+              <th mat-header-cell *matHeaderCellDef>Index</th>
+              <td mat-cell *matCellDef="let element; let i = index">
+                <mat-icon>devices</mat-icon>{{i + 1}}
+              </td>
+            </ng-container> -->
+
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Name</th>
+              <td mat-cell *matCellDef="let element">
+                <p style="font-weight: 500;">{{element.name}}</p>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Assigned at</th>
+              <td mat-cell *matCellDef="let element">
+
+                <span class="status-chip" style="font-weight:500;color:#10b981;">
+                  {{element.current_assignment.assigned_at}}
+                </span>
+
+              </td>
+            </ng-container>
+
+
+            <!-- ACTIONS -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef></th>
+
+              <td mat-cell *matCellDef="let element">
+
+                <button mat-icon-button (click)="viewAsset(element)" style="border:none;">
+                  <mat-icon style="color:blueviolet;">visibility</mat-icon>
+                </button>
+
+                <!-- <button mat-icon-button (click)="returnAsset(element.id)" style="color: green; background-color: white;height:70%;"><mat-icon>assignment_return</mat-icon></button>
+                
+                <button mat-icon-button (click)="editAsset(element)">
+                  <mat-icon style="color:blueviolet;">edit</mat-icon>
+                </button> -->
+
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="['name','status','actions']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['name','status','actions'];"></tr>
+          </table>
+          <mat-paginator
+            [length]="totalRecent()"
+            [pageSize]="5"
+            (page)="onPageChange($event)">
+          </mat-paginator>
+      </div>
+    </div>
+
+    <div style="height:500px;">
+      <mat-card class="chart-card">
+        
+        <!-- <div class="chart-header" style="display:flex;">
+          <mat-icon style="color: #e91e63;">pie_chart</mat-icon>
+        </div> -->
+        <span style="font-weight:500; padding:13px;">Assets by Category</span>
+        <!-- <div class="chart-container"> -->
+          <canvasjs-chart
+            [options]="chartOptions()"
+            [styles]="{width: '100%', height: '260px'}">
+          </canvasjs-chart>
+        <!-- </div> -->
+      </mat-card>
+
+      <mat-card class="chart-card">
+        <!-- <div class="chart-header" style="display:flex;">  
+          <mat-icon style="color: #e91e63;">pie_chart</mat-icon>
+        </div> -->
+        <span style="font-weight:500; padding:13px;">Assets by Status</span>
+        <canvasjs-chart
+          [options]="chartOptions2()"
+          [styles]="{width: '100%', height: '260px'}">
+        </canvasjs-chart>
+      </mat-card>
+    </div>
+
+    
+  </div>
+
+  
+  <!-- <mat-card class="chart-card">
+    <div class="chart-header">
+      <mat-icon>pie_chart</mat-icon>
+      <span>Assets by Status</span>
+    </div>
+
+    <canvasjs-chart
+      [options]="statusChartOptions"
+      [styles]="{width: '100%', height: '260px'}">
+    </canvasjs-chart>
+
+  </mat-card> -->
+
+<!-- </div> -->
+
+</div>

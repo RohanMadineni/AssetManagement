@@ -1,0 +1,261 @@
+<!-- <div class="category-page">
+    <mat-card class = "filter-card">
+
+        <mat-card-header>
+            <div style="color: rgb(71, 70, 70);">
+                <mat-card-title>Create Parameter</mat-card-title>
+            </div>
+        </mat-card-header>
+
+        <mat-card-content class="filter-content">
+            <mat-form-field class = "full-width" style="margin-top: 18px;">
+
+                    <mat-label>Category</mat-label>
+
+                    <mat-select [(ngModel)] = "filters.category_id">
+                        <mat-option *ngFor = "let cat of categories()" [value] = "cat.id">{{cat.name}}</mat-option>
+                    </mat-select>
+
+                </mat-form-field>
+            <form [formGroup]="categoryForm" (ngSubmit)="onSubmit('create')" >
+                
+                <mat-form-field class = "full-width">
+                    <mat-label>Parameter Name</mat-label>
+                    <input matInput formControlName="name" required>
+                </mat-form-field>
+
+                <mat-form-field class="full-width">
+                    <mat-label>Parameter Data Type</mat-label>
+                    <mat-select formControlName = "data_type" required>
+                        <mat-option value="string">String</mat-option>
+                        <mat-option value="number">Number</mat-option>
+                        <mat-option value="boolean">Boolean</mat-option>
+                        <mat-option value="date">Date</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field class="full-width">
+                    <mat-label>Is Required</mat-label>
+                    <mat-select formControlName = "is_required" required>
+                        <mat-option value="true">Yes</mat-option>
+                        <mat-option value="false">No</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <button mat-raised-button class = "apply-fil" [disabled]="!categoryForm.valid">
+                    <mat-icon>filter_list</mat-icon>
+                        Edit
+                </button>
+            </form>
+        </mat-card-content>  
+
+    </mat-card>
+
+    <mat-card class = "filter-card">
+
+        <mat-card-header>
+            <div style="color: rgb(71, 70, 70);">
+                <mat-card-title>Edit Parameter</mat-card-title>
+            </div>
+        </mat-card-header>
+
+        <mat-card-content class="filter-content">
+            <mat-form-field class = "full-width" style="margin-top: 18px;">
+
+                <mat-label>Category</mat-label>
+
+                <mat-select [(ngModel)] = "filters.edit_category_id" (selectionChange)="loadParameters()">
+                    <mat-option *ngFor = "let cat of categories()" [value] = "cat.id">{{cat.name}}</mat-option>
+                </mat-select>
+
+            </mat-form-field>
+
+            <mat-form-field class = "full-width">
+
+                <mat-label>Parameter Name</mat-label>
+
+                <mat-select [(ngModel)] = "filters.edit_param_id" (selectionChange)="onParamChange()">
+                    <mat-option *ngFor = "let par of parameters()" [value] = "par.id">{{par.name}}</mat-option>
+                </mat-select>
+
+            </mat-form-field>
+
+            <form [formGroup]="editForm" (ngSubmit)="onSubmit('edit')" >
+                <mat-form-field class="full-width">
+                    <mat-label>Parameter Data Type</mat-label>
+                    <mat-select formControlName = "data_type" required>
+                        <mat-option value="string">String</mat-option>
+                        <mat-option value="number">Number</mat-option>
+                        <mat-option value="boolean">Boolean</mat-option>
+                        <mat-option value="date">Date</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field class="full-width">
+                    <mat-label>Is Required</mat-label>
+                    <mat-select formControlName = "is_required" required>
+                        <mat-option value="true">Yes</mat-option>
+                        <mat-option value="false">No</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <button mat-raised-button class = "apply-fil" [disabled]="!editForm.valid">
+                    <mat-icon>filter_list</mat-icon>
+                        Edit
+                </button>
+            </form>
+        </mat-card-content>  
+
+    </mat-card>
+</div> -->
+
+<div class="category-page">
+  <div>
+    <h1 class="page-title">Category Configuration</h1>
+    <p class="welcome">Fill in information for new categories!</p>
+  </div>
+
+  
+    <form [formGroup]="createcatForm" (ngSubmit)="onSubmit('createCat')" >
+        <div class="section-title" style="display:flex; align-content: center; padding-bottom: 10px;">
+                <mat-icon class="icon-circle">info</mat-icon>
+                <span style="align-content: center; margin-left:5px; font-weight:500;">Create Category</span>
+        </div>
+        <div class="form-grid1" style="padding-left:20px;">
+            
+            <div style="margin-right:10px;">
+                <span style="font-weight: 500; padding-bottom:5px;">Category Name</span>
+                <mat-form-field class="full-width" type="string">
+                    <mat-label>Enter category name</mat-label>
+                    <input matInput formControlName="name">
+                </mat-form-field>
+            </div>
+            <div>
+                <span style="font-weight: 500; padding-bottom:5px;">Description</span>
+                <mat-form-field class="full-width">
+                    <mat-label>Enter category description</mat-label>
+                    <input matInput formControlName="description">
+                </mat-form-field>
+            </div>
+            <div style="justify-content:center;">
+                <!-- <span style="font-weight: 500;"></span> -->
+                <button mat-raised-button class="add-user-btn">
+                    <mat-icon>account_box</mat-icon>Create Category
+                </button>
+            </div>
+        </div>
+    </form>
+
+    
+    
+    <div class="form-grid2" style="padding-left:20px;">
+        
+        <div>
+            <span class="section-title" style="display:flex; align-content: center; padding-bottom: 10px;">
+                <mat-icon class="icon-circle">info</mat-icon>
+                <span style="align-content: center; margin-left:5px; font-weight:500;">Create Parameters</span>
+            </span>
+
+            <form [formGroup]="categoryForm" (ngSubmit)="onSubmit('create')" >
+                <div>
+                    <mat-form-field class = "full-width" style="margin-top: 18px;">
+
+                        <mat-label>Category</mat-label>
+
+                        <mat-select formControlName = "category_id">
+                            <mat-option *ngFor = "let cat of categories()" [value] = "cat.id">{{cat.name}}</mat-option>
+                        </mat-select>
+
+                    </mat-form-field>
+                </div>
+
+                <mat-form-field class = "full-width">
+                    <mat-label>Parameter Name</mat-label>
+                    <input matInput formControlName="name" required>
+                </mat-form-field>
+
+                <mat-form-field class="full-width">
+                    <mat-label>Parameter Data Type</mat-label>
+                    <mat-select formControlName = "data_type" required>
+                        <mat-option value="string">String</mat-option>
+                        <mat-option value="number">Number</mat-option>
+                        <mat-option value="boolean">Boolean</mat-option>
+                        <mat-option value="date">Date</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field class="full-width">
+                    <mat-label>Is Required</mat-label>
+                    <mat-select formControlName = "is_required" required>
+                        <mat-option [value]="true">Yes</mat-option>
+                        <mat-option [value]="false">No</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <button mat-raised-button class = "apply-fil" [disabled]="!categoryForm.valid">
+                    <mat-icon>filter_list</mat-icon>
+                        Create
+                </button>
+            </form>
+        </div>
+        
+        <div>
+            <span class="section-title" style="display:flex; align-content: center; padding-bottom: 10px;">
+                <mat-icon class="icon-circle">info</mat-icon>
+                <span style="align-content: center; margin-left:5px; font-weight:500;">Edit Parameters</span>
+            </span>
+            
+            <form [formGroup]="editForm" (ngSubmit)="onSubmit('edit')" >
+                <div>
+                    <mat-form-field class = "full-width" style="margin-top: 18px;">
+
+                        <mat-label>Category</mat-label>
+
+                        <mat-select formControlName = "edit_category_id" (selectionChange)="loadParameters()">
+                            <mat-option *ngFor = "let cat of categories()" [value] = "cat.id">{{cat.name}}</mat-option>
+                        </mat-select>
+
+                    </mat-form-field>
+                </div>
+
+                <div>
+                    <mat-form-field class = "full-width">
+
+                        <mat-label>Parameter Name</mat-label>
+
+                        <mat-select formControlName = "edit_param_id" (selectionChange)="onParamChange()">
+                            <mat-option *ngFor = "let par of parameters()" [value] = "par.id">{{par.name}}</mat-option>
+                        </mat-select>
+
+                    </mat-form-field>
+                </div>
+                <div>
+                    <mat-form-field class="full-width">
+                        <mat-label>Parameter Data Type</mat-label>
+                        <mat-select formControlName = "data_type" required>
+                            <mat-option value="string">String</mat-option>
+                            <mat-option value="number">Number</mat-option>
+                            <mat-option value="boolean">Boolean</mat-option>
+                            <mat-option value="date">Date</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div>
+                    <mat-form-field class="full-width">
+                        <mat-label>Is Required</mat-label>
+                        <mat-select formControlName = "is_required" required>
+                            <mat-option [value]="true">Yes</mat-option>
+                            <mat-option [value]="false">No</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div>
+                    <button mat-raised-button class = "apply-fil" [disabled]="!editForm.valid">
+                        <mat-icon>filter_list</mat-icon>
+                            Edit
+                    </button>
+                </div>
+            </form> 
+        </div>
+  </div>
+</div>

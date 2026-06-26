@@ -1,0 +1,9 @@
+release/
+test.txt
+vendor/
+venv/
+node_modules/
+AssetManagement/
+dist/
+out/
+*.exe
