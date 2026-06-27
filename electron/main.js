@@ -43,6 +43,14 @@ autoUpdater.on('update-available', () => {
 
 autoUpdater.on('update-downloaded', () => {
     console.log('Update downloaded, restarting...');
-
-    autoUpdater.quitAndInstall();
-})
+    dialog.showMessageBox({
+        type: 'info',
+        buttons: ['Restart now', 'Later'],
+        message: 'Update ready',
+    }).then(result => {
+        if(result.response === 0){
+            autoUpdater.quitAndInstall();
+        }
+    });
+    // autoUpdater.quitAndInstall();
+});
