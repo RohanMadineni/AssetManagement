@@ -28,6 +28,11 @@
     },
     "linux": {
       "target": "AppImage"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "RohanMadineni",
+      "repo": "AssetManagement"
     }
   },
   "repository": {
