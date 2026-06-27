@@ -1,6 +1,11 @@
 const { app, BrowserWindow } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
+const log = require ('electron-log');
+
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+log.info('App starting...');
 
 const isDev = !app.isPackaged;
 const createWindow = () => {
@@ -24,9 +29,20 @@ const createWindow = () => {
 }
 
 app.whenReady().then(() => {
-        createWindow()
+        createWindow();
+        autoUpdater.checkForUpdatesAndNotify();
     });
 
 app.on('window-all-closed', () => {
     if(process.platform !== 'darwin') app.quit();
 });
+
+autoUpdater.on('update-available', () => {
+    console.log('Update available');
+});
+
+autoUpdater.on('update-downloaded', () => {
+    console.log('Update downloaded, restarting...');
+
+    autoUpdater.quitAndInstall();
+})

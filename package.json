@@ -1,6 +1,6 @@
 {
   "name": "assetmanagement",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "electron/main.js",
   "scripts": {
@@ -51,5 +51,9 @@
   "devDependencies": {
     "electron": "^42.4.1",
     "electron-builder": "^26.15.3"
+  },
+  "dependencies": {
+    "electron-log": "^5.4.4",
+    "electron-updater": "^6.8.9"
   }
 }
