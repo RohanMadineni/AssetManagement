@@ -19,6 +19,7 @@ import { AssetViewDialog } from '../asset-view-dialog/asset-view-dialog';
 import { AssetEditDialog } from '../asset-edit-dialog/asset-edit-dialog';
 import { AssignAssetDialog } from '../assign-asset-dialog/assign-asset-dialog';
 import { AssetAssignmentHistory } from '../asset-assignment-history/asset-assignment-history';
+import { ExportServiceTs } from '../export-service';
 @Component({
   selector: 'app-available-assets-list',
   imports: [MatTableModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatPaginatorModule, FormsModule, CommonModule, MatSelectModule, MatIconModule, MatCardModule],
@@ -40,7 +41,7 @@ export class AvailableAssetsList {
   @Output() back = new EventEmitter<void>();
   displayedColumns: string[] = ['name', 'actions'];
 
-  constructor(private assetService: AssetService, private dialog: MatDialog) {}
+  constructor(private assetService: AssetService, private exportService: ExportServiceTs, private dialog: MatDialog) {}
 
   ngOnInit() {
     this.loadAssets();
@@ -142,5 +143,26 @@ export class AvailableAssetsList {
         });
     }
     else this.loadAssets();
+  }
+
+  exportAssets() {
+    this.exportService.export_asset_list().subscribe((blob: Blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'exported-data.xlsx';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  }
+  exportAssetsPdf() {
+    this.exportService.export_asset_list_pdf().subscribe((blob: Blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'exported-data.pdf';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
   }
 }

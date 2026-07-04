@@ -14,6 +14,8 @@ import { UserEditDialog } from '../user-edit-dialog/user-edit-dialog';
 
 import { AddAssetComponent } from '../add-asset/add-asset';
 import { AssetListPage } from '../asset-list/asset-list';
+
+import { ExportServiceTs } from '../export-service';
 @Component({
   selector: 'app-user-management',
   imports: [MatCardModule, MatTableModule, MatButtonModule, MatIcon, CommonModule, ReactiveFormsModule, AddAssetComponent, AssetListPage],
@@ -34,7 +36,7 @@ export class UserManagement implements OnInit{
   }
 
 
-  constructor(private userservice: UserService, private router: Router, private dialog: MatDialog){};
+  constructor(private userservice: UserService, private exportService: ExportServiceTs, private router: Router, private dialog: MatDialog){};
 
   initTable(){
     this.userservice.getUsers().subscribe(res => {
@@ -80,5 +82,25 @@ export class UserManagement implements OnInit{
     this.selectedUser.set(user_);
     this.selectedName.set(user_name);
     this.view.set('assetlist-page');
+  }
+  exportUsers() {
+    this.exportService.export_user_list().subscribe((blob: Blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'exported-data.xlsx';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  }
+  exportUsersPdf() {
+    this.exportService.export_user_list_pdf().subscribe((blob: Blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'user-list.pdf';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
   }
 }

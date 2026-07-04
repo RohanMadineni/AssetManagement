@@ -369,6 +369,7 @@ class AssetController extends Controller
         ]);
         // Http::post('http://localhost:3000/AssetReturned', $notification);
         Http::post(config('services.realtime.url') . '/AssetReturned', $notification);
+        // Http::post(env('REALTIME_URL') . '/AssetReturned', $notification);
         // SendRealtimeNotification::dispatch('/AssetReturned', $notification);
         return response()->json(['message' => 'Asset returned']);
     }

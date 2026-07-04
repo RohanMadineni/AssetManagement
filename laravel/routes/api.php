@@ -9,6 +9,7 @@ use App\Http\Controllers\ParameterController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetSearchController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ExportController;
 use App\Models\Asset;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Notification;
@@ -92,3 +93,9 @@ Route::middleware('auth:sanctum')->group(function(){
 
 Route::get('search', [AssetSearchController::class, 'search'])->middleware('auth:sanctum');
 
+Route::middleware('auth:sanctum')->group(function(){
+    Route::get('export-users', [ExportController::class, 'ExportUserstoExcel']);
+    Route::get('export-assets', [ExportController::class, 'ExportAssetstoExcel']);
+    Route::get('export-users-pdf', [ExportController::class, 'ExportUserstoPdf']);
+    Route::get('export-assets-pdf', [ExportController::class, 'ExportAssetstoPdf']);
+});

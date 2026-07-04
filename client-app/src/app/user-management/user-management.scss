@@ -23,6 +23,9 @@
     max-width: 98%;
     height: 100%;
     justify-items: center;
+    display: flex;
+    flex-direction: row;
+    padding: 15px;
     // align-content: center;
     // padding-right: 20px;
 }
@@ -36,8 +39,8 @@
     border-radius: 12px;
     height: 90%;
     width: 90%; 
-    padding-top: 15px;
-    padding:5px;
+    // padding-top: 15px;
+    // padding:5px;
 }
 table{
   max-width:80%;

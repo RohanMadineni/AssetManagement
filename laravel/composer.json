@@ -6,10 +6,12 @@
     "license": "MIT",
     "require": {
         "php": ">=8.4.0",
+        "barryvdh/laravel-dompdf": "^3.1",
         "elasticsearch/elasticsearch": "8.15.0",
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "maatwebsite/excel": "^3.1",
         "tymon/jwt-auth": "^2.2"
     },
     "require-dev": {

@@ -11,7 +11,15 @@
     </div>
 
     <div class="User-Content">
-
+        <div>
+            <button mat-icon-button (click)="exportUsers()" style="height:10%; border:none;">
+                <mat-icon>cloud_download</mat-icon>
+            </button>
+            <button mat-icon-button (click)="exportUsersPdf()" style="height:10%; border:none;">
+                <mat-icon>cloud_download</mat-icon>
+            </button>
+        </div>
+        
         <mat-card class="table-card">
             <table mat-table [dataSource]="users()">
                 <ng-container matColumnDef="id" >
