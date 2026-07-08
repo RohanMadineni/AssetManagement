@@ -7,6 +7,7 @@ use App\Models\Asset;
 use App\Services\ElasticsearchService;
 use App\Jobs\IndexAssetToElasticsearch;
 use App\Jobs\DeleteAssetFromElasticsearch;
+use Illuminate\Support\Facades\Cache;
 // use App\Services\ElasticsearchService as ServicesElasticsearchService;
 
 class AssetObserver
@@ -19,6 +20,7 @@ class AssetObserver
     {
         //
         // app(ElasticsearchService::class)->indexAsset($asset);
+        Cache::tags(['assets'])->flush();
         IndexAssetToElasticsearch::dispatch($asset);
       
     }
@@ -30,6 +32,7 @@ class AssetObserver
     {
         //
         // app(ElasticsearchService::class)->indexAsset($asset);
+        Cache::tags(['assets'])->flush();
         IndexAssetToElasticsearch::dispatch($asset);
     }
 
@@ -40,7 +43,8 @@ class AssetObserver
     {
         //
         // app(ElasticsearchService::class)->delete($asset->id);
-        DeleteAssetFromElasticsearch::dispatch($asset);
+        Cache::tags(['assets'])->flush();
+        DeleteAssetFromElasticsearch::dispatch($asset->id);
     }
 
     /**

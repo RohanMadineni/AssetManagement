@@ -7,11 +7,11 @@ WORKDIR /var/www/html
 RUN apt-get update && apt-get install -y \
     git curl unzip zip \
     libpng-dev libonig-dev \
-    git \
-    curl \
-    unzip \
-    zip \
-    libpng-dev \
+    # git \
+    # curl \
+    # unzip \
+    # zip \
+    # libpng-dev \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
     libwebp-dev \
@@ -20,7 +20,10 @@ RUN apt-get update && apt-get install -y \
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
 
-RUN docker-php-ext-install zip pdo pdo_mysql gd
+RUN docker-php-ext-install zip pdo pdo_mysql gd sockets
+
+RUN pecl install redis \
+    && docker-php-ext-enable redis
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 

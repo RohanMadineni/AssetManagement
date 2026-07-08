@@ -12,23 +12,70 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Jobs\SendRealtimeNotification;
+use Illuminate\Support\Facades\Cache;
 
 class AssetController extends Controller
 {
     //
     public function index(Request $request, $id){
-        $assets = Asset::with('attribute_values.parameter')
-            ->where('user_id',Auth::id())
-            ->findorFail($id);
+        $cacheKey = "asset." . Auth::id() . "." . $id;
+        $assets = Cache::tags(['assets'])->remember($cacheKey, now()->addMinutes(10), function () use ($id) {
+            return Asset::with('attribute_values.parameter')
+                ->where('user_id',Auth::id())
+                ->findorFail($id);
+        });
         return response()->json($assets);
+
     }
     
-    public function show(Request $request){
-        if($request->selected_user==0)
-                $user_id = Auth::id();
-        else $user_id = $request['selected_user'];
+    // public function show(Request $request){
+    //     if($request->selected_user==0)
+    //             $user_id = Auth::id();
+    //     else $user_id = $request['selected_user'];
 
-        $query = Asset::with('attribute_values.parameter', 'currentAssignment.user') 
+    //     return Cache::tags(['assets'])->remember("OwnedAssets.$user_id", now()->addMinutes(10), function () use ($user_id, $request){
+    //         $query = Asset::with('attribute_values.parameter', 'currentAssignment.user') 
+    //         ->AssignedTo($user_id);
+    //         if ($request->category_id) {
+    //             $query->where('category_id', $request->category_id);
+    //         }
+
+    //         if ($request->status) {
+    //             $query->where('status', $request->status);
+    //         }
+
+    //         if ($request->name){
+    //             $query->where('name', $request->name);
+    //         } 
+    //         if ($request->has('parameter_id') && $request->has('value')) {
+    //             $query->whereHas('attribute_values', function ($q) use ($request) {
+    //                 $q->where('parameter_id', $request->parameter_id)
+    //                 ->where('value', $request->value);
+    //             });
+    //         }
+    //         return $query->paginate(5);
+    //     });
+    // }
+    public function show(Request $request)
+{
+    $user_id = $request->selected_user == 0
+        ? Auth::id()
+        : $request->selected_user;
+
+    $page = $request->get('page', 1);
+
+    $cacheKey = "OwnedAssets:" . $user_id . ":" . md5(json_encode([
+        'category_id' => $request->category_id,
+        'status' => $request->status,
+        'name' => $request->name,
+        'parameter_id' => $request->parameter_id,
+        'value' => $request->value,
+        'page' => $page,
+    ]));
+
+    return Cache::tags(['assets'])->remember($cacheKey, now()->addMinutes(10), function () use ($user_id, $request) {
+
+        $query = Asset::with('attribute_values.parameter', 'currentAssignment.user')
             ->AssignedTo($user_id);
 
         if ($request->category_id) {
@@ -39,19 +86,57 @@ class AssetController extends Controller
             $query->where('status', $request->status);
         }
 
-        if ($request->name){
+        if ($request->name) {
             $query->where('name', $request->name);
-        } 
+        }
+
         if ($request->has('parameter_id') && $request->has('value')) {
             $query->whereHas('attribute_values', function ($q) use ($request) {
                 $q->where('parameter_id', $request->parameter_id)
-                ->where('value', $request->value);
+                  ->where('value', $request->value);
             });
         }
-        return $query->paginate(5);
-    }
-    public function showAll(Request $request){
+
+        return $query->paginate(10);
+    });
+}
+    // public function showAll(Request $request){
+    //     return Cache::tags(['assets'])->remember("AllAssets", now()->addMinutes(10), function () use ($request){
+    //         $query = Asset::with('attribute_values.parameter', 'currentAssignment.user');
+    //         if ($request->category_id) {
+    //             $query->where('category_id', $request->category_id);
+    //         }
+
+    //         if ($request->status) {
+    //             $query->where('status', $request->status);
+    //         }
+
+    //         if ($request->has('parameter_id') && $request->has('value')) {
+    //             $query->whereHas('attribute_values', function ($q) use ($request) {
+    //                 $q->where('parameter_id', $request->parameter_id)
+    //                 ->where('value', $request->value);
+    //             });
+    //         }
+    //         return $query->paginate(10);
+    //     });
+        
+    // }
+    public function showAll(Request $request)
+{
+    $page = $request->get('page', 1);
+
+    $cacheKey = "AllAssets:" . md5(json_encode([
+        'category_id' => $request->category_id,
+        'status' => $request->status,
+        'parameter_id' => $request->parameter_id,
+        'value' => $request->value,
+        'page' => $page,
+    ]));
+
+    return Cache::tags(['assets'])->remember($cacheKey, now()->addMinutes(10), function () use ($request) {
+
         $query = Asset::with('attribute_values.parameter', 'currentAssignment.user');
+
         if ($request->category_id) {
             $query->where('category_id', $request->category_id);
         }
@@ -63,11 +148,13 @@ class AssetController extends Controller
         if ($request->has('parameter_id') && $request->has('value')) {
             $query->whereHas('attribute_values', function ($q) use ($request) {
                 $q->where('parameter_id', $request->parameter_id)
-                ->where('value', $request->value);
+                  ->where('value', $request->value);
             });
         }
+
         return $query->paginate(10);
-    }
+    });
+}
     public function store(Request $request){
         try{$validated = $request->validate([
             'name'=>'required|string',
@@ -93,6 +180,7 @@ class AssetController extends Controller
             
         ]);
          
+        event(new \App\Events\AssetCreated($asset));
 
         if ($request->has('attributes')) {
             foreach ($request->attributes as $parameterId => $value) {
@@ -109,9 +197,8 @@ class AssetController extends Controller
             'message' => $request->name,
             'type' => 'success'
         ]);
-        // Http::post('localhost:3000/AssetCreated', $notification);
+        // Cache::tags(['assets'])->flush();
         Http::post(config('services.realtime.url') . '/AssetCreated', $notification);
-        // SendRealtimeNotification::dispatch('/AssetCreated', $notification->toArray());
         return response()->json($asset, 201);} catch (\Exception $e) {
 
         return response()->json([
@@ -156,12 +243,14 @@ class AssetController extends Controller
             }
         }
 
+        
         $notification = Notification::create([
             'user_id' => $asset->user_id,
             'title' => 'Asset Updated',
             'message' => $asset->name,
             'type' => 'success'
         ]);
+        // Cache::tags(['assets'])->flush();
         // Http::post('localhost:3000/AssetCreated', $notification);
         Http::post(config('services.realtime.url') . '/AssetCreated', $notification);
         // SendRealtimeNotification::dispatch('/AssetCreated', $notification);
@@ -171,7 +260,7 @@ class AssetController extends Controller
     public function destroy($id){
         $asset = Asset::findorFail($id);
 
-        $asset->attribute_values()->delete();
+        // $asset->attribute_values()->delete();
         $notification = Notification::create([
             'user_id' => $asset->user_id,
             'title' => 'Asset Deleted',
@@ -179,11 +268,10 @@ class AssetController extends Controller
             'type' => 'success'
         ]);
         $asset->delete();
-        
-        
+        // Cache::tags(['assets'])->flush();
         // Http::post('localhost:3000/AssetCreated', $notification);
         Http::post(config('services.realtime.url') . '/AssetCreated', $notification);
-        // SendRealtimeNotification::dispatch('/AssetCreated', $notification);
+
         return response()->json([
             'message' => 'Asset deleted'
         ]);
@@ -191,74 +279,97 @@ class AssetController extends Controller
 
     public function stats(Request $request){
         $user_id=Auth::id();
-        $assets = Asset::with('currentAssignment')
-        ->assignedTo($user_id)
-        ->get();
-        //  dd($request->header('Authorization'));
-        // return $assets;
-        $total = $assets->count();
 
-        $contvalues = $assets->countBy('status');
-        $sum = $assets->sum('price');
+        $stats = Cache::tags(['assets'])->remember(
+                    "dashboard.stats.$user_id", 
+                    now()->addMinutes(5), 
+                    function () use ($user_id){
+                        $assets = Asset::with('currentAssignment')
+                        ->assignedTo($user_id)
+                        ->get();
+                        $total = $assets->count();
 
-        $unassigned = $contvalues['available'] ?? 0;
-        $assigned = $contvalues['assigned'] ?? 0;
-        $maintenance = $contvalues['under maintenance'] ?? 0;
+                        $contvalues = $assets->countBy('status');
+                        $sum = $assets->sum('price');
 
-        $categories = $assets->countBy('category_id');
+                        $unassigned = $contvalues['available'] ?? 0;
+                        $assigned = $contvalues['assigned'] ?? 0;
+                        $maintenance = $contvalues['under maintenance'] ?? 0;
 
-        $cat_names = Category::pluck('name', 'id');
-        return response()->json([
-            'total_assets' => $total,
-            'assigned_assets' => $assigned,
-            'unassigned_assets' => $unassigned,
-            'under_maintenance' => $maintenance,
-            'catNames' => $cat_names,
-            'cat_Array' =>$categories,
-            'totalvalue' =>$sum,
-        ]);
+                        $categories = $assets->countBy('category_id');
 
+                        // $cat_names = Category::pluck('name', 'id');
+                        $cat_names = Cache::remember(
+                            'categories',
+                            now()->addHour(),
+                            fn() => Category::pluck('name', 'id')
+                        );
+                        return [
+                            'total_assets' => $total,
+                            'assigned_assets' => $assigned,
+                            'unassigned_assets' => $unassigned,
+                            'under_maintenance' => $maintenance,
+                            'catNames' => $cat_names,
+                            'cat_Array' =>$categories,
+                            'totalvalue' =>$sum,
+                        ];
+                    }
+                );
+        return response()->json($stats);
     }
 
     public function allstats(){
-        $assets = DB::select('select category_id, status, price from assets');  
-        
-        $total = count($assets);
-        $sum = array_sum(array_column($assets, 'price'));
-        $contvalues = array_count_values(array_column($assets, 'status'));
-        $maintenance = 0;
-        $unassigned = 0;
-        $assigned = 0;
-        if(array_key_exists('available', $contvalues))
-            $unassigned = $contvalues['available'];
-        if(array_key_exists('assigned', $contvalues))
-            $assigned = $contvalues['assigned'];
-        if(array_key_exists('under maintenance', $contvalues))
-            $maintenance = $contvalues['under maintenance'];
-        $categories = array_count_values(array_column($assets, 'category_id'));
 
-        $cat_names = Category::pluck('name', 'id');
-        return response()->json([
-            'total_assets' => $total,
-            'assigned_assets' => $assigned,
-            'unassigned_assets' => $unassigned,
-            'under_maintenance' => $maintenance,
-            'catNames' => $cat_names,
-            'cat_Array' =>$categories,
-            'totalvalue' =>$sum,
-        ]);
+        $allstats = Cache::tags(['assets'])->remember(
+            "dashboard.allstats",
+            now()->addMinutes(5),
+            function() {
+                $assets = DB::select('select category_id, status, price from assets');  
+                $total = count($assets);
+                $sum = array_sum(array_column($assets, 'price'));
+                $contvalues = array_count_values(array_column($assets, 'status'));
+                $maintenance = 0;
+                $unassigned = 0;
+                $assigned = 0;
+                if(array_key_exists('available', $contvalues))
+                    $unassigned = $contvalues['available'];
+                if(array_key_exists('assigned', $contvalues))
+                    $assigned = $contvalues['assigned'];
+                if(array_key_exists('under maintenance', $contvalues))
+                    $maintenance = $contvalues['under maintenance'];
+                $categories = array_count_values(array_column($assets, 'category_id'));
+
+                // $cat_names = Category::pluck('name', 'id');
+                $cat_names = Cache::remember(
+                            'categories',
+                            now()->addHour(),
+                            fn() => Category::pluck('name', 'id')
+                        );
+                return [
+                    'total_assets' => $total,
+                    'assigned_assets' => $assigned,
+                    'unassigned_assets' => $unassigned,
+                    'under_maintenance' => $maintenance,
+                    'catNames' => $cat_names,
+                    'cat_Array' =>$categories,
+                    'totalvalue' =>$sum,
+                ];
+            }
+        );
+        return response()->json($allstats);
     }
 
     public function upcomingWarranty(){
         $today = Carbon::today();
         $threshold = Carbon::today()->addDays(15);
         $user_id = Auth::id();
-        $assets = Asset::whereNotNull('Warranty')
-        ->AssignedTo($user_id)
-                // ->where('user_id',$user_id)
-                ->whereBetween('Warranty', [$today, $threshold])
-                ->paginate(5);
-        
+        $assets = Cache::tags(['assets'])->remember("warranty.$user_id", now()->addMinutes(10), function() use ($today, $threshold, $user_id){
+                return Asset::whereNotNull('Warranty')
+                ->AssignedTo($user_id)
+                        // ->where('user_id',$user_id)
+                        ->whereBetween('Warranty', [$today, $threshold])
+                        ->paginate(5);
+        });
         $assets->getCollection()->transform(function ($asset) {
             return [
                 'id' => $asset->id,
@@ -279,9 +390,12 @@ class AssetController extends Controller
     public function upcomingAllWarranty(){
         $today = Carbon::today();
         $threshold = Carbon::today()->addDays(15);
-        $assets = Asset::whereNotNull('Warranty')
-                ->whereBetween('Warranty', [$today, $threshold])
-                ->paginate(5);
+
+        $assets = Cache::tags(['assets'])->remember("warranty.Upcomingall", now()->addMinutes(10), function() use ($today, $threshold){
+                return Asset::whereNotNull('Warranty')
+                    ->whereBetween('Warranty', [$today, $threshold])
+                    ->paginate(5);
+        });
         $assets->getCollection()->transform(function ($asset) {
             return [
                 'id' => $asset->id,
@@ -318,16 +432,20 @@ class AssetController extends Controller
             'user_id' => $request->user_id,
             'assigned_at' => now(),
         ]);
-
+        
         // Optional: update asset status
         Asset::where('id', $request->asset_id)
             ->update(['status' => 'assigned']);
+
+        
+
         $notif = Notification::create([
             'user_id' => $assignment->user_id,
             'title' => 'Asset Assigned To',
             'message' => $request->username,
             'type' => 'success'
         ]);
+        Cache::tags(['assets'])->flush();
         // Http::post('localhost:3000/AssetAssigned', $notif);
         Http::post(config('services.realtime.url') . '/AssetAssigned', $notif);
         // SendRealtimeNotification::dispatch(
@@ -360,6 +478,7 @@ class AssetController extends Controller
         Asset::where('id', $request->asset_id)
             ->update(['status' => 'available']);
         
+        
 
         $notification = Notification::create([
             'user_id' => $assignment->user_id,
@@ -367,10 +486,10 @@ class AssetController extends Controller
             'message' => "Returned",
             'type' => "success" 
         ]);
+        Cache::tags(['assets'])->flush();
         // Http::post('http://localhost:3000/AssetReturned', $notification);
         Http::post(config('services.realtime.url') . '/AssetReturned', $notification);
         // Http::post(env('REALTIME_URL') . '/AssetReturned', $notification);
-        // SendRealtimeNotification::dispatch('/AssetReturned', $notification);
         return response()->json(['message' => 'Asset returned']);
     }
 
@@ -388,29 +507,30 @@ class AssetController extends Controller
         $user_id = Auth::id();
         $today = Carbon::today()->addDays(1);
         $threshold = Carbon::today()->subDays(10);
-        $query = Asset::with('attribute_values.parameter', 'currentAssignment') 
+        
+        return Cache::tags(['assets'])->remember("recentlyAssiged.$user_id", now()->addMinutes(10), function() use ($today, $threshold, $user_id){
+            $query = Asset::with('attribute_values.parameter', 'currentAssignment') 
             ->AssignedTo($user_id)
             ->whereHas('currentAssignment', function ($q) use ($today, $threshold) {
                         $q->whereBetween('assigned_at', [$threshold, $today]);
                     });
-        // $alreadyAssigned = AssetAssignment::where('user_id', $user_id)
-        //     ->whereNull('returned_at')
-        //     ->whereBetween('assigned_at', [$threshold, $today])
-        //     ->get();
+            return $query->paginate(5);
+        });
         
-        return $query->paginate(5);
     }
 
     public function recentlyAllAssigned(){
         $today = Carbon::today()->addDays(1);
         $threshold = Carbon::today()->subDays(13);
-        $query = Asset::with(['attribute_values.parameter', 'currentAssignment'])
+        
+                    
+        return Cache::tags(['assets'])->remember("recentlyAllAssiged", now()->addMinutes(10), function() use ($today, $threshold){
+            $query = Asset::with(['attribute_values.parameter', 'currentAssignment'])
                     ->whereHas('currentAssignment', function ($q) use ($today, $threshold) {
                         $q->whereBetween('assigned_at', [$threshold, $today]);
                     });
-                    
-
-        return $query->paginate(5);
+            return $query->paginate(5);
+        });
     }
     
     public function AssetHistory($id){

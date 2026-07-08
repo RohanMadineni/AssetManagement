@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+// use App\Models\Asset;
 use App\Services\ElasticsearchService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
