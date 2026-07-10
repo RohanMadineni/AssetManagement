@@ -12,6 +12,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "amqplib": "^2.0.1",
     "express": "^5.2.1",
     "socket.io": "^4.8.3",
     "sqlite": "^5.1.1",

@@ -1,13 +1,16 @@
 import express from 'express';
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
-
+import startRealtimeConsumer from './consumers/realTimeConsumer.js';
 
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: { origin: '*' } // Allow CORS for development
 });
+
+export { io };
+
 io.on('connection', (socket) => {
 //   socket.broadcast.emit('hi');
   console.log('hi');
@@ -17,29 +20,29 @@ io.on('connection', (socket) => {
 
 app.use(express.json());
 
-app.post('/AssetCreated', (req, res)=>{
-    const body = req.body;
+// app.post('/AssetCreated', (req, res)=>{
+//     const body = req.body;
 
-    io.to(`${body.user_id}`).emit('notification', body);
+//     io.to(`${body.user_id}`).emit('notification', body);
     
-    res.json({
-        success: true,
-        notification: body
-    });
+//     res.json({
+//         success: true,
+//         notification: body
+//     });
 
-});
+// });
 
-app.post('/AssetDeleted', (req, res)=>{
-    const body = req.body;
+// app.post('/AssetDeleted', (req, res)=>{
+//     const body = req.body;
 
-    io.to(`${body.user_id}`).emit('notification', body);
+//     io.to(`${body.user_id}`).emit('notification', body);
     
-    res.json({
-        success: true,
-        notification: body
-    });
+//     res.json({
+//         success: true,
+//         notification: body
+//     });
 
-});
+// });
 
 app.post('/AssetAssigned', (req, res)=>{
   const body = req.body;
@@ -98,4 +101,6 @@ app.post('/UserUpdated', (req, res)=>{
     });
 
 });
+
+startRealtimeConsumer(io);
 server.listen(3000);

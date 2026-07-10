@@ -10,6 +10,7 @@ use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetSearchController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ExportController;
+use App\Services\RabbitMQPublisher;
 use App\Models\Asset;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Notification;
@@ -99,3 +100,21 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('export-users-pdf', [ExportController::class, 'ExportUserstoPdf']);
     Route::get('export-assets-pdf', [ExportController::class, 'ExportAssetstoPdf']);
 });
+
+Route::get('/rabbit-test', function(
+        RabbitMQPublisher $publisher
+){
+    $publisher->publish(
+        'asset.created',
+        [
+            'event'=>'asset.created',
+            'asset_id'=>1,
+            'name'=>'Test Laptop'
+        ]
+    );
+
+
+    return response()->json([
+        'sent'=>true
+    ]);
+})->middleware('auth:sanctum');

@@ -37,6 +37,12 @@ services:
     build:
       context: ./realtime-server
     container_name: realtime_server
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
+      RABBITMQ_EXCHANGE: asset.exchange
     # ports:
     #   - "3000:3000"
     expose:
@@ -71,7 +77,7 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: rabbitmq
+    container_name: rabbitmq  
     hostname: rabbitmq
     restart: unless-stopped
     ports:

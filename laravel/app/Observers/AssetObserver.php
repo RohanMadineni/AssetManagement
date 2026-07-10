@@ -4,10 +4,12 @@ namespace App\Observers;
 // namespace App\Services;
 
 use App\Models\Asset;
+use Illuminate\Support\Facades\Http;
 use App\Services\ElasticsearchService;
 use App\Jobs\IndexAssetToElasticsearch;
 use App\Jobs\DeleteAssetFromElasticsearch;
 use Illuminate\Support\Facades\Cache;
+use App\Services\RabbitMQPublisher;
 // use App\Services\ElasticsearchService as ServicesElasticsearchService;
 
 class AssetObserver
@@ -22,6 +24,18 @@ class AssetObserver
         // app(ElasticsearchService::class)->indexAsset($asset);
         Cache::tags(['assets'])->flush();
         IndexAssetToElasticsearch::dispatch($asset);
+        app(RabbitMQPublisher::class)->publish(
+            'asset.created',
+            [
+                'event' => 'asset.created',
+                'asset_id' => $asset->id,
+                'name' => $asset->name,
+                'user_id' => $asset->user_id,
+                'title' => 'Asset Created',
+                'message' => $asset->name,
+            ]
+        );
+        
       
     }
 
@@ -34,6 +48,18 @@ class AssetObserver
         // app(ElasticsearchService::class)->indexAsset($asset);
         Cache::tags(['assets'])->flush();
         IndexAssetToElasticsearch::dispatch($asset);
+        app(RabbitMQPublisher::class)->publish(
+            'asset.updated',
+            [
+                'event' => 'asset.updated',
+                'asset_id' => $asset->id,
+                'name' => $asset->name,
+                'user_id' => $asset->user_id,
+                'title' => 'Asset Updated',
+                'message' => $asset->name,
+            ]
+        );
+       
     }
 
     /**
@@ -44,7 +70,20 @@ class AssetObserver
         //
         // app(ElasticsearchService::class)->delete($asset->id);
         Cache::tags(['assets'])->flush();
-        DeleteAssetFromElasticsearch::dispatch($asset->id);
+        DeleteAssetFromElasticsearch::dispatch($asset);
+
+        app(RabbitMQPublisher::class)->publish(
+            'asset.deleted',
+            [
+                'event' => 'asset.deleted',
+                'asset_id' => $asset->id,
+                'name' => $asset->name,
+                'user_id' => $asset->user_id,
+                'title' => 'Asset Deleted',
+                'message' => $asset->name,
+            ]
+        );
+        
     }
 
     /**

@@ -12,6 +12,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "maatwebsite/excel": "^3.1",
+        "php-amqplib/php-amqplib": "^3.7",
         "tymon/jwt-auth": "^2.2",
         "vladimir-yuldashev/laravel-queue-rabbitmq": "^15.0"
     },

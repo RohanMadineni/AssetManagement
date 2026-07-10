@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Jobs\SendRealtimeNotification;
 use Illuminate\Support\Facades\Cache;
+use App\Services\RabbitMQPublisher;
 
 class AssetController extends Controller
 {
@@ -165,7 +166,7 @@ class AssetController extends Controller
             'price'=>'required',
             'selected_user'=>'required',
         ]);
-        // dd($request->all());
+        
         if($validated['selected_user']==0)
                 $user_id = Auth::id();
         else $user_id=$validated['selected_user'];
@@ -180,7 +181,7 @@ class AssetController extends Controller
             
         ]);
          
-        event(new \App\Events\AssetCreated($asset));
+        // event(new \App\Events\AssetCreated($asset));
 
         if ($request->has('attributes')) {
             foreach ($request->attributes as $parameterId => $value) {
@@ -191,14 +192,14 @@ class AssetController extends Controller
                 ]);
             }
         }
-        $notification = Notification::create([
-            'user_id' => $asset->user_id,
-            'title' => 'Asset Created',
-            'message' => $request->name,
-            'type' => 'success'
-        ]);
+        // $notification = Notification::create([
+        //     'user_id' => $asset->user_id,
+        //     'title' => 'Asset Created',
+        //     'message' => $request->name,
+        //     'type' => 'success'
+        // ]);
         // Cache::tags(['assets'])->flush();
-        Http::post(config('services.realtime.url') . '/AssetCreated', $notification);
+        // Http::post(config('services.realtime.url') . '/AssetCreated', $notification);
         return response()->json($asset, 201);} catch (\Exception $e) {
 
         return response()->json([
@@ -244,15 +245,15 @@ class AssetController extends Controller
         }
 
         
-        $notification = Notification::create([
-            'user_id' => $asset->user_id,
-            'title' => 'Asset Updated',
-            'message' => $asset->name,
-            'type' => 'success'
-        ]);
+        // $notification = Notification::create([
+        //     'user_id' => $asset->user_id,
+        //     'title' => 'Asset Updated',
+        //     'message' => $asset->name,
+        //     'type' => 'success'
+        // ]);
         // Cache::tags(['assets'])->flush();
         // Http::post('localhost:3000/AssetCreated', $notification);
-        Http::post(config('services.realtime.url') . '/AssetCreated', $notification);
+        // Http::post(config('services.realtime.url') . '/AssetCreated', $notification);
         // SendRealtimeNotification::dispatch('/AssetCreated', $notification);
         return response()->json($request->input('attributes'));
     }
@@ -260,17 +261,17 @@ class AssetController extends Controller
     public function destroy($id){
         $asset = Asset::findorFail($id);
 
-        // $asset->attribute_values()->delete();
-        $notification = Notification::create([
-            'user_id' => $asset->user_id,
-            'title' => 'Asset Deleted',
-            'message' => $asset->name,
-            'type' => 'success'
-        ]);
+        $asset->attribute_values()->delete();
+        // $notification = Notification::create([
+        //     'user_id' => $asset->user_id,
+        //     'title' => 'Asset Deleted',
+        //     'message' => $asset->name,
+        //     'type' => 'success'
+        // ]);
         $asset->delete();
         // Cache::tags(['assets'])->flush();
         // Http::post('localhost:3000/AssetCreated', $notification);
-        Http::post(config('services.realtime.url') . '/AssetCreated', $notification);
+        // Http::post(config('services.realtime.url') . '/AssetCreated', $notification);
 
         return response()->json([
             'message' => 'Asset deleted'
@@ -439,15 +440,27 @@ class AssetController extends Controller
 
         
 
-        $notif = Notification::create([
-            'user_id' => $assignment->user_id,
-            'title' => 'Asset Assigned To',
-            'message' => $request->username,
-            'type' => 'success'
-        ]);
+        // $notif = Notification::create([
+        //     'user_id' => $assignment->user_id,
+        //     'title' => 'Asset Assigned To',
+        //     'message' => $request->username,
+        //     'type' => 'success'
+        // ]);
         Cache::tags(['assets'])->flush();
+        app(RabbitMQPublisher::class)->publish(
+            'asset.assigned',
+            [
+                'event' => 'asset.assigned',
+                'asset_id' => $request->asset_id,
+                'name' => $request->username,
+                'user_id' => $assignment->user_id,
+                'title' => 'Asset Assigned to',
+                'message' => $request->username,
+                'type' => 'success'
+            ]
+        );
+        // Http::post(config('services.realtime.url') . '/AssetAssigned', $notif);
         // Http::post('localhost:3000/AssetAssigned', $notif);
-        Http::post(config('services.realtime.url') . '/AssetAssigned', $notif);
         // SendRealtimeNotification::dispatch(
         //     '/AssetAssigned', $notif
         // );
@@ -480,15 +493,27 @@ class AssetController extends Controller
         
         
 
-        $notification = Notification::create([
-            'user_id' => $assignment->user_id,
-            'title' => "Asset {$assignment->asset_id}",
-            'message' => "Returned",
-            'type' => "success" 
-        ]);
+        // $notification = Notification::create([
+        //     'user_id' => $assignment->user_id,
+        //     'title' => "Asset {$assignment->asset_id}",
+        //     'message' => "Returned",
+        //     'type' => "success" 
+        // ]);
         Cache::tags(['assets'])->flush();
+        app(RabbitMQPublisher::class)->publish(
+            'asset.assigned',
+            [
+                'event' => 'asset.returned',
+                'asset_id' => $request->asset_id,
+                'name' => $request->username,
+                'user_id' => $assignment->user_id,
+                'title' => 'Asset Returned by',
+                'message' => $request->username,
+                'type' => 'success'
+            ]
+        );
         // Http::post('http://localhost:3000/AssetReturned', $notification);
-        Http::post(config('services.realtime.url') . '/AssetReturned', $notification);
+        // Http::post(config('services.realtime.url') . '/AssetReturned', $notification);
         // Http::post(env('REALTIME_URL') . '/AssetReturned', $notification);
         return response()->json(['message' => 'Asset returned']);
     }
