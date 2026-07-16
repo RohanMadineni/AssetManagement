@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        
         Schema::create('parameters', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->foreignId('category_id')
-                ->constrained()
+                // ->constrained()
                 ->onDelete('cascade');
             $table->enum('data_type', ['string', 'number', 'boolean', 'date']);
             $table->boolean('is_required');

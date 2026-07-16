@@ -60,7 +60,7 @@ async function startRealtimeConsumer(io) {
                     message.content.toString()
                 );
 
-                if(event.event === "asset.created" || event.event === "asset.deleted" || event.event === "asset.updated"|| event.event === "asset.assigned") {
+                if(event.event === "asset.created" || event.event === "asset.deleted" || event.event === "asset.updated"|| event.event === "asset.assigned"|| event.event === "asset.returned") {
                     io.to(
                         `${event.user_id}`
                     )

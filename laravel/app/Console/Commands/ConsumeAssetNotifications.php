@@ -6,6 +6,9 @@ use Illuminate\Console\Command;
 use App\Models\Notification;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
+use App\Services\ElasticsearchService;
+use App\Jobs\IndexAssetToElasticsearch;
+use App\Jobs\DeleteAssetFromElasticsearch;
 
 class ConsumeAssetNotifications extends Command
 {
@@ -37,17 +40,58 @@ class ConsumeAssetNotifications extends Command
         );
 
         $channel = $connection->channel();
+        $exchange = config('rabbitmq.exchange');
+        $queue = 'notification.queue';
+
+        $channel->exchange_declare(
+            $exchange,
+            'topic',
+            false,
+            true,
+            false
+        );
 
         $channel->queue_declare(
-            'notification.queue',
+            $queue,
             false,
             true,
             false,
             false
         );
+        $channel->queue_bind(
+            $queue,
+            $exchange,
+            'asset.created'
+        );
+
+
+        $channel->queue_bind(
+            $queue,
+            $exchange,
+            'asset.updated'
+        );
+
+
+        $channel->queue_bind(
+            $queue,
+            $exchange,
+            'asset.deleted'
+        );
+
+        $channel->queue_bind(
+            $queue,
+            $exchange,
+            'asset.assigned'
+        );
+
+        $channel->queue_bind(
+            $queue,
+            $exchange,
+            'asset.returned'
+        );
 
         $channel->basic_consume(
-            'notification.queue',
+            $queue,
             '',
             false,
             false,
@@ -66,9 +110,9 @@ class ConsumeAssetNotifications extends Command
                     if ($event['event'] === 'asset.created') {
 
                         Notification::create([
-                            'user_id' => $event->user_id,
+                            'user_id' => $event['user_id'],
                             'title' => 'Asset Created',
-                            'message' => $event->name,
+                            'message' => $event['name'],
                             'type' => 'success'
                         ]);
                         $this->info(
@@ -78,16 +122,52 @@ class ConsumeAssetNotifications extends Command
                     else if ($event['event'] === 'asset.deleted') {
 
                         Notification::create([
-                            'user_id' => $event->user_id,
+                            'user_id' => $event['user_id'],
                             'title' => 'Asset Deleted',
-                            'message' => $event->name,
+                            'message' => $event['name'],
                             'type' => 'success'
                         ]);
                         $this->info(
                             'Notification Created'
                         );  
                     }
+                    else if ($event['event'] === 'asset.updated') {
 
+                        Notification::create([
+                            'user_id' => $event['user_id'],
+                            'title' => 'Asset Updated',
+                            'message' => $event['name'],
+                            'type' => 'success'
+                        ]);
+                        $this->info(
+                            'Notification Created'
+                        );  
+                    }
+                    else if ($event['event'] === 'asset.assigned') {
+
+                        Notification::create([
+                            'user_id' => $event['user_id'],
+                            'title' => 'Asset Assigned',
+                            'message' => $event['name'],
+                            'type' => 'success'
+                        ]);
+                        $this->info(
+                            'Notification Created'
+                        );  
+                    }
+                    else if ($event['event'] === 'asset.returned') {
+
+                        Notification::create([
+                            'user_id' => $event['user_id'],
+                            'title' => $event['title'],
+                            'message' => $event['message'],
+                            'type' => 'success'
+                        ]);
+                        $this->info(
+                            'Notification Created'
+                        );  
+                    }
+                
                     $message->ack();
 
                 } catch (\Exception $e) {
@@ -109,5 +189,8 @@ class ConsumeAssetNotifications extends Command
             $channel->wait();
 
         }
+
+        $channel->close();
+        $connection->close();
     }
 }

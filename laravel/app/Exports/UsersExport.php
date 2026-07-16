@@ -3,10 +3,12 @@
 namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use App\Models\User;
-class UsersExport implements FromCollection, WithHeadings, WithMapping
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+class UsersExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -16,7 +18,22 @@ class UsersExport implements FromCollection, WithHeadings, WithMapping
         // return User::all();
         return User::select('id', 'username', 'email', 'role')->get();
     }
+    public function styles($Worksheet)
+    {
 
+        return [
+            '1' =>[ 'font' => ['bold' => true, 'size' => 13]],
+            'A:Z' => [
+                'alignment' => [
+                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                    'wrapText' => true,
+                ],
+            ]
+
+
+        ];
+    }
     public function headings(): array
     {
         return [

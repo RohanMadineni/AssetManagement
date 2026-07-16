@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('attribute_values', function (Blueprint $table) {
             $table->id();
             $table->foreignId('asset_id')
-                ->constrained()
+                // ->constrained()
                 ->onDelete('cascade');
             $table->foreignId('parameter_id')
-                ->constrained()
+                // ->constrained()
                 ->onDelete('cascade');
             $table->text('value');
             $table->timestamps();

@@ -18,10 +18,10 @@ return new class extends Migration
             $table->string('status');
             $table->float('price');
             $table->foreignId('category_id')
-                ->constrained()
+                // ->constrained()
                 ->onDelete('cascade');
             $table->foreignId('user_id')    
-                ->constrained()
+                // ->constrained()
                 ->onDelete('cascade');
             // $table->foreignId('currentAssignment_id')    
             //     ->constrained()

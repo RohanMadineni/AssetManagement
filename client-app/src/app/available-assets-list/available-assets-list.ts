@@ -55,14 +55,7 @@ export class AvailableAssetsList {
       selected_user: this.user?this.user:0,
       ...this.filters
     };
-    // console.log(params);
-    // this.assetService.getAssets(params).subscribe(res => {
-    //   setTimeout(()=>{
-    //     console.log(res);
-    //     this.assets.set(res.data);
-    //     this.total.set(res.total);
-    //   });
-    // });
+   
     this.assetService.getAllAssets(params).subscribe(res => {
       setTimeout(()=>{
         this.assets.set(res.data);
@@ -133,14 +126,19 @@ export class AvailableAssetsList {
       this.assetService.searchAssets(this.searchterm)
         .subscribe(results => {
             // this.assets = results;
-            const formattedResults = results.map((item:any)=>({
-                id:item._id, ...item._source
-              })
-            );
+            // const formattedResults = results.map((item:any)=>({
+            //     id:item._id, ...item._source
+            //   })
+            // );
             console.log(results);
-            this.assets.set(formattedResults);
-            this.total.set(formattedResults.length);
+            
+            // this.assets.set(formattedResults);
+            this.assets.set(results);
+            this.total.set(results);
+            // this.total.set(formattedResults.length);   
         });
+        
+        
     }
     else this.loadAssets();
   }
@@ -150,7 +148,7 @@ export class AvailableAssetsList {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'exported-data.xlsx';
+      a.download = 'asset-list.xlsx';
       a.click();
       window.URL.revokeObjectURL(url);
     });
@@ -160,7 +158,7 @@ export class AvailableAssetsList {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'exported-data.pdf';
+      a.download = 'asset-list.pdf';
       a.click();
       window.URL.revokeObjectURL(url);
     });

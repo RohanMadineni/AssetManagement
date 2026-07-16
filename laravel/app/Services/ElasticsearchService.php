@@ -16,16 +16,14 @@ class ElasticsearchService
     }
 
     public function indexAsset($asset){
+        $contentString = mb_strtolower($asset->name.' '.$asset->brand.' '.$asset->price.' '.$asset->status.' '.optional($asset->category)->name);
+
         $params = [
             'index' => 'assets',
             'id' => $asset->id,
             'body' => [
-                'name' => $asset->name,
-                'brand' => $asset->brand,
-                'price' => $asset->price,
-                'status' => $asset->status,
-                'category' => optional($asset->category)->name,
-                'created_at' => $asset->created_at,
+                // 'content' => $asset->name.' '.$asset->brand.' '.$asset->price.' '.$asset->status.' '.optional($asset->category)->name,
+                'content' => $contentString
             ]
         ];
 
@@ -33,13 +31,21 @@ class ElasticsearchService
     }
 
     public function searchAssets($query){
+        $lowercaseQuery = mb_strtolower($query);
          return $this->client->search([
             'index' => 'assets',
+            
             'body'  => [
                 'query' => [
-                    'multi_match' => [
-                        'query'  => $query,
-                        'fields' => ['name', 'brand', 'category', 'status']
+                    'bool' => [
+                        'should' => [
+                            // Clause 1: Exact Match gets a higher score boost
+                            [ 'match' => [ 'content' => [ 'query' => $query, 'boost' => 2 ] ] ],
+                            // Clause 2: Partial Match ensures we catch incomplete text
+                            [ 'wildcard' => [ 
+                                    'content' => "*$lowercaseQuery*", 
+                                ] ]
+                        ]
                     ]
                 ]
             ]
@@ -77,23 +83,8 @@ class ElasticsearchService
                 ],
                 'mappings' => [
                     'properties' => [
-                        'name' => [
+                        'content' => [
                             'type' => 'text'
-                        ],
-                        'brand' => [
-                            'type' => 'text'
-                        ],
-                        'status' => [
-                            'type' => 'keyword'
-                        ],
-                        'price' => [
-                            'type' => 'float'
-                        ],
-                        'category' => [
-                            'type' => 'text'
-                        ],
-                        'created_at' => [
-                            'type' => 'date'
                         ]
                     ]
                 ]

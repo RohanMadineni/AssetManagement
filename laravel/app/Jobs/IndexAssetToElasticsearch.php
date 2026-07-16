@@ -14,11 +14,12 @@ use Throwable;
 
 class IndexAssetToElasticsearch implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, SerializesModels;
 
     /**
      * Create a new job instance.
      */
+    public bool $afterCommit = true;
     public function __construct(public Asset $asset)
     {
         //
@@ -27,9 +28,10 @@ class IndexAssetToElasticsearch implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(ElasticsearchService $es): void
+    public function handle(): void
     {
         //
+        $es = app(ElasticsearchService::class);
         $es->indexAsset($this->asset);
     }
 

@@ -43,6 +43,7 @@ export class AssetService {
     // return this.requestService.GetRequest('http://localhost:8000/api/assets', params);
     return this.requestService.GetRequest(`${environment.apiUrl}/assets`, params);
   }
+  
   getAllAssets(params: any) {
     // return this.requestService.GetRequest('http://localhost:8000/api/assets/all', params);
     return this.requestService.GetRequest(`${environment.apiUrl}/assets/all`, params);

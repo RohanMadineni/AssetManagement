@@ -26,14 +26,16 @@ class ReindexAssets extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle() : void
     {
         //
         $elastic = app(ElasticsearchService::class);
 
         $assets = Asset::with('category')->get();
-
+        $elastic->deleteIndex();
+        $elastic->createIndex();
         foreach ($assets as $asset) {
+            
             $elastic->indexAsset($asset);
         }
 

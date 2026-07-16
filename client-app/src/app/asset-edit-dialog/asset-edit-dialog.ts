@@ -58,7 +58,7 @@ export class AssetEditDialog implements OnInit{
         [attributesControls.parameterID]: attributesControls.value
       }
     }
-  
+    console.log(this.editForm.value);
     console.log(payload);
     
     this.assetService.updateAsset(Number(this.data.id), payload).subscribe(res=>{console.log(res);this.dialogRef.close(true);});

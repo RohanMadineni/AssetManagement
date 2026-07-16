@@ -88,7 +88,7 @@ export class UserManagement implements OnInit{
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'exported-data.xlsx';
+      a.download = 'user-list.xlsx';
       a.click();
       window.URL.revokeObjectURL(url);
     });

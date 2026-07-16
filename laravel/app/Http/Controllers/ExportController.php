@@ -28,7 +28,7 @@ class ExportController extends Controller
     }
     public function ExportAssetstoPdf()
     {
-        $assets = Asset::select('id', 'name', 'brand', 'status', 'price', 'category', 'Warranty')->get();
+        $assets = Asset::select('id', 'name', 'brand', 'status', 'price', 'category_id', 'Warranty')->get();
         
         $pdf = Pdf::loadView('pdf.assets', compact('assets'));
 

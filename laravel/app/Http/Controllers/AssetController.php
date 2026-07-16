@@ -29,34 +29,6 @@ class AssetController extends Controller
 
     }
     
-    // public function show(Request $request){
-    //     if($request->selected_user==0)
-    //             $user_id = Auth::id();
-    //     else $user_id = $request['selected_user'];
-
-    //     return Cache::tags(['assets'])->remember("OwnedAssets.$user_id", now()->addMinutes(10), function () use ($user_id, $request){
-    //         $query = Asset::with('attribute_values.parameter', 'currentAssignment.user') 
-    //         ->AssignedTo($user_id);
-    //         if ($request->category_id) {
-    //             $query->where('category_id', $request->category_id);
-    //         }
-
-    //         if ($request->status) {
-    //             $query->where('status', $request->status);
-    //         }
-
-    //         if ($request->name){
-    //             $query->where('name', $request->name);
-    //         } 
-    //         if ($request->has('parameter_id') && $request->has('value')) {
-    //             $query->whereHas('attribute_values', function ($q) use ($request) {
-    //                 $q->where('parameter_id', $request->parameter_id)
-    //                 ->where('value', $request->value);
-    //             });
-    //         }
-    //         return $query->paginate(5);
-    //     });
-    // }
     public function show(Request $request)
 {
     $user_id = $request->selected_user == 0
@@ -101,27 +73,6 @@ class AssetController extends Controller
         return $query->paginate(10);
     });
 }
-    // public function showAll(Request $request){
-    //     return Cache::tags(['assets'])->remember("AllAssets", now()->addMinutes(10), function () use ($request){
-    //         $query = Asset::with('attribute_values.parameter', 'currentAssignment.user');
-    //         if ($request->category_id) {
-    //             $query->where('category_id', $request->category_id);
-    //         }
-
-    //         if ($request->status) {
-    //             $query->where('status', $request->status);
-    //         }
-
-    //         if ($request->has('parameter_id') && $request->has('value')) {
-    //             $query->whereHas('attribute_values', function ($q) use ($request) {
-    //                 $q->where('parameter_id', $request->parameter_id)
-    //                 ->where('value', $request->value);
-    //             });
-    //         }
-    //         return $query->paginate(10);
-    //     });
-        
-    // }
     public function showAll(Request $request)
 {
     $page = $request->get('page', 1);
@@ -184,22 +135,14 @@ class AssetController extends Controller
         // event(new \App\Events\AssetCreated($asset));
 
         if ($request->has('attributes')) {
-            foreach ($request->attributes as $parameterId => $value) {
+            foreach ($request->attributes as $parameter_id => $value) {
                 Attribute_value::create([
                     'asset_id' => $asset->id,
-                    'parameter_id' => $parameterId,
+                    'parameter_id' => $parameter_id,
                     'value' => $value
                 ]);
             }
         }
-        // $notification = Notification::create([
-        //     'user_id' => $asset->user_id,
-        //     'title' => 'Asset Created',
-        //     'message' => $request->name,
-        //     'type' => 'success'
-        // ]);
-        // Cache::tags(['assets'])->flush();
-        // Http::post(config('services.realtime.url') . '/AssetCreated', $notification);
         return response()->json($asset, 201);} catch (\Exception $e) {
 
         return response()->json([
@@ -219,19 +162,10 @@ class AssetController extends Controller
             'price' => 'required',
             'Warranty' => 'required',
         ]);
-        // $asset->update($validated);
-        $asset->update([
-            'name'=>$validated['name'],
-            'brand'=>$validated['brand'],
-            // 'category_id'=>$validated['category_id'],
-            'Warranty'=>$validated['Warranty'],
-            // 'user_id'=>$user_id,
-            'status'=>$validated['status'],
-            'price'=>$validated['price'], 
-        ]);
+        
         if($request->has('attributes')){
             foreach($request->input('attributes') as $parameterID=>$value){
-               
+                
                 Attribute_value::updateorCreate(
                     [
                         'asset_id' => $asset->id,
@@ -244,34 +178,25 @@ class AssetController extends Controller
             }
         }
 
+        $asset->update([
+            'name'=>$validated['name'],
+            'brand'=>$validated['brand'],
+            // 'category_id'=>$validated['category_id'],
+            'Warranty'=>$validated['Warranty'],
+            // 'user_id'=>$user_id,
+            'status'=>$validated['status'],
+            'price'=>$validated['price'], 
+        ]);
         
-        // $notification = Notification::create([
-        //     'user_id' => $asset->user_id,
-        //     'title' => 'Asset Updated',
-        //     'message' => $asset->name,
-        //     'type' => 'success'
-        // ]);
-        // Cache::tags(['assets'])->flush();
-        // Http::post('localhost:3000/AssetCreated', $notification);
-        // Http::post(config('services.realtime.url') . '/AssetCreated', $notification);
-        // SendRealtimeNotification::dispatch('/AssetCreated', $notification);
         return response()->json($request->input('attributes'));
     }
 
+   
     public function destroy($id){
         $asset = Asset::findorFail($id);
 
         $asset->attribute_values()->delete();
-        // $notification = Notification::create([
-        //     'user_id' => $asset->user_id,
-        //     'title' => 'Asset Deleted',
-        //     'message' => $asset->name,
-        //     'type' => 'success'
-        // ]);
         $asset->delete();
-        // Cache::tags(['assets'])->flush();
-        // Http::post('localhost:3000/AssetCreated', $notification);
-        // Http::post(config('services.realtime.url') . '/AssetCreated', $notification);
 
         return response()->json([
             'message' => 'Asset deleted'
@@ -438,14 +363,6 @@ class AssetController extends Controller
         Asset::where('id', $request->asset_id)
             ->update(['status' => 'assigned']);
 
-        
-
-        // $notif = Notification::create([
-        //     'user_id' => $assignment->user_id,
-        //     'title' => 'Asset Assigned To',
-        //     'message' => $request->username,
-        //     'type' => 'success'
-        // ]);
         Cache::tags(['assets'])->flush();
         app(RabbitMQPublisher::class)->publish(
             'asset.assigned',
@@ -459,11 +376,6 @@ class AssetController extends Controller
                 'type' => 'success'
             ]
         );
-        // Http::post(config('services.realtime.url') . '/AssetAssigned', $notif);
-        // Http::post('localhost:3000/AssetAssigned', $notif);
-        // SendRealtimeNotification::dispatch(
-        //     '/AssetAssigned', $notif
-        // );
         return response()->json($assignment);
     
     }
@@ -491,30 +403,19 @@ class AssetController extends Controller
         Asset::where('id', $request->asset_id)
             ->update(['status' => 'available']);
         
-        
-
-        // $notification = Notification::create([
-        //     'user_id' => $assignment->user_id,
-        //     'title' => "Asset {$assignment->asset_id}",
-        //     'message' => "Returned",
-        //     'type' => "success" 
-        // ]);
         Cache::tags(['assets'])->flush();
         app(RabbitMQPublisher::class)->publish(
-            'asset.assigned',
+            'asset.returned',
             [
                 'event' => 'asset.returned',
                 'asset_id' => $request->asset_id,
-                'name' => $request->username,
+                // 'name' => $request->username,
                 'user_id' => $assignment->user_id,
-                'title' => 'Asset Returned by',
-                'message' => $request->username,
+                'title' => "Asset {$assignment->asset_id}",
+                'message' => 'returned',
                 'type' => 'success'
             ]
         );
-        // Http::post('http://localhost:3000/AssetReturned', $notification);
-        // Http::post(config('services.realtime.url') . '/AssetReturned', $notification);
-        // Http::post(env('REALTIME_URL') . '/AssetReturned', $notification);
         return response()->json(['message' => 'Asset returned']);
     }
 
