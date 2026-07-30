@@ -22,14 +22,20 @@ class AssetController extends Controller
 {
     //
     public function index(Request $request, $id){
-        $cacheKey = "asset." . Auth::id() . "." . $id;
-        $assets = Cache::tags(['assets'])->remember($cacheKey, now()->addMinutes(10), function () use ($id) {
-            return Asset::with('attribute_values.parameter')
-                ->where('user_id',Auth::id())
-                ->findorFail($id);
-        });
-        return response()->json($assets);
-
+        try{
+            $cacheKey = "asset." . Auth::id() . "." . $id;
+            $assets = Cache::tags(['assets'])->remember($cacheKey, now()->addMinutes(10), function () use ($id) {
+                return Asset::with('attribute_values.parameter')
+                    ->where('user_id',Auth::id())
+                    ->findorFail($id);
+            });
+            return response()->json($assets);
+        } catch (\Throwable $e) {
+            $assets = Asset::with('attribute_values.parameter')
+                    ->where('user_id',Auth::id())
+                    ->findorFail($id);
+            return response()->json($assets);
+        }
     }
     
     public function show(Request $request)
@@ -49,32 +55,59 @@ class AssetController extends Controller
         'page' => $page,
     ]));
 
-    return Cache::tags(['assets'])->remember($cacheKey, now()->addMinutes(10), function () use ($user_id, $request) {
+    try{
+        return Cache::tags(['assets'])->remember($cacheKey, now()->addMinutes(10), function () use ($user_id, $request) {
+
+            $query = Asset::with('attribute_values.parameter', 'currentAssignment.user')
+                ->AssignedTo($user_id);
+
+            if ($request->category_id) {
+                $query->where('category_id', $request->category_id);
+            }
+
+            if ($request->status) {
+                $query->where('status', $request->status);
+            }
+
+            if ($request->name) {
+                $query->where('name', $request->name);
+            }
+
+            if ($request->has('parameter_id') && $request->has('value')) {
+                $query->whereHas('attribute_values', function ($q) use ($request) {
+                    $q->where('parameter_id', $request->parameter_id)
+                    ->where('value', $request->value);
+                });
+            }
+
+            return $query->paginate(10);
+        });
+    } catch (\Throwable $e) {
 
         $query = Asset::with('attribute_values.parameter', 'currentAssignment.user')
-            ->AssignedTo($user_id);
+                ->AssignedTo($user_id);
 
-        if ($request->category_id) {
-            $query->where('category_id', $request->category_id);
-        }
+            if ($request->category_id) {
+                $query->where('category_id', $request->category_id);
+            }
 
-        if ($request->status) {
-            $query->where('status', $request->status);
-        }
+            if ($request->status) {
+                $query->where('status', $request->status);
+            }
 
-        if ($request->name) {
-            $query->where('name', $request->name);
-        }
+            if ($request->name) {
+                $query->where('name', $request->name);
+            }
 
-        if ($request->has('parameter_id') && $request->has('value')) {
-            $query->whereHas('attribute_values', function ($q) use ($request) {
-                $q->where('parameter_id', $request->parameter_id)
-                  ->where('value', $request->value);
-            });
-        }
+            if ($request->has('parameter_id') && $request->has('value')) {
+                $query->whereHas('attribute_values', function ($q) use ($request) {
+                    $q->where('parameter_id', $request->parameter_id)
+                    ->where('value', $request->value);
+                });
+            }
 
-        return $query->paginate(10);
-    });
+            return $query->paginate(10);
+    }
 }
     public function showAll(Request $request)
 {
@@ -87,28 +120,50 @@ class AssetController extends Controller
         'value' => $request->value,
         'page' => $page,
     ]));
+    try{
+        return Cache::tags(['assets'])->remember($cacheKey, now()->addMinutes(10), function () use ($request) {
 
-    return Cache::tags(['assets'])->remember($cacheKey, now()->addMinutes(10), function () use ($request) {
+            $query = Asset::with('attribute_values.parameter', 'currentAssignment.user');
 
-        $query = Asset::with('attribute_values.parameter', 'currentAssignment.user');
+            if ($request->category_id) {
+                $query->where('category_id', $request->category_id);
+            }
 
-        if ($request->category_id) {
-            $query->where('category_id', $request->category_id);
-        }
+            if ($request->status) {
+                $query->where('status', $request->status);
+            }
 
-        if ($request->status) {
-            $query->where('status', $request->status);
-        }
+            if ($request->has('parameter_id') && $request->has('value')) {
+                $query->whereHas('attribute_values', function ($q) use ($request) {
+                    $q->where('parameter_id', $request->parameter_id)
+                    ->where('value', $request->value);
+                });
+            }
 
-        if ($request->has('parameter_id') && $request->has('value')) {
-            $query->whereHas('attribute_values', function ($q) use ($request) {
-                $q->where('parameter_id', $request->parameter_id)
-                  ->where('value', $request->value);
-            });
-        }
+            return $query->paginate(10);
+        });
+    } catch (\Throwable $e) {
 
-        return $query->paginate(10);
-    });
+            $query = Asset::with('attribute_values.parameter', 'currentAssignment.user');
+
+            if ($request->category_id) {
+                $query->where('category_id', $request->category_id);
+            }
+
+            if ($request->status) {
+                $query->where('status', $request->status);
+            }
+
+            if ($request->has('parameter_id') && $request->has('value')) {
+                $query->whereHas('attribute_values', function ($q) use ($request) {
+                    $q->where('parameter_id', $request->parameter_id)
+                    ->where('value', $request->value);
+                });
+            }
+
+            return $query->paginate(10);
+        
+    }
 }
     public function store(Request $request){
         try{$validated = $request->validate([
@@ -217,7 +272,12 @@ class AssetController extends Controller
     }
 
     $asset->update($validated);
-    Cache::tags(['assets'])->flush();
+
+    try{
+        Cache::tags(['assets'])->flush();
+    } catch (\Throwable $e) {
+                    
+    }
     return response()->json([
         'message' => 'Asset updated successfully.',
         'asset' => $asset,
@@ -238,85 +298,144 @@ class AssetController extends Controller
 
     public function stats(Request $request){
         $user_id=Auth::id();
+        try{
+            $stats = Cache::tags(['assets'])->remember(
+                        "dashboard.stats.$user_id", 
+                        now()->addMinutes(5), 
+                        function () use ($user_id){
+                            logger('CACHE MISS: Querying database');
+                            $assets = Asset::with('currentAssignment')
+                            ->assignedTo($user_id)
+                            ->get();
+                            $total = $assets->count();
 
-        $stats = Cache::tags(['assets'])->remember(
-                    "dashboard.stats.$user_id", 
-                    now()->addMinutes(5), 
-                    function () use ($user_id){
-                        logger('CACHE MISS: Querying database');
-                        $assets = Asset::with('currentAssignment')
-                        ->assignedTo($user_id)
-                        ->get();
-                        $total = $assets->count();
+                            $contvalues = $assets->countBy('status');
+                            $sum = $assets->sum('price');
 
-                        $contvalues = $assets->countBy('status');
-                        $sum = $assets->sum('price');
+                            $unassigned = $contvalues['available'] ?? 0;
+                            $assigned = $contvalues['assigned'] ?? 0;
+                            $maintenance = $contvalues['under maintenance'] ?? 0;
 
-                        $unassigned = $contvalues['available'] ?? 0;
-                        $assigned = $contvalues['assigned'] ?? 0;
-                        $maintenance = $contvalues['under maintenance'] ?? 0;
+                            $categories = $assets->countBy('category_id');
 
-                        $categories = $assets->countBy('category_id');
+                            // $cat_names = Category::pluck('name', 'id');
+                            $cat_names = Cache::remember(
+                                'categories',
+                                now()->addHour(),
+                                fn() => Category::pluck('name', 'id')
+                            );
+                            return [
+                                'total_assets' => $total,
+                                'assigned_assets' => $assigned,
+                                'unassigned_assets' => $unassigned,
+                                'under_maintenance' => $maintenance,
+                                'catNames' => $cat_names,
+                                'cat_Array' =>$categories,
+                                'totalvalue' =>$sum,
+                            ];
+                        }
+                    );
+            return response()->json($stats);
+        } catch (\Throwable $e) {
+                    $assets = Asset::with('currentAssignment')
+                            ->assignedTo($user_id)
+                            ->get();
+                            $total = $assets->count();
 
-                        // $cat_names = Category::pluck('name', 'id');
-                        $cat_names = Cache::remember(
-                            'categories',
-                            now()->addHour(),
-                            fn() => Category::pluck('name', 'id')
-                        );
-                        return [
-                            'total_assets' => $total,
-                            'assigned_assets' => $assigned,
-                            'unassigned_assets' => $unassigned,
-                            'under_maintenance' => $maintenance,
-                            'catNames' => $cat_names,
-                            'cat_Array' =>$categories,
-                            'totalvalue' =>$sum,
-                        ];
-                    }
-                );
-        return response()->json($stats);
+                            $contvalues = $assets->countBy('status');
+                            $sum = $assets->sum('price');
+
+                            $unassigned = $contvalues['available'] ?? 0;
+                            $assigned = $contvalues['assigned'] ?? 0;
+                            $maintenance = $contvalues['under maintenance'] ?? 0;
+
+                            $categories = $assets->countBy('category_id');
+
+                            // $cat_names = Category::pluck('name', 'id');
+                            $cat_names = Category::pluck('name', 'id');
+                            
+                            $stats = [
+                                'total_assets' => $total,
+                                'assigned_assets' => $assigned,
+                                'unassigned_assets' => $unassigned,
+                                'under_maintenance' => $maintenance,
+                                'catNames' => $cat_names,
+                                'cat_Array' =>$categories,
+                                'totalvalue' =>$sum,
+                            ];
+                return response()->json($stats);
+        }
     }
 
     public function allstats(){
+        try{
+            $allstats = Cache::tags(['assets'])->remember(
+                "dashboard.allstats",
+                now()->addMinutes(5),
+                function() {
+                    $assets = DB::select('select category_id, status, price from assets');  
+                    $total = count($assets);
+                    $sum = array_sum(array_column($assets, 'price'));
+                    $contvalues = array_count_values(array_column($assets, 'status'));
+                    $maintenance = 0;
+                    $unassigned = 0;
+                    $assigned = 0;
+                    if(array_key_exists('available', $contvalues))
+                        $unassigned = $contvalues['available'];
+                    if(array_key_exists('assigned', $contvalues))
+                        $assigned = $contvalues['assigned'];
+                    if(array_key_exists('under maintenance', $contvalues))
+                        $maintenance = $contvalues['under maintenance'];
+                    $categories = array_count_values(array_column($assets, 'category_id'));
 
-        $allstats = Cache::tags(['assets'])->remember(
-            "dashboard.allstats",
-            now()->addMinutes(5),
-            function() {
+                    // $cat_names = Category::pluck('name', 'id');
+                    $cat_names = Cache::remember(
+                                'categories',
+                                now()->addHour(),
+                                fn() => Category::pluck('name', 'id')
+                            );
+                    return [
+                        'total_assets' => $total,
+                        'assigned_assets' => $assigned,
+                        'unassigned_assets' => $unassigned,
+                        'under_maintenance' => $maintenance,
+                        'catNames' => $cat_names,
+                        'cat_Array' =>$categories,
+                        'totalvalue' =>$sum,
+                    ];
+                }
+            );
+            return response()->json($allstats);
+        } catch (\Throwable $e) {
                 $assets = DB::select('select category_id, status, price from assets');  
-                $total = count($assets);
-                $sum = array_sum(array_column($assets, 'price'));
-                $contvalues = array_count_values(array_column($assets, 'status'));
-                $maintenance = 0;
-                $unassigned = 0;
-                $assigned = 0;
-                if(array_key_exists('available', $contvalues))
-                    $unassigned = $contvalues['available'];
-                if(array_key_exists('assigned', $contvalues))
-                    $assigned = $contvalues['assigned'];
-                if(array_key_exists('under maintenance', $contvalues))
-                    $maintenance = $contvalues['under maintenance'];
-                $categories = array_count_values(array_column($assets, 'category_id'));
+                    $total = count($assets);
+                    $sum = array_sum(array_column($assets, 'price'));
+                    $contvalues = array_count_values(array_column($assets, 'status'));
+                    $maintenance = 0;
+                    $unassigned = 0;
+                    $assigned = 0;
+                    if(array_key_exists('available', $contvalues))
+                        $unassigned = $contvalues['available'];
+                    if(array_key_exists('assigned', $contvalues))
+                        $assigned = $contvalues['assigned'];
+                    if(array_key_exists('under maintenance', $contvalues))
+                        $maintenance = $contvalues['under maintenance'];
+                    $categories = array_count_values(array_column($assets, 'category_id'));
 
-                // $cat_names = Category::pluck('name', 'id');
-                $cat_names = Cache::remember(
-                            'categories',
-                            now()->addHour(),
-                            fn() => Category::pluck('name', 'id')
-                        );
-                return [
-                    'total_assets' => $total,
-                    'assigned_assets' => $assigned,
-                    'unassigned_assets' => $unassigned,
-                    'under_maintenance' => $maintenance,
-                    'catNames' => $cat_names,
-                    'cat_Array' =>$categories,
-                    'totalvalue' =>$sum,
-                ];
-            }
-        );
-        return response()->json($allstats);
+                    // $cat_names = Category::pluck('name', 'id');
+                    $cat_names = Category::pluck('name', 'id');
+                            
+                    $allstats = [
+                        'total_assets' => $total,
+                        'assigned_assets' => $assigned,
+                        'unassigned_assets' => $unassigned,
+                        'under_maintenance' => $maintenance,
+                        'catNames' => $cat_names,
+                        'cat_Array' =>$categories,
+                        'totalvalue' =>$sum,
+                    ];
+                return response()->json($allstats);
+        }
     }
 
     public function upcomingWarranty(){
@@ -324,55 +443,100 @@ class AssetController extends Controller
         $threshold = Carbon::today()->addDays(15);
         $user_id = Auth::id();
         $page = request()->get('page', 1);
-        $assets = Cache::tags(['assets'])->remember("warranty.{$user_id}.page.{$page}", now()->addMinutes(10), function() use ($today, $threshold, $user_id){
-                return Asset::whereNotNull('Warranty')
-                ->AssignedTo($user_id)
-                        // ->where('user_id',$user_id)
-                        ->whereBetween('Warranty', [$today, $threshold])
-                        // ->get();
-                        ->paginate(4);
-        });
-        $assets->getCollection()->transform(function ($asset) {
-            return [
-                'id' => $asset->id,
-                'name' => $asset->name,
-                'model' => $asset->model,
-                'Warranty' => $asset->Warranty,
-                'status' => $asset->status,
-                'brand' => $asset->brand,
 
-                'days_left' => Carbon::today()
-                    ->diffInDays($asset->Warranty, false),
-            ];
-        });
-        // return $assets->paginate(4);
-        return response()->json($assets);
+        try{
+            $assets = Cache::tags(['assets'])->remember("warranty.{$user_id}.page.{$page}", now()->addMinutes(10), function() use ($today, $threshold, $user_id){
+                    return Asset::whereNotNull('Warranty')
+                    ->AssignedTo($user_id)
+                            // ->where('user_id',$user_id)
+                            ->whereBetween('Warranty', [$today, $threshold])
+                            // ->get();
+                            ->paginate(4);
+            });
+            $assets->getCollection()->transform(function ($asset) {
+                return [
+                    'id' => $asset->id,
+                    'name' => $asset->name,
+                    'model' => $asset->model,
+                    'Warranty' => $asset->Warranty,
+                    'status' => $asset->status,
+                    'brand' => $asset->brand,
+
+                    'days_left' => Carbon::today()
+                        ->diffInDays($asset->Warranty, false),
+                ];
+            });
+            // return $assets->paginate(4);
+            return response()->json($assets);
+        } catch (\Throwable $e) {
+            $assets = Asset::whereNotNull('Warranty')
+                        ->AssignedTo($user_id)
+                                // ->where('user_id',$user_id)
+                                ->whereBetween('Warranty', [$today, $threshold])
+                                // ->get();
+                                ->paginate(4);
+            $assets->getCollection()->transform(function ($asset) {
+                return [
+                    'id' => $asset->id,
+                    'name' => $asset->name,
+                    'model' => $asset->model,
+                    'Warranty' => $asset->Warranty,
+                    'status' => $asset->status,
+                    'brand' => $asset->brand,
+
+                    'days_left' => Carbon::today()
+                        ->diffInDays($asset->Warranty, false),
+                ];
+            });
+            return response()->json($assets);
+        }
     }
 
     public function upcomingAllWarranty(){
         $today = Carbon::today();
         $threshold = Carbon::today()->addDays(15);
         $page = request()->get('page', 1);
-        $assets = Cache::tags(['assets'])->remember("warranty.Upcomingall.page.{$page}", now()->addMinutes(10), function() use ($today, $threshold){
-                return Asset::whereNotNull('Warranty')
-                    ->whereBetween('Warranty', [$today, $threshold])
-                    ->paginate(4);
-        });
-        $assets->getCollection()->transform(function ($asset) {
-            return [
-                'id' => $asset->id,
-                'name' => $asset->name,
-                'model' => $asset->model,
-                'Warranty' => $asset->Warranty,
-                'status' => $asset->status,
-                'brand' => $asset->brand,
+        try{
+            $assets = Cache::tags(['assets'])->remember("warranty.Upcomingall.page.{$page}", now()->addMinutes(10), function() use ($today, $threshold){
+                    return Asset::whereNotNull('Warranty')
+                        ->whereBetween('Warranty', [$today, $threshold])
+                        ->paginate(4);
+            });
+            $assets->getCollection()->transform(function ($asset) {
+                return [
+                    'id' => $asset->id,
+                    'name' => $asset->name,
+                    'model' => $asset->model,
+                    'Warranty' => $asset->Warranty,
+                    'status' => $asset->status,
+                    'brand' => $asset->brand,
 
-                'days_left' => Carbon::today()
-                    ->diffInDays($asset->Warranty, false),
-            ];
-        });
-        
-        return response()->json($assets);
+                    'days_left' => Carbon::today()
+                        ->diffInDays($asset->Warranty, false),
+                ];
+            });
+            
+            return response()->json($assets);
+        } catch (\Throwable $e) {
+            $assets = Asset::whereNotNull('Warranty')
+                        ->whereBetween('Warranty', [$today, $threshold])
+                        ->paginate(4);
+            $assets->getCollection()->transform(function ($asset) {
+                return [
+                    'id' => $asset->id,
+                    'name' => $asset->name,
+                    'model' => $asset->model,
+                    'Warranty' => $asset->Warranty,
+                    'status' => $asset->status,
+                    'brand' => $asset->brand,
+
+                    'days_left' => Carbon::today()
+                        ->diffInDays($asset->Warranty, false),
+                ];
+            });
+            
+            return response()->json($assets);
+        }
     }
 
     public function assign(Request $request){
@@ -399,7 +563,11 @@ class AssetController extends Controller
         Asset::where('id', $request->asset_id)
             ->update(['status' => 'assigned']);
 
-        Cache::tags(['assets'])->flush();
+        try{
+            Cache::tags(['assets'])->flush();
+        } catch (\Throwable $e) {
+                        
+        }
         app(RabbitMQPublisher::class)->publish(
             'asset.assigned',
             [
@@ -439,7 +607,11 @@ class AssetController extends Controller
         Asset::where('id', $request->asset_id)
             ->update(['status' => 'available']);
         
-        Cache::tags(['assets'])->flush();
+        try{
+            Cache::tags(['assets'])->flush();
+        } catch (\Throwable $e) {
+                        
+        }
         app(RabbitMQPublisher::class)->publish(
             'asset.returned',
             [
@@ -470,29 +642,44 @@ class AssetController extends Controller
         $today = Carbon::today()->addDays(1);
         $threshold = Carbon::today()->subDays(13);
         $page = request()->get('page', 1);
-        return Cache::tags(['assets'])->remember("recentlyAssiged.{$user_id}.page.{$page}", now()->addMinutes(10), function() use ($today, $threshold, $user_id){
+        try{
+            return Cache::tags(['assets'])->remember("recentlyAssiged.{$user_id}.page.{$page}", now()->addMinutes(10), function() use ($today, $threshold, $user_id){
+                $query = Asset::with('attribute_values.parameter', 'currentAssignment') 
+                ->AssignedTo($user_id)
+                ->whereHas('currentAssignment', function ($q) use ($today, $threshold) {
+                            $q->whereBetween('assigned_at', [$threshold, $today]);
+                        });
+                return $query->paginate(5);
+            });
+        } catch (\Throwable $e) {
             $query = Asset::with('attribute_values.parameter', 'currentAssignment') 
-            ->AssignedTo($user_id)
-            ->whereHas('currentAssignment', function ($q) use ($today, $threshold) {
-                        $q->whereBetween('assigned_at', [$threshold, $today]);
-                    });
+                ->AssignedTo($user_id)
+                ->whereHas('currentAssignment', function ($q) use ($today, $threshold) {
+                            $q->whereBetween('assigned_at', [$threshold, $today]);
+                        });
             return $query->paginate(5);
-        });
-        
+        }
     }
 
     public function recentlyAllAssigned(){
         $today = Carbon::today()->addDays(1);
         $threshold = Carbon::today()->subDays(13);
         $page = request()->get('page', 1);
-                    
-        return Cache::tags(['assets'])->remember("recentlyAllAssiged.page.$page", now()->addMinutes(10), function() use ($today, $threshold){
+        try{
+            return Cache::tags(['assets'])->remember("recentlyAllAssiged.page.$page", now()->addMinutes(10), function() use ($today, $threshold){
+                $query = Asset::with(['attribute_values.parameter', 'currentAssignment'])
+                        ->whereHas('currentAssignment', function ($q) use ($today, $threshold) {
+                            $q->whereBetween('assigned_at', [$threshold, $today]);
+                        });
+                return $query->paginate(5);
+            });
+        } catch (\Throwable $e) {
             $query = Asset::with(['attribute_values.parameter', 'currentAssignment'])
-                    ->whereHas('currentAssignment', function ($q) use ($today, $threshold) {
-                        $q->whereBetween('assigned_at', [$threshold, $today]);
-                    });
+                        ->whereHas('currentAssignment', function ($q) use ($today, $threshold) {
+                            $q->whereBetween('assigned_at', [$threshold, $today]);
+                        });
             return $query->paginate(5);
-        });
+        }
     }
     
     public function AssetHistory($id){
