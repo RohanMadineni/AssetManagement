@@ -32,17 +32,7 @@ class Asset extends Model
     public function assignments(){
         return $this->hasMany(AssetAssignment::class);
     }
-    // public function currentAssignment(){
-    //     return $this->hasOne(AssetAssignment::class)
-    //                 ->whereNull('returned_at');
-    // }
-    // public function scopeAssignedTo($userId)
-    // {
-    //     return $this->whereHas('currentAssignment', function ($q) use ($userId) {
-    //         $q->where('user_id', $userId);
-    //     });
-    // }
-    // Current active assignment only
+
     public function currentAssignment()
     {
         return $this->hasOne(AssetAssignment::class)
@@ -56,20 +46,4 @@ class Asset extends Model
             $q->where('user_id', $userId);
         });
     }
-    // protected static function boot()
-    // {
-    //     parent::boot();
-
-    //     static::created(function ($asset) {
-    //         app(ElasticsearchTestController::class)->indexAsset($asset);
-    //     });
-
-    //     static::updated(function ($asset) {
-    //         app(ElasticsearchTestController::class)->indexAsset($asset);
-    //     });
-
-    //     static::deleted(function ($asset) {
-    //         app(ElasticsearchTestController::class)->deleteAsset($asset->id);
-    //     });
-    // }
 }

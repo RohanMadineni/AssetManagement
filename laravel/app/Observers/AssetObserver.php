@@ -21,7 +21,7 @@ class AssetObserver
     public function created(Asset $asset): void
     {
         //
-        app(ElasticsearchService::class)->indexAsset($asset);
+        // app(ElasticsearchService::class)->indexAsset($asset);
         Cache::tags(['assets'])->flush();
         // IndexAssetToElasticsearch::dispatch($asset);
         app(RabbitMQPublisher::class)->publish(
@@ -36,6 +36,7 @@ class AssetObserver
                 'user_id' => $asset->user_id,
                 'title' => 'Asset Created',
                 'message' => $asset->name,
+                'asset' => $asset->toArray(),
             ]
         );
         
@@ -48,7 +49,7 @@ class AssetObserver
     public function updated(Asset $asset): void
     {
         //
-        app(ElasticsearchService::class)->indexAsset($asset);
+        // app(ElasticsearchService::class)->indexAsset($asset);
         Cache::tags(['assets'])->flush();
         // DeleteAssetFromElasticsearch::dispatch($asset->id);
         // IndexAssetToElasticsearch::dispatch($asset);
@@ -61,6 +62,7 @@ class AssetObserver
                 'user_id' => $asset->user_id,
                 'title' => 'Asset Updated',
                 'message' => $asset->name,
+                'asset' => $asset->toArray(),
             ]
         );
        
@@ -72,7 +74,7 @@ class AssetObserver
     public function deleted(Asset $asset): void
     {
         //
-        app(ElasticsearchService::class)->delete($asset->id);
+        // app(ElasticsearchService::class)->delete($asset->id);
         Cache::tags(['assets'])->flush();
         // DeleteAssetFromElasticsearch::dispatch($asset->id);
 
@@ -85,6 +87,7 @@ class AssetObserver
                 'user_id' => $asset->user_id,
                 'title' => 'Asset Deleted',
                 'message' => $asset->name,
+                'asset' => $asset->toArray(),
             ]
         );
         

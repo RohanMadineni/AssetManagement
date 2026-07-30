@@ -7,6 +7,9 @@ use App\Models\Asset;
 use App\Models\AssetAssignment;
 use App\Models\Attribute_value;
 use App\Models\Category;
+use App\Models\Parameter;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -154,41 +157,71 @@ class AssetController extends Controller
     }
 
     public function update(Request $request, $id){
-        $asset = Asset::findorFail($id);
-        $validated = $request->validate([
-            'name' => 'required',
-            'status' => 'required',
-            'brand' => 'required',
-            'price' => 'required',
-            'Warranty' => 'required',
-        ]);
-        
-        if($request->has('attributes')){
-            foreach($request->input('attributes') as $parameterID=>$value){
-                
-                Attribute_value::updateorCreate(
-                    [
-                        'asset_id' => $asset->id,
-                        'parameter_id'=> $parameterID
-                    ],
-                    [
-                        'value' => $value
-                    ]
-                );
-            }
-        }
+        $asset = Asset::findOrFail($id);
 
-        $asset->update([
-            'name'=>$validated['name'],
-            'brand'=>$validated['brand'],
-            // 'category_id'=>$validated['category_id'],
-            'Warranty'=>$validated['Warranty'],
-            // 'user_id'=>$user_id,
-            'status'=>$validated['status'],
-            'price'=>$validated['price'], 
-        ]);
-        
-        return response()->json($request->input('attributes'));
+    $validated = $request->validate([
+        'name'      => 'required|string|max:255',
+        'status'    => 'required|string',
+        'brand'     => 'required|string|max:255',
+        'price'     => 'required|numeric|min:0',
+        'Warranty'  => 'required|date',
+    ]);
+
+    if ($request->has('attributes')) {
+
+        foreach ($request->input('attributes') as $parameterID => $value) {
+
+            $parameter = Parameter::findOrFail($parameterID);
+
+            $rules = [];
+
+            switch ($parameter->data_type) {
+                case 'string':
+                    $rules[] = 'string';
+                    break;
+
+                case 'number':
+                    $rules[] = 'numeric';
+                    break;
+
+                case 'boolean':
+                    $rules[] = 'boolean';
+                    break;
+
+                case 'date':
+                    $rules[] = 'date';
+                    break;
+            }
+
+            if ($parameter->is_required) {
+                array_unshift($rules, 'required');
+            } else {
+                array_unshift($rules, 'nullable');
+            }
+
+            Validator::make(
+                ['value' => $value],
+                ['value' => $rules]
+            )->validate();
+
+            Attribute_value::updateOrCreate(
+                [
+                    'asset_id'     => $asset->id,
+                    'parameter_id' => $parameterID,
+                ],
+                [
+                    'value' => $value,
+                ]
+            );
+        }
+    }
+
+    $asset->update($validated);
+    Cache::tags(['assets'])->flush();
+    return response()->json([
+        'message' => 'Asset updated successfully.',
+        'asset' => $asset,
+    ]);
     }
 
    
@@ -210,6 +243,7 @@ class AssetController extends Controller
                     "dashboard.stats.$user_id", 
                     now()->addMinutes(5), 
                     function () use ($user_id){
+                        logger('CACHE MISS: Querying database');
                         $assets = Asset::with('currentAssignment')
                         ->assignedTo($user_id)
                         ->get();
@@ -289,12 +323,14 @@ class AssetController extends Controller
         $today = Carbon::today();
         $threshold = Carbon::today()->addDays(15);
         $user_id = Auth::id();
-        $assets = Cache::tags(['assets'])->remember("warranty.$user_id", now()->addMinutes(10), function() use ($today, $threshold, $user_id){
+        $page = request()->get('page', 1);
+        $assets = Cache::tags(['assets'])->remember("warranty.{$user_id}.page.{$page}", now()->addMinutes(10), function() use ($today, $threshold, $user_id){
                 return Asset::whereNotNull('Warranty')
                 ->AssignedTo($user_id)
                         // ->where('user_id',$user_id)
                         ->whereBetween('Warranty', [$today, $threshold])
-                        ->paginate(5);
+                        // ->get();
+                        ->paginate(4);
         });
         $assets->getCollection()->transform(function ($asset) {
             return [
@@ -309,18 +345,18 @@ class AssetController extends Controller
                     ->diffInDays($asset->Warranty, false),
             ];
         });
-
+        // return $assets->paginate(4);
         return response()->json($assets);
     }
 
     public function upcomingAllWarranty(){
         $today = Carbon::today();
         $threshold = Carbon::today()->addDays(15);
-
-        $assets = Cache::tags(['assets'])->remember("warranty.Upcomingall", now()->addMinutes(10), function() use ($today, $threshold){
+        $page = request()->get('page', 1);
+        $assets = Cache::tags(['assets'])->remember("warranty.Upcomingall.page.{$page}", now()->addMinutes(10), function() use ($today, $threshold){
                 return Asset::whereNotNull('Warranty')
                     ->whereBetween('Warranty', [$today, $threshold])
-                    ->paginate(5);
+                    ->paginate(4);
         });
         $assets->getCollection()->transform(function ($asset) {
             return [
@@ -432,9 +468,9 @@ class AssetController extends Controller
     public function recentlyAssigned(){
         $user_id = Auth::id();
         $today = Carbon::today()->addDays(1);
-        $threshold = Carbon::today()->subDays(10);
-        
-        return Cache::tags(['assets'])->remember("recentlyAssiged.$user_id", now()->addMinutes(10), function() use ($today, $threshold, $user_id){
+        $threshold = Carbon::today()->subDays(13);
+        $page = request()->get('page', 1);
+        return Cache::tags(['assets'])->remember("recentlyAssiged.{$user_id}.page.{$page}", now()->addMinutes(10), function() use ($today, $threshold, $user_id){
             $query = Asset::with('attribute_values.parameter', 'currentAssignment') 
             ->AssignedTo($user_id)
             ->whereHas('currentAssignment', function ($q) use ($today, $threshold) {
@@ -448,9 +484,9 @@ class AssetController extends Controller
     public function recentlyAllAssigned(){
         $today = Carbon::today()->addDays(1);
         $threshold = Carbon::today()->subDays(13);
-        
+        $page = request()->get('page', 1);
                     
-        return Cache::tags(['assets'])->remember("recentlyAllAssiged", now()->addMinutes(10), function() use ($today, $threshold){
+        return Cache::tags(['assets'])->remember("recentlyAllAssiged.page.$page", now()->addMinutes(10), function() use ($today, $threshold){
             $query = Asset::with(['attribute_values.parameter', 'currentAssignment'])
                     ->whereHas('currentAssignment', function ($q) use ($today, $threshold) {
                         $q->whereBetween('assigned_at', [$threshold, $today]);
