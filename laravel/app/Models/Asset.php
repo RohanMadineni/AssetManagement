@@ -27,7 +27,7 @@ class Asset extends Model
         return $this->belongsTo(User::class);
     }
     public function attribute_values(){
-        return $this->hasMany(Attribute_Value::class);
+        return $this->hasMany(Attribute_value::class);
     }
     public function assignments(){
         return $this->hasMany(AssetAssignment::class);

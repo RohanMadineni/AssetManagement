@@ -7,11 +7,6 @@ WORKDIR /var/www/html
 RUN apt-get update && apt-get install -y \
     git curl unzip zip \
     libpng-dev libonig-dev \
-    # git \
-    # curl \
-    # unzip \
-    # zip \
-    # libpng-dev \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
     libwebp-dev \
@@ -35,13 +30,21 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 COPY . .
 
-RUN composer install --no-interaction --prefer-dist
+RUN composer install --no-interaction --prefer-dist \
+    #production
+    --no-dev \
+    --optimize-autoloader
 
 
 # EXPOSE 8000
 
 # CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
 RUN chown -R www-data:www-data storage bootstrap/cache
+
+# production
+RUN chmod -R 775 storage bootstrap/cache
+RUN chmod 600 .env
+
 # CMD ["php", "artisan", "serve"]
 EXPOSE 9000
 CMD ["php-fpm"]

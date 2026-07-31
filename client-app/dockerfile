@@ -10,7 +10,7 @@ RUN npm install
 # Copy source code
 COPY . .
 RUN find src -type f | sort
-RUN npm run build
+RUN npm run build 
 
 # Expose Angular dev server port
 # EXPOSE 4200

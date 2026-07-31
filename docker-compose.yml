@@ -27,9 +27,9 @@ services:
     #   - "8000:8000"
     expose:
       - "9000"
-    volumes:
-      - ./laravel:/var/www/html
-      - laravel_vendor:/var/www/html/vendor
+    # volumes:
+    #   - ./laravel:/var/www/html
+    #   - laravel_vendor:/var/www/html/vendor
     networks:
       - app-network
 
@@ -43,8 +43,7 @@ services:
       RABBITMQ_USER: guest
       RABBITMQ_PASSWORD: guest
       RABBITMQ_EXCHANGE: asset.exchange
-    # ports:
-    #   - "3000:3000"
+    restart: unless-stopped
     expose:
       - "3000"
     volumes:
@@ -59,6 +58,10 @@ services:
     container_name: gateway
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
     depends_on:
       - frontend
       - laravel

@@ -2,10 +2,39 @@
 import amqp from 'amqplib';
 // const amqp = require('amqplib');
 
+async function connectRabbitMQ() {
+
+    while (true) {
+
+        try {
+
+            console.log("Connecting to RabbitMQ...");
+
+            const connection = await amqp.connect(
+                `amqp://${process.env.RABBITMQ_USER}:${process.env.RABBITMQ_PASSWORD}@${process.env.RABBITMQ_HOST}:${process.env.RABBITMQ_PORT}`
+            );
+
+            console.log("Connected to RabbitMQ");
+
+            return connection;
+
+        } catch (err) {
+
+            console.log(
+                "RabbitMQ unavailable. Retrying in 5 seconds..."
+            );
+
+            await new Promise(resolve =>
+                setTimeout(resolve, 5000)
+            );
+        }
+    }
+}
+
 async function startRealtimeConsumer(io) {
 
-    const connection = await amqp.connect(`amqp://${process.env.RABBITMQ_USER}:${process.env.RABBITMQ_PASSWORD}@${process.env.RABBITMQ_HOST}:${process.env.RABBITMQ_PORT}`);
-
+    // const connection = await amqp.connect(`amqp://${process.env.RABBITMQ_USER}:${process.env.RABBITMQ_PASSWORD}@${process.env.RABBITMQ_HOST}:${process.env.RABBITMQ_PORT}`);
+    const connection = await connectRabbitMQ();
     const channel = await connection.createChannel();
 
     const exchange = process.env.RABBITMQ_EXCHANGE;

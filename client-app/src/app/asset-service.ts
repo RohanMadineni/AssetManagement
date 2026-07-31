@@ -82,6 +82,7 @@ export class AssetService {
 
   returnAsset(assetId: number) {
     // return this.requestService.PostRequest('http://localhost:8000/api/assets/return', { asset_id: assetId });
+    console.log(`${environment.apiUrl}`);
     return this.requestService.PostRequest(`${environment.apiUrl}/assets/return`, { asset_id: assetId });
   }
 
