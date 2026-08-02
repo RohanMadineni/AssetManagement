@@ -74,7 +74,8 @@ export class CategoryConfig implements OnInit{
       };
       this.assetService.createParam(Number(this.categoryForm.value.category_id), payload).subscribe();
       this.categoryForm.reset();
-      
+      this.loadParameters();
+      this.editForm.reset();
     }
 
     if(mode==='edit'){
@@ -103,5 +104,28 @@ export class CategoryConfig implements OnInit{
     const param = this.parameters().find(p => p.id == this.editForm.value.edit_param_id);
     console.log(param);
     this.editForm.patchValue({name: param.name}); 
+  }
+  deleteParameter(){
+    const parameterId = this.editForm.get('edit_param_id')?.value;
+
+    if (!parameterId) {
+      return;
+    }
+
+    if (!confirm('Are you sure you want to delete this parameter?')) {
+      return;
+    }
+    this.assetService.deleteParam(parameterId).subscribe({
+      next: () => {
+        this.loadParameters();
+        this.editForm.patchValue({
+          edit_param_id: null,
+          data_type: null,
+          is_required: null
+        });
+      },
+      error: err => console.error(err)
+    });
+    this.editForm.reset();
   }
 }

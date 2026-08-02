@@ -30,6 +30,7 @@ export class AddAssetComponent implements OnInit{
   assetForm!: FormGroup;
   categories: any[] = [];
   parameters: any[] = [];
+  submitAttempted = false;
   @Input() user: any;
   @Input() use_name: any;
   @Output() back = new EventEmitter<void>();
@@ -49,13 +50,13 @@ export class AddAssetComponent implements OnInit{
       name: ['', Validators.required],
       category_id: ['', Validators.required],
       status: ['', Validators.required],
-      brand: [''],
-      model: [''],
-      description: [''],
-      date: [''],
-      warranty: [''],
-      price: <number|null>(null),
-      attributes: this.fb.array([])
+      brand: ['', Validators.required],
+      model: ['', Validators.required],
+      description: ['', Validators.required],
+      date: ['', Validators.required],
+      warranty: ['', Validators.required],
+      price: [<number|null>(null), Validators.required],
+      attributes: [this.fb.array([]), Validators.required]
     });
   }
 
@@ -89,7 +90,11 @@ export class AddAssetComponent implements OnInit{
   }
 
   onSubmit() {
-    if (this.assetForm.invalid) return;
+    this.submitAttempted = true;
+    if (this.assetForm.invalid) {
+      this.assetForm.markAllAsTouched();
+      return;
+    }
 
     const payload = this.transformPayload();
     console.log(payload);
@@ -97,6 +102,7 @@ export class AddAssetComponent implements OnInit{
       console.log('Asset created', res);
        this.assetForm.reset();
        this.attributes.clear();
+       this.submitAttempted = false;
       //  this.back.emit();
     }});
   }

@@ -78,6 +78,9 @@ export class AssetListPage implements OnInit {
   }
  
   deleteAsset(id: any) {
+    if (!confirm('Are you sure you want to delete this Asset?')) {
+      return;
+    }
     this.assetService.deleteAsset(id).subscribe(() => {
       this.loadAssets(); 
     });

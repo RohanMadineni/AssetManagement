@@ -33,7 +33,7 @@ class ParameterController extends Controller
             // 'name' => 'sometimes|string|max:255',
             'name' => 'required',
             // 'data_type' => 'sometimes|in:string,number,boolean,date',
-            'data_type' => 'required',
+            // 'data_type' => 'required',
             'is_required' => 'boolean'
         ]);
 
@@ -45,12 +45,8 @@ class ParameterController extends Controller
     public function destroy(Request $request, $id){
         $parameter = Parameter::findOrFail($id);
 
-        if ($parameter->attributeValues()->exists()) {
-            return response()->json([
-                'message' => 'Cannot delete parameter with existing attribute values'
-            ], 409);
-        }
-
+            $parameter->attribute_values()->delete();
+        
         $parameter->delete();
 
         return response()->json([

@@ -69,7 +69,10 @@ export class AssetService {
     // return this.requestService.PostRequest(`http://localhost:8000/api/categories/${id}/parameters`, data);
     return this.requestService.PostRequest(`${environment.apiUrl}/categories/${id}/parameters`, data);
   }
-
+  deleteParam(id: number){
+    // return this.requestService.PostRequest(`http://localhost:8000/api/categories/${id}/parameters`, data);
+    return this.requestService.DeleteRequest(`${environment.apiUrl}/parameters/${id}`);
+  }
   updateParam(id: number, data: any){
     // return this.requestService.PutRequest(`http://localhost:8000/api/parameters/${id}`, data);
     return this.requestService.PutRequest(`${environment.apiUrl}/parameters/${id}`, data);

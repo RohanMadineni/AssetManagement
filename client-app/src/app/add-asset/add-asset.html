@@ -102,6 +102,10 @@
       <!-- <div></div> -->
     </div>
     <!-- <div style="padding: 5px;"> -->
+    <div class="form-error" *ngIf="submitAttempted && assetForm.invalid">
+      Please correct the highlighted fields before submitting the form.
+    </div>
+
     <button mat-raised-button style="margin-top:5px; color: white; background-color: #4f46e5;font-size: 12px;" type="submit">
       Create Asset
     </button>

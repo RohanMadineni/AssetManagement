@@ -55,6 +55,9 @@ export class UserManagement implements OnInit{
   // }
 
   deleteUser(id: any) {
+    if (!confirm('Are you sure you want to delete this User?')) {
+      return;
+    }
     this.userservice.deleteUser(id).subscribe({
     next: () => this.initTable(),
     error: err => console.log(err)

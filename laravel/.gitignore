@@ -5,9 +5,10 @@
 /public/storage
 /storage/*.key
 /vendor
-.env.example
+# .env.example
 .env.backup
 .env.production
+.env
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml

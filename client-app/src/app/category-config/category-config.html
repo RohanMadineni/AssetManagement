@@ -1,114 +1,3 @@
-<!-- <div class="category-page">
-    <mat-card class = "filter-card">
-
-        <mat-card-header>
-            <div style="color: rgb(71, 70, 70);">
-                <mat-card-title>Create Parameter</mat-card-title>
-            </div>
-        </mat-card-header>
-
-        <mat-card-content class="filter-content">
-            <mat-form-field class = "full-width" style="margin-top: 18px;">
-
-                    <mat-label>Category</mat-label>
-
-                    <mat-select [(ngModel)] = "filters.category_id">
-                        <mat-option *ngFor = "let cat of categories()" [value] = "cat.id">{{cat.name}}</mat-option>
-                    </mat-select>
-
-                </mat-form-field>
-            <form [formGroup]="categoryForm" (ngSubmit)="onSubmit('create')" >
-                
-                <mat-form-field class = "full-width">
-                    <mat-label>Parameter Name</mat-label>
-                    <input matInput formControlName="name" required>
-                </mat-form-field>
-
-                <mat-form-field class="full-width">
-                    <mat-label>Parameter Data Type</mat-label>
-                    <mat-select formControlName = "data_type" required>
-                        <mat-option value="string">String</mat-option>
-                        <mat-option value="number">Number</mat-option>
-                        <mat-option value="boolean">Boolean</mat-option>
-                        <mat-option value="date">Date</mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <mat-form-field class="full-width">
-                    <mat-label>Is Required</mat-label>
-                    <mat-select formControlName = "is_required" required>
-                        <mat-option value="true">Yes</mat-option>
-                        <mat-option value="false">No</mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <button mat-raised-button class = "apply-fil" [disabled]="!categoryForm.valid">
-                    <mat-icon>filter_list</mat-icon>
-                        Edit
-                </button>
-            </form>
-        </mat-card-content>  
-
-    </mat-card>
-
-    <mat-card class = "filter-card">
-
-        <mat-card-header>
-            <div style="color: rgb(71, 70, 70);">
-                <mat-card-title>Edit Parameter</mat-card-title>
-            </div>
-        </mat-card-header>
-
-        <mat-card-content class="filter-content">
-            <mat-form-field class = "full-width" style="margin-top: 18px;">
-
-                <mat-label>Category</mat-label>
-
-                <mat-select [(ngModel)] = "filters.edit_category_id" (selectionChange)="loadParameters()">
-                    <mat-option *ngFor = "let cat of categories()" [value] = "cat.id">{{cat.name}}</mat-option>
-                </mat-select>
-
-            </mat-form-field>
-
-            <mat-form-field class = "full-width">
-
-                <mat-label>Parameter Name</mat-label>
-
-                <mat-select [(ngModel)] = "filters.edit_param_id" (selectionChange)="onParamChange()">
-                    <mat-option *ngFor = "let par of parameters()" [value] = "par.id">{{par.name}}</mat-option>
-                </mat-select>
-
-            </mat-form-field>
-
-            <form [formGroup]="editForm" (ngSubmit)="onSubmit('edit')" >
-                <mat-form-field class="full-width">
-                    <mat-label>Parameter Data Type</mat-label>
-                    <mat-select formControlName = "data_type" required>
-                        <mat-option value="string">String</mat-option>
-                        <mat-option value="number">Number</mat-option>
-                        <mat-option value="boolean">Boolean</mat-option>
-                        <mat-option value="date">Date</mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <mat-form-field class="full-width">
-                    <mat-label>Is Required</mat-label>
-                    <mat-select formControlName = "is_required" required>
-                        <mat-option value="true">Yes</mat-option>
-                        <mat-option value="false">No</mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <button mat-raised-button class = "apply-fil" [disabled]="!editForm.valid">
-                    <mat-icon>filter_list</mat-icon>
-                        Edit
-                </button>
-            </form>
-        </mat-card-content>  
-
-    </mat-card>
-</div> -->
-
 <div class="category-page">
   <div>
     <h1 class="page-title">Category Configuration</h1>
@@ -254,7 +143,12 @@
                         <mat-icon>filter_list</mat-icon>
                             Edit
                     </button>
+                    <button mat-raised-button class = "apply-fil" color="warn" [disabled]="!editForm.get('edit_param_id')?.value" (click)="deleteParameter()">
+                        <mat-icon>delete</mat-icon>
+                            Delete
+                    </button>
                 </div>
+
             </form> 
         </div>
   </div>
