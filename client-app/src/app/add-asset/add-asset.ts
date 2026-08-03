@@ -52,11 +52,13 @@ export class AddAssetComponent implements OnInit{
       status: ['', Validators.required],
       brand: ['', Validators.required],
       model: ['', Validators.required],
-      description: ['', Validators.required],
+      description: [''],
       date: ['', Validators.required],
       warranty: ['', Validators.required],
       price: [<number|null>(null), Validators.required],
-      attributes: [this.fb.array([]), Validators.required]
+      // attributes: [this.fb.array([])],
+      // attributes: this.fb.array([], Validators.required)
+      attributes: this.fb.array([])
     });
   }
 
