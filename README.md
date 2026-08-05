@@ -36,6 +36,11 @@ Laravel:
   - Index assets: php artisan app:reindex-assets
   - Notification queue consumer: php artisan rabbitmq:consume-notifications
   - Elastic queue consumer: php artisan app:consume-elastic-queue
+
+
+## License
+
+Internal Asset Management System 
      
 
 
