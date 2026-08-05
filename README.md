@@ -29,7 +29,7 @@ The system consists of:
 
 **Start: docker compose up -d**
 
-Useful commands: 
+### Useful commands: 
 
 Laravel: 
   - Clear cache: php artisan optimize:clear
