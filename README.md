@@ -18,18 +18,16 @@ The system consists of:
   
 ## Docker Services
 
-frontend
-laravel
-nginx
-mysql
-redis
-rabbitmq
-elasticsearch
-realtime-server
+- frontend
+- laravel
+- nginx
+- redis
+- rabbitmq
+- realtime-server
 
-Build: docker compose build 
+**Build: docker compose build**
 
-Start: docker compose up -d
+**Start: docker compose up -d**
 
 Useful commands: 
 Laravel: 
