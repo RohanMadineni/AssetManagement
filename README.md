@@ -30,6 +30,7 @@ The system consists of:
 **Start: docker compose up -d**
 
 Useful commands: 
+
 Laravel: 
   - Clear cache: php artisan optimize:clear
   - Index assets: php artisan app:reindex-assets
