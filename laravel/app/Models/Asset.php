@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\AssetAssignment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Http\Controllers\ElasticsearchTestController;
 class Asset extends Model
 {
     //

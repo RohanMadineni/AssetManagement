@@ -40,7 +40,7 @@ export class LayoutPage {
     this.authService.getRole().subscribe(
       res => {
         console.log(res);
-        console.log(this.notificationService.notifications());
+        // console.log(this.notificationService.notifications());
         this.role.set(res.role);
         this.name.set(res.username);
         if (res) {
@@ -50,6 +50,7 @@ export class LayoutPage {
     );
     this.toastr.overlayContainer = this.toastContainer();
     this.notificationService.loadNotifications();
+    // console.log(this.notificationService.notifications());
   }
 
   isAdmin(){
@@ -64,6 +65,7 @@ export class LayoutPage {
   }
 
   onRead(id:number){
+    console.log(id);
     this.notificationService.markAsRead(id);
   
   }

@@ -39,10 +39,115 @@
             </mat-select>
         </mat-form-field>
 
-        <mat-form-field class="full-width" formGroupName="attributesControls">
+        <!-- <mat-form-field class="full-width" formGroupName="attributesControls">
             <mat-label>Parameters Value</mat-label>
             <input matInput formControlName="value">
-        </mat-form-field>
+        </mat-form-field> -->
+        @if (editForm.get('attributesControls.parameterID')?.value) {
+
+            @for (par of parameters(); track par.id) {
+
+                @if (
+                    par.id ===
+                    editForm.get('attributesControls.parameterID')?.value
+                ) {
+
+                    <!-- TEXT -->
+                    @if (par.data_type === 'string') {
+
+                        <mat-form-field class="full-width" formGroupName="attributesControls">
+                            <mat-label>{{ par.name }}</mat-label>
+
+                            <input
+                                matInput
+                                formControlName="value"
+                                type="string">
+                        </mat-form-field>
+
+                    }
+
+
+                    <!-- NUMBER -->
+                    @if (par.data_type === 'number') {
+
+                        <mat-form-field class="full-width" formGroupName="attributesControls">
+                            <mat-label>{{ par.name }}</mat-label>
+
+                            <input
+                                matInput
+                                formControlName="value"
+                                type="number">
+                        </mat-form-field>
+
+                    }
+
+
+                    <!-- DATE -->
+                    @if (par.data_type === 'date') {
+
+                        <mat-form-field class="full-width" formGroupName="attributesControls">
+                            <mat-label>{{ par.name }}</mat-label>
+
+                            <input
+                                matInput
+                                formControlName="value"
+                                type="date">
+                        </mat-form-field>
+
+                    }
+
+
+                    <!-- BOOLEAN -->
+                    @if (par.data_type === 'boolean') {
+
+                        <mat-form-field class="full-width" formGroupName="attributesControls">
+                            <mat-label>{{ par.name }}</mat-label>
+
+                            <mat-select formControlName="value">
+
+                                <mat-option [value]="true">
+                                    Yes
+                                </mat-option>
+
+                                <mat-option [value]="false">
+                                    No
+                                </mat-option>
+
+                            </mat-select>
+                        </mat-form-field>
+
+                    }
+
+
+                    <!-- SELECT -->
+                    @if (par.data_type === 'select') {
+
+                        <mat-form-field class="full-width" formGroupName="attributesControls">
+                            <mat-label>{{ par.name }}</mat-label>
+
+                            <mat-select formControlName="value">
+
+                                @for (
+                                    option of par.options;
+                                    track option
+                                ) {
+
+                                    <mat-option [value]="option">
+                                        {{ option }}
+                                    </mat-option>
+
+                                }
+
+                            </mat-select>
+                        </mat-form-field>
+
+                    }
+
+                }
+
+            }
+
+        }
     </mat-dialog-content>
 
     <mat-dialog-actions>

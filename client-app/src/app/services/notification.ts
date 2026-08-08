@@ -17,7 +17,7 @@ export interface Notification {
 
 export class NotificationService {
   notifications = signal<Notification[]>([]);
-toastr = inject(ToastrService)!;
+  toastr = inject(ToastrService)!;
   constructor(private http:HttpClient){
     this.loadNotifications();
   }
@@ -28,7 +28,7 @@ toastr = inject(ToastrService)!;
       .get<Notification[]>(`${environment.apiUrl}/notifications/`)
       .subscribe(data => {
 
-        console.log('loaded notifications', data);
+        // console.log('loaded notifications', data);
 
         this.notifications.set(data);
 
@@ -36,10 +36,9 @@ toastr = inject(ToastrService)!;
 
   }
   add(notification: Notification) {
-    this.notifications.update(n => [notification, ...n]);
-
+    // this.notifications.update(n => [notification, ...n]);
     this.toastr.success(notification.title + " " + notification.message).onTap.subscribe(() => {this.markAsRead(notification.id);});
-    console.log(this.notifications());
+    // console.log(this.notifications());
   }
 
   markAsRead(id: number) {

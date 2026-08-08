@@ -9,6 +9,7 @@ use PhpAmqpLib\Message\AMQPMessage;
 use App\Services\ElasticsearchService;
 use App\Jobs\IndexAssetToElasticsearch;
 use App\Jobs\DeleteAssetFromElasticsearch;
+use App\Services\RabbitMQPublisher;
 
 class ConsumeAssetNotifications extends Command
 {
@@ -109,63 +110,135 @@ class ConsumeAssetNotifications extends Command
                     
                     if ($event['event'] === 'asset.created') {
 
-                        Notification::create([
+                        $notification = Notification::create([
                             'user_id' => $event['user_id'],
                             'title' => 'Asset Created',
                             'message' => $event['name'],
-                            'type' => 'success'
+                            'type' => 'success',
+                            'is_read' => false
                         ]);
                         $this->info(
                             'Notification created'
                         );  
+                        app(RabbitMQPublisher::class)->publish(
+                            'notification.created',
+                            [
+                                'event' => 'notification.created',
+                                'id' => $notification->id,
+                                'user_id' => $notification->user_id,
+                                'title' => $notification->title,
+                                'message' => $notification->message,
+                                'type' => $notification->type,
+                                'is_read' => $notification->is_read,
+                                'created_at' => $notification->created_at,
+                            ]
+                        );
+                        
                     } 
                     else if ($event['event'] === 'asset.deleted') {
 
-                        Notification::create([
+                        $notification = Notification::create([
                             'user_id' => $event['user_id'],
                             'title' => 'Asset Deleted',
                             'message' => $event['name'],
-                            'type' => 'success'
+                            'type' => 'success',
+                            'is_read' => false
                         ]);
                         $this->info(
                             'Notification Created'
                         );  
+                        app(RabbitMQPublisher::class)->publish(
+                            'notification.created',
+                            [
+                                'event' => 'notification.created',
+                                'id' => $notification->id,
+                                'user_id' => $notification->user_id,
+                                'title' => $notification->title,
+                                'message' => $notification->message,
+                                'type' => $notification->type,
+                                'is_read' => $notification->is_read,
+                                'created_at' => $notification->created_at,
+                            ]
+                        );
                     }
                     else if ($event['event'] === 'asset.updated') {
 
-                        Notification::create([
+                        $notification = Notification::create([
                             'user_id' => $event['user_id'],
                             'title' => 'Asset Updated',
                             'message' => $event['name'],
-                            'type' => 'success'
+                            'type' => 'success',
+                            'is_read' => false
                         ]);
                         $this->info(
                             'Notification Created'
                         );  
+                        app(RabbitMQPublisher::class)->publish(
+                            'notification.created',
+                            [
+                                'event' => 'notification.created',
+                                'id' => $notification->id,
+                                'user_id' => $notification->user_id,
+                                'title' => $notification->title,
+                                'message' => $notification->message,
+                                'type' => $notification->type,
+                                'is_read' => $notification->is_read,
+                                'created_at' => $notification->created_at,
+                            ]
+                        );
                     }
                     else if ($event['event'] === 'asset.assigned') {
 
-                        Notification::create([
+                        $notification = Notification::create([
                             'user_id' => $event['user_id'],
                             'title' => 'Asset Assigned',
                             'message' => $event['name'],
-                            'type' => 'success'
+                            'type' => 'success',
+                            'is_read' => false
                         ]);
                         $this->info(
                             'Notification Created'
                         );  
+                        app(RabbitMQPublisher::class)->publish(
+                            'notification.created',
+                            [
+                                'event' => 'notification.created',
+                                'id' => $notification->id,
+                                'user_id' => $notification->user_id,
+                                'title' => $notification->title,
+                                'message' => $notification->message,
+                                'type' => $notification->type,
+                                'is_read' => $notification->is_read,
+                                'created_at' => $notification->created_at,
+                            ]
+                        );
                     }
                     else if ($event['event'] === 'asset.returned') {
 
-                        Notification::create([
+                        $notification = Notification::create([
                             'user_id' => $event['user_id'],
                             'title' => $event['title'],
                             'message' => $event['message'],
-                            'type' => 'success'
+                            'type' => 'success',
+                            'is_read' => false
+
                         ]);
                         $this->info(
                             'Notification Created'
                         );  
+                        app(RabbitMQPublisher::class)->publish(
+                            'notification.created',
+                            [
+                                'event' => 'notification.created',
+                                'id' => $notification->id,
+                                'user_id' => $notification->user_id,
+                                'title' => $notification->title,
+                                'message' => $notification->message,
+                                'type' => $notification->type,
+                                'is_read' => $notification->is_read,
+                                'created_at' => $notification->created_at,
+                            ]
+                        );
                     }
                 
                     $message->ack();

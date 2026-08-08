@@ -23,6 +23,7 @@ export class SocketService {
     // this.socket = io({query: {user_id: this.currentUser().id}});
     this.socket.on('notification', (body) => {
       console.log(body);
+      this.notificationService.loadNotifications();
       this.notificationService.add({...body});
     });
     

@@ -50,31 +50,37 @@ async function startRealtimeConsumer(io) {
         }
     );
 
+    // await channel.bindQueue(
+    //     queue,
+    //     exchange,
+    //     "asset.created"
+    // );
+    // await channel.bindQueue(
+    //     queue,
+    //     exchange,
+    //     "asset.deleted"
+    // );
+    // await channel.bindQueue(
+    //     queue,
+    //     exchange,
+    //     "asset.updated"
+    // );
+    // await channel.bindQueue(
+    //     queue,
+    //     exchange,
+    //     "asset.assigned"
+    // );
+    // await channel.bindQueue(
+    //     queue,
+    //     exchange,
+    //     "asset.returned"
+    // );
     await channel.bindQueue(
         queue,
         exchange,
-        "asset.created"
+        'notification.created'
     );
-    await channel.bindQueue(
-        queue,
-        exchange,
-        "asset.deleted"
-    );
-    await channel.bindQueue(
-        queue,
-        exchange,
-        "asset.updated"
-    );
-    await channel.bindQueue(
-        queue,
-        exchange,
-        "asset.assigned"
-    );
-    await channel.bindQueue(
-        queue,
-        exchange,
-        "asset.returned"
-    );
+    
 
     channel.consume(
         queue,
@@ -84,20 +90,25 @@ async function startRealtimeConsumer(io) {
                 return;
 
             try{
-
-                const event =  JSON.parse(
+                const notification = JSON.parse(
                     message.content.toString()
                 );
 
-                if(event.event === "asset.created" || event.event === "asset.deleted" || event.event === "asset.updated"|| event.event === "asset.assigned"|| event.event === "asset.returned") {
-                    io.to(
-                        `${event.user_id}`
-                    )
-                    .emit(
-                        'notification',
-                        event
-                    );
-                }
+                io.to(`${notification.user_id}`)
+                .emit('notification', notification);
+                // const event =  JSON.parse(
+                //     message.content.toString()
+                // );
+
+                // if(event.event === "asset.created" || event.event === "asset.deleted" || event.event === "asset.updated"|| event.event === "asset.assigned"|| event.event === "asset.returned") {
+                //     io.to(
+                //         `${event.user_id}`
+                //     )
+                //     .emit(
+                //         'notification',
+                //         event
+                //     );
+                // }
 
                 channel.ack(message);
 

@@ -56,8 +56,6 @@ export class AddAssetComponent implements OnInit{
       date: ['', Validators.required],
       warranty: ['', Validators.required],
       price: [<number|null>(null), Validators.required],
-      // attributes: [this.fb.array([])],
-      // attributes: this.fb.array([], Validators.required)
       attributes: this.fb.array([])
     });
   }
@@ -105,7 +103,6 @@ export class AddAssetComponent implements OnInit{
        this.assetForm.reset();
        this.attributes.clear();
        this.submitAttempted = false;
-      //  this.back.emit();
     }});
   }
 

@@ -7,7 +7,8 @@ return [
 
     'user' => env('RABBITMQ_USER', 'guest'),
 
-    'password' => env('RABBITMQ_PASSWORD', 'guest'),
+    // 'password' => env('RABBITMQ_PASSWORD', 'guest'),
+    'password' => env('RABBITMQ_PASSWORD'),
 
     'vhost' => env('RABBITMQ_VHOST', '/'),
 
