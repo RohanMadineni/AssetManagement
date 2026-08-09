@@ -40,6 +40,8 @@ async function startRealtimeConsumer(io) {
     const exchange = process.env.RABBITMQ_EXCHANGE;
     const queue = "realtime.queue";
 
+    const processedNotifications = new Set();
+
     await channel.assertExchange(exchange, 'topic', {
         durable: true
     });
@@ -59,7 +61,7 @@ async function startRealtimeConsumer(io) {
     //     queue,
     //     exchange,
     //     "asset.deleted"
-    // );
+    // );   
     // await channel.bindQueue(
     //     queue,
     //     exchange,
@@ -93,6 +95,26 @@ async function startRealtimeConsumer(io) {
                 const notification = JSON.parse(
                     message.content.toString()
                 );
+                
+                const notificationId = notification.id;
+
+                if (!notificationId) {
+                    throw new Error(
+                        "Notification has no ID"
+                    );
+                }
+
+
+                // Already processed?
+                if (processedNotifications.has(notificationId)) {
+
+                    console.log(
+                        `Duplicate notification ${notificationId} ignored`
+                    );
+
+                    channel.ack(message);
+                    // return;
+                }
 
                 io.to(`${notification.user_id}`)
                 .emit('notification', notification);
@@ -110,6 +132,15 @@ async function startRealtimeConsumer(io) {
                 //     );
                 // }
 
+                
+                processedNotifications.add(
+                    notificationId
+                );
+
+
+                console.log(
+                    `Notification ${notificationId} processed`
+                );
                 channel.ack(message);
 
             } catch(error) {

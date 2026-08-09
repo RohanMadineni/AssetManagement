@@ -57,7 +57,6 @@ app.post('/AssetAssigned', (req, res)=>{
 
 app.post('/AssetReturned', (req, res)=>{
   const body = req.body;
-//   console.log(req.body);
 
   io.to(`${body.user_id}`).emit('notification', body);
 
