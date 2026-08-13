@@ -166,49 +166,51 @@ class AssetController extends Controller
     }
 }
     public function store(Request $request){
-        try{$validated = $request->validate([
-            'name'=>'required|string',
-            'category_id'=>'required',
-            'status'=>'required',
-            'brand'=>'required',
-            'warranty'=>'required',
-            'price'=>'required',
-            'selected_user'=>'required',
-        ]);
+        // try{
+            $validated = $request->validate([
+                'name'=>'required|string',
+                'category_id'=>'required',
+                'status'=>'required',
+                'brand'=>'required',
+                'warranty'=>'required',
+                'price'=>'required',
+                'selected_user'=>'required',
+            ]);
         
-        if($validated['selected_user']==0)
-                $user_id = Auth::id();
-        else $user_id=$validated['selected_user'];
-        $asset = Asset::create([
-            'name'=>$validated['name'],
-            'brand'=>$validated['brand'],
-            'category_id'=>$validated['category_id'],
-            'Warranty'=>$validated['warranty'],
-            'user_id'=>$user_id,
-            'status'=>$validated['status'],
-            'price'=>$validated['price'], 
+            if($validated['selected_user']==0)
+                    $user_id = Auth::id();
+            else $user_id=$validated['selected_user'];
+            $asset = Asset::create([
+                'name'=>$validated['name'],
+                'brand'=>$validated['brand'],
+                'category_id'=>$validated['category_id'],
+                'Warranty'=>$validated['warranty'],
+                'user_id'=>$user_id,
+                'status'=>$validated['status'],
+                'price'=>$validated['price'], 
+                
+            ]);
             
-        ]);
-         
-        // event(new \App\Events\AssetCreated($asset));
+            // event(new \App\Events\AssetCreated($asset));
 
-        if ($request->has('attributes')) {
-            foreach ($request->attributes as $parameter_id => $value) {
-                Attribute_value::create([
-                    'asset_id' => $asset->id,
-                    'parameter_id' => $parameter_id,
-                    'value' => $value
-                ]);
+            if ($request->has('attributes')) {
+                foreach ($request->attributes as $parameter_id => $value) {
+                    Attribute_value::create([
+                        'asset_id' => $asset->id,
+                        'parameter_id' => $parameter_id,
+                        'value' => $value
+                    ]);
+                }
             }
-        }
-        return response()->json($asset, 201);} catch (\Exception $e) {
+            return response()->json($asset, 201);
+        // } catch (\Exception $e) {
 
-        return response()->json([
-            'error' => $e->getMessage(),
-            'line' => $e->getLine(),
-            'file' => $e->getFile()
-        ], 500);
-    }
+        //     return response()->json([
+        //         'error' => $e->getMessage(),
+        //         'line' => $e->getLine(),
+        //         'file' => $e->getFile()
+        //     ], 500);
+        // }
     }
 
     public function update(Request $request, $id){

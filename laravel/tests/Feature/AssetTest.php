@@ -2,18 +2,68 @@
 
 namespace Tests\Feature;
 
+use App\Models\Asset;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-
+use Illuminate\Support\Facades\DB;
 class AssetTest extends TestCase
 {
     /**
      * A basic feature test example.
      */
-    public function test_example(): void
+    use RefreshDatabase;
+
+    public function test_authenticated_user_can_create_an_asset(): void
     {
-        $response = $this->getJson('/api/assets');
-        $response->assertStatus(200);
+        dump(config('database.default'));
+        dump(config('database.connections.mysql.database'));
+        dump(DB::connection()->getDatabaseName());
+        /** @var \App\Models\User $user */
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->postJson('/api/assets', [
+            'name' => 'Test Laptop',
+            'category_id' => 1,
+            'status' => 'Available',
+            'brand' => 'Dell',
+            'warranty' => '2027-12-31',
+            'price' => 1500,
+            'selected_user' => 0,
+        ]);
+
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('assets', [
+            'name' => 'Test Laptop',
+            'brand' => 'Dell',
+            'category_id' => 1,
+            'status' => 'Available',
+            'price' => 1500,
+        ]);
+    }
+
+    public function test_asset_creation_requires_required_fields(): void
+    {
+        /** @var \App\Models\User $user */
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->postJson('/api/assets', []);
+        if ($response->status() === 500) {
+            dd($response->json(), $response->getContent());
+        }
+
+        $response->assertStatus(422);
+
+
+        $response->assertJsonValidationErrors([
+            'name',
+            'category_id',
+            'status',
+            'brand',
+            'warranty',
+            'price',
+            'selected_user',
+        ]);
     }
 }
