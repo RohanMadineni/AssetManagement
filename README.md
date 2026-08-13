@@ -38,6 +38,22 @@ Laravel:
   - Elastic queue consumer: php artisan app:consume-elastic-queue
 
 
+## Limitations
+ - Elasticsearch dependency : asset search/indexing depends on Elasticsearch being available
+ - Cache consistency : Redis caching means changes must invalidate the appropriate cache entries to prevent stale data
+ - RabbitMQ dependency : asynchronous notifications and indexing depend on RabbitMQ consumers being available. 
+
+## Unlimited features 
+ - Advanced role/permission management
+ - Production-grade monitoring and alerting
+ - Full audit history for every asset modification
+ - Automated database backup/restore procedures
+
+## Technical debt
+ - Automated test coverage could be expanded around the asynchronous event-driven architecture
+ - Some responsibilities could be separated further as the application grows
+ 
+
 ## License
 
 Internal Asset Management System 
