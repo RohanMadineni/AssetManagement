@@ -66,4 +66,24 @@ class AssetTest extends TestCase
             'selected_user',
         ]);
     }
+
+    public function test_non_admin_user_cannot_delete_an_asset(): void
+    {
+        /** @var \App\Models\User $user */
+        $user = User::factory()->create([
+            'role' => 'user',
+        ]);
+
+        $asset = Asset::factory()->create();
+
+        $response = $this
+            ->actingAs($user)
+            ->deleteJson("/api/assets/{$asset->id}");
+
+        $response->assertStatus(403);
+
+        $this->assertDatabaseHas('assets', [
+            'id' => $asset->id,
+        ]);
+    }
 }
