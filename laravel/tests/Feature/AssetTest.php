@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\Asset;
 use App\Models\User;
+use App\Models\Category;
+use App\Models\Parameter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Illuminate\Support\Facades\DB;
@@ -84,6 +86,58 @@ class AssetTest extends TestCase
 
         $this->assertDatabaseHas('assets', [
             'id' => $asset->id,
+        ]);
+    }
+
+    public function test_asset_can_store_dynamic_attributes_for_a_category(): void {
+
+        /** @var \App\Models\User $user */
+        $user = User::factory()->admin('Rishika', 'rishika123');
+        $category = Category::factory()->create();
+
+
+        $textParameter = Parameter::factory()->create([
+            'category_id' => $category->id,
+            'name' => 'Operating System',
+            'type' => 'text',
+        ]);
+
+        $numberParameter = Parameter::factory()->create([
+            'category_id' => $category->id,
+            'name' => 'RAM',
+            'type' => 'number',
+        ]);
+        
+        
+        $response = $this->actingAs($user)->postJson('/api/assets', [
+            'name' => 'Test Laptop',
+            'category_id' => $category->id,
+            'status' => 'Available',
+            'brand' => 'Dell',
+            'warranty' => '2027-12-31',
+            'price' => 1500,
+            'selected_user' => 0,
+
+            'attributes' => [
+                $textParameter->id => 'Windows 11',
+                $numberParameter->id => '16',
+            ],
+        ]);
+
+        $response->assertStatus(201);
+
+        $asset = Asset::where('name', 'Test Laptop')->first();
+
+        $this->assertDatabaseHas('attribute_values', [
+            'asset_id' => $asset->id,
+            'parameter_id' => $textParameter->id,
+            'value' => 'Windows 11',
+        ]);
+
+        $this->assertDatabaseHas('attribute_values', [
+            'asset_id' => $asset->id,
+            'parameter_id' => $numberParameter->id,
+            'value' => '16',
         ]);
     }
 }

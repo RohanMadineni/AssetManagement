@@ -52,7 +52,7 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::post('/', [AssetController::class, 'store']);
         Route::get('{id}', [AssetController::class, 'index'])->whereNumber('id');
         Route::put('{id}', [AssetController::class, 'update'])->whereNumber('id');
-        Route::delete('{id}', [AssetController::class, 'destroy'])->whereNumber('id');
+        Route::delete('{id}', [AssetController::class, 'destroy'])->whereNumber('id')->middleware(EnsureHasRole::class.':admin');
         Route::post('assign', [AssetController::class, 'assign']);
         Route::post('return', [AssetController::class, 'returnAsset']);
         // Route::get('{id}/history', [AssetController::class, 'history']);
