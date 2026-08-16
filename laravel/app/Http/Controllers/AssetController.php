@@ -191,14 +191,12 @@ class AssetController extends Controller
                 
             ]);
             
-            // event(new \App\Events\AssetCreated($asset));
-
             if ($request->has('attributes')) {
-                foreach ($request->attributes as $parameter_id => $value) {
+                foreach ($request->input('attributes') as $parameter_id => $value) {
                     Attribute_value::create([
                         'asset_id' => $asset->id,
                         'parameter_id' => $parameter_id,
-                        'value' => $value
+                        'value' => $value,
                     ]);
                 }
             }

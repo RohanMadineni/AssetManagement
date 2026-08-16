@@ -14,7 +14,7 @@ class AssetTest extends TestCase
     /**
      * A basic feature test example.
      */
-    use RefreshDatabase;
+    // use RefreshDatabase;
 
     public function test_authenticated_user_can_create_an_asset(): void
     {
@@ -92,20 +92,25 @@ class AssetTest extends TestCase
     public function test_asset_can_store_dynamic_attributes_for_a_category(): void {
 
         /** @var \App\Models\User $user */
-        $user = User::factory()->admin('Rishika', 'rishika123');
+        $user = User::factory()->create([
+            'role' => 'user',
+        ]);
+        
         $category = Category::factory()->create();
 
 
         $textParameter = Parameter::factory()->create([
             'category_id' => $category->id,
             'name' => 'Operating System',
-            'type' => 'text',
+            'data_type' => 'string',
+            'is_required' => false,
         ]);
 
         $numberParameter = Parameter::factory()->create([
             'category_id' => $category->id,
             'name' => 'RAM',
-            'type' => 'number',
+            'data_type' => 'number',
+            'is_required' => false,
         ]);
         
         
@@ -123,21 +128,35 @@ class AssetTest extends TestCase
                 $numberParameter->id => '16',
             ],
         ]);
-
+        $response->dump();
         $response->assertStatus(201);
+        $assetId = $response->json('id');
 
-        $asset = Asset::where('name', 'Test Laptop')->first();
+        $this->assertNotNull($assetId);
 
         $this->assertDatabaseHas('attribute_values', [
-            'asset_id' => $asset->id,
+            'asset_id' => $assetId,
             'parameter_id' => $textParameter->id,
             'value' => 'Windows 11',
         ]);
 
         $this->assertDatabaseHas('attribute_values', [
-            'asset_id' => $asset->id,
+            'asset_id' => $assetId,
             'parameter_id' => $numberParameter->id,
             'value' => '16',
         ]);
+        // $asset = Asset::where('name', 'Test Laptop')->first();
+
+        // $this->assertDatabaseHas('attribute_values', [
+        //     'asset_id' => $asset->id,
+        //     'parameter_id' => $textParameter->id,
+        //     'value' => 'Windows 11',
+        // ]);
+
+        // $this->assertDatabaseHas('attribute_values', [
+        //     'asset_id' => $asset->id,
+        //     'parameter_id' => $numberParameter->id,
+        //     'value' => '16',
+        // ]);
     }
 }

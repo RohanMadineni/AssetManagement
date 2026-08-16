@@ -6,7 +6,7 @@ import startRealtimeConsumer from './consumers/realTimeConsumer.js';
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
-  cors: { origin: '*' } // Allow CORS for development
+  cors: { origin: 'https://localhost' } // Allow CORS for development
 });
 
 export { io };
