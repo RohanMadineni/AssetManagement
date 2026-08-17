@@ -14,7 +14,7 @@ class AssetTest extends TestCase
     /**
      * A basic feature test example.
      */
-    // use RefreshDatabase;
+    use RefreshDatabase;
 
     public function test_authenticated_user_can_create_an_asset(): void
     {
