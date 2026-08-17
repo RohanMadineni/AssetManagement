@@ -34,8 +34,8 @@ jobs:
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
           DB_DATABASE: assetmanagement_test
-          DB_USERNAME: root
-          DB_PASSWORD: root
+          DB_USERNAME: ams_user
+          DB_PASSWORD: HIKbUxZg19rAazkZ
         run: php artisan migrate --force
 
       - name: Run PHPUnit tests
@@ -46,6 +46,6 @@ jobs:
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
           DB_DATABASE: assetmanagement_test
-          DB_USERNAME: root
-          DB_PASSWORD: root
+          DB_USERNAME: ams_user
+          DB_PASSWORD: HIKbUxZg19rAazkZ
         run: php artisan test

@@ -214,74 +214,74 @@ class AssetController extends Controller
     public function update(Request $request, $id){
         $asset = Asset::findOrFail($id);
 
-    $validated = $request->validate([
-        'name'      => 'required|string|max:255',
-        'status'    => 'required|string',
-        'brand'     => 'required|string|max:255',
-        'price'     => 'required|numeric|min:0',
-        'Warranty'  => 'required|date',
-    ]);
+        $validated = $request->validate([
+            'name'      => 'required|string|max:255',
+            'status'    => 'required|string',
+            'brand'     => 'required|string|max:255',
+            'price'     => 'required|numeric|min:0',
+            'Warranty'  => 'required|date',
+        ]);
 
-    if ($request->has('attributes')) {
+        if ($request->has('attributes')) {
 
-        foreach ($request->input('attributes') as $parameterID => $value) {
+            foreach ($request->input('attributes') as $parameterID => $value) {
 
-            $parameter = Parameter::findOrFail($parameterID);
+                $parameter = Parameter::findOrFail($parameterID);
 
-            $rules = [];
+                $rules = [];
 
-            switch ($parameter->data_type) {
-                case 'string':
-                    $rules[] = 'string';
-                    break;
+                switch ($parameter->data_type) {
+                    case 'string':
+                        $rules[] = 'string';
+                        break;
 
-                case 'number':
-                    $rules[] = 'numeric';
-                    break;
+                    case 'number':
+                        $rules[] = 'numeric';
+                        break;
 
-                case 'boolean':
-                    $rules[] = 'boolean';
-                    break;
+                    case 'boolean':
+                        $rules[] = 'boolean';
+                        break;
 
-                case 'date':
-                    $rules[] = 'date';
-                    break;
+                    case 'date':
+                        $rules[] = 'date';
+                        break;
+                }
+
+                if ($parameter->is_required) {
+                    array_unshift($rules, 'required');
+                } else {
+                    array_unshift($rules, 'nullable');
+                }
+
+                Validator::make(
+                    ['value' => $value],
+                    ['value' => $rules]
+                )->validate();
+
+                Attribute_value::updateOrCreate(
+                    [
+                        'asset_id'     => $asset->id,
+                        'parameter_id' => $parameterID,
+                    ],
+                    [
+                        'value' => $value,
+                    ]
+                );
             }
-
-            if ($parameter->is_required) {
-                array_unshift($rules, 'required');
-            } else {
-                array_unshift($rules, 'nullable');
-            }
-
-            Validator::make(
-                ['value' => $value],
-                ['value' => $rules]
-            )->validate();
-
-            Attribute_value::updateOrCreate(
-                [
-                    'asset_id'     => $asset->id,
-                    'parameter_id' => $parameterID,
-                ],
-                [
-                    'value' => $value,
-                ]
-            );
         }
-    }
 
-    $asset->update($validated);
+        $asset->update($validated);
 
-    try{
-        Cache::tags(['assets'])->flush();
-    } catch (\Throwable $e) {
-                    
-    }
-    return response()->json([
-        'message' => 'Asset updated successfully.',
-        'asset' => $asset,
-    ]);
+        try{
+            Cache::tags(['assets'])->flush();
+        } catch (\Throwable $e) {
+                        
+        }
+        return response()->json([
+            'message' => 'Asset updated successfully.',
+            'asset' => $asset,
+        ]);
     }
 
    
