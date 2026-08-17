@@ -6,6 +6,20 @@ jobs:
   test:
     runs-on: ubuntu-latest
     
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: assetmanagement_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+          
     env:
           DB_CONNECTION: mysql
           DB_HOST: 192.168.56.102
@@ -42,11 +56,11 @@ jobs:
           php artisan key:generate
 
       - name: Check MySQL service
-        run: nc -zv 127.0.0.1 3306
+        run: nc -zv 192.168.56.102 3306
 
       - name: Check database connection
         working-directory: laravel
-        run: docker compose exec laravel php artisan db:show
+        run: php artisan db:show
         
       - name: Run database migrations
         working-directory: laravel
