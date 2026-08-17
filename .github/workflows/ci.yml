@@ -21,8 +21,8 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
 
-      # - name: Build Docker images
-      #   run: docker compose build
+      - name: Build Docker images
+        run: docker compose build
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -41,14 +41,15 @@ jobs:
           cp .env.example .env
           php artisan key:generate
 
-      
+      - name: Check MySQL service
+        run: |
+          docker ps
+          docker inspect $(docker ps -q --filter "ancestor=mysql:8.0")
+          nc -zv 192.168.56.102 3306
 
       - name: Check database connection
         working-directory: laravel
-        run: |
-          docker compose build laravel
-          docker compose up -d 
-          docker compose exec laravel php artisan db:show
+        run: docker compose exec laravel php artisan db:show
         
       - name: Run database migrations
         working-directory: laravel
