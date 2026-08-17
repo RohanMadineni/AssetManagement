@@ -43,7 +43,7 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 
 # production
 RUN chmod -R 775 storage bootstrap/cache
-RUN chmod 600 .env
+RUN chmod 600 .env.example
 
 # CMD ["php", "artisan", "serve"]
 EXPOSE 9000
