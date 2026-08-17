@@ -18,6 +18,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build Docker images
+        run: docker compose build
+
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -34,6 +40,12 @@ jobs:
         run: |
           cp .env.example .env
           php artisan key:generate
+
+      - name: Check MySQL service
+        run: |
+          docker ps
+          docker inspect $(docker ps -q --filter "ancestor=mysql:8.0")
+          nc -zv 192.168.56.102 3306
 
       - name: Check database connection
         working-directory: laravel
@@ -54,5 +66,7 @@ jobs:
           DB_USERNAME: ams_user
           DB_PASSWORD: HIKbUxZg19rAazkZ
         run: php artisan test
+
+      
 
       
