@@ -6,6 +6,14 @@ jobs:
   test:
     runs-on: ubuntu-latest
     
+    env:
+          DB_CONNECTION: mysql
+          DB_HOST: 192.168.56.102
+          DB_PORT: 3306
+          DB_DATABASE: assetmanagement_test
+          DB_USERNAME: ams_user
+          DB_PASSWORD: HIKbUxZg19rAazkZ
+
     steps: 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -29,24 +37,10 @@ jobs:
 
       - name: Check database connection
         working-directory: laravel
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: assetmanagement_test
-          DB_USERNAME: root
-          DB_PASSWORD: root
         run: php artisan db:show
         
       - name: Run database migrations
         working-directory: laravel
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: assetmanagement_test
-          DB_USERNAME: ams_user
-          DB_PASSWORD: HIKbUxZg19rAazkZ
         run: php artisan migrate --force
 
       - name: Run PHPUnit tests
@@ -54,7 +48,7 @@ jobs:
         env:
           APP_ENV: testing
           DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
+          DB_HOST: 192.168.56.102
           DB_PORT: 3306
           DB_DATABASE: assetmanagement_test
           DB_USERNAME: ams_user
