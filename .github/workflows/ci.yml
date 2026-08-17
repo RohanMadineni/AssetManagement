@@ -41,9 +41,7 @@ jobs:
           cp .env.example .env
           php artisan key:generate
 
-      - name: Check MySQL service
-        run: |
-          nc -zv 192.168.56.102 3306
+      
 
       - name: Check database connection
         working-directory: laravel
