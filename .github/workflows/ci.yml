@@ -45,7 +45,9 @@ jobs:
 
       - name: Check database connection
         working-directory: laravel
-        run: docker compose exec laravel php artisan db:show
+        run: |
+          docker compose build laravel 
+          docker compose exec laravel php artisan db:show
         
       - name: Run database migrations
         working-directory: laravel
