@@ -43,8 +43,6 @@ jobs:
 
       - name: Check MySQL service
         run: |
-          docker ps
-          docker inspect $(docker ps -q --filter "ancestor=mysql:8.0")
           nc -zv 192.168.56.102 3306
 
       - name: Check database connection
