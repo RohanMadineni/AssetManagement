@@ -26,11 +26,11 @@ jobs:
 
     env:
           DB_CONNECTION: mysql
-          DB_HOST: 192.168.56.102
+          DB_HOST: 127.0.0.1
           DB_PORT: 3306
           DB_DATABASE: assetmanagement_test
-          DB_USERNAME: ams_user
-          DB_PASSWORD: HIKbUxZg19rAazkZ
+          DB_USERNAME: root
+          DB_PASSWORD: root
 
     steps: 
       - name: Checkout repository
@@ -73,13 +73,12 @@ jobs:
       - name: Run PHPUnit tests
         working-directory: laravel
         env:
-          APP_ENV: testing
           DB_CONNECTION: mysql
-          DB_HOST: 192.168.56.102
+          DB_HOST: 127.0.0.1
           DB_PORT: 3306
           DB_DATABASE: assetmanagement_test
-          DB_USERNAME: ams_user
-          DB_PASSWORD: HIKbUxZg19rAazkZ
+          DB_USERNAME: root
+          DB_PASSWORD: root
         run: php artisan test
 
       
