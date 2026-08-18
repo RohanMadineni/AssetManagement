@@ -85,6 +85,11 @@ jobs:
           DB_DATABASE: assetmanagement_test
           DB_USERNAME: root
           DB_PASSWORD: root
+          RABBITMQ_HOST: 127.0.0.1
+          RABBITMQ_PORT: 5672
+          RABBITMQ_USER: guest
+          RABBITMQ_PASSWORD: guest
+          RABBITMQ_EXCHANGE: asset.exchange
         run: php artisan test
 
       
