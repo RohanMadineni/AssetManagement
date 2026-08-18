@@ -10,8 +10,12 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: assetmanagement_test
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: assetmanagement_test
+          DB_USERNAME: root
+          DB_PASSWORD: root
         ports:
           - 3306:3306
         options: >-
@@ -58,9 +62,9 @@ jobs:
       # - name: Check MySQL service
       #   run: nc -zv 192.168.56.102 3306
 
-      # - name: Check database connection
-      #   working-directory: laravel
-      #   run: php artisan db:show
+      - name: Check database connection
+        working-directory: laravel
+        run: php artisan db:show
         
       - name: Run database migrations
         working-directory: laravel

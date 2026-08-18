@@ -10,6 +10,7 @@ use App\Jobs\IndexAssetToElasticsearch;
 use App\Jobs\DeleteAssetFromElasticsearch;
 use Illuminate\Support\Facades\Cache;
 use App\Services\RabbitMQPublisher;
+use Illuminate\Support\Facades\Log;
 // use App\Services\ElasticsearchService as ServicesElasticsearchService;
 
 class AssetObserver
@@ -24,6 +25,12 @@ class AssetObserver
         // app(ElasticsearchService::class)->indexAsset($asset);
         Cache::tags(['assets'])->flush();
         // IndexAssetToElasticsearch::dispatch($asset);
+        $correlationId = request()->attributes->get('correlation_id');
+
+        Log::info('Publishing asset.created event', [
+            'asset_id' => $asset->id,
+            'correlation_id' => $correlationId,
+        ]);
         app(RabbitMQPublisher::class)->publish(
             'asset.created',
             [
@@ -37,10 +44,9 @@ class AssetObserver
                 'title' => 'Asset Created',
                 'message' => $asset->name,
                 'asset' => $asset->toArray(),
+                'correlation_id' => $correlationId,
             ]
         );
-        
-      
     }
 
     /**
@@ -77,6 +83,12 @@ class AssetObserver
         // app(ElasticsearchService::class)->delete($asset->id);
         Cache::tags(['assets'])->flush();
         // DeleteAssetFromElasticsearch::dispatch($asset->id);
+        $correlationId = request()->attributes->get('correlation_id');
+
+        Log::info('Publishing asset.deleted event', [
+            'asset_id' => $asset->id,
+            'correlation_id' => $correlationId,
+        ]);
 
         app(RabbitMQPublisher::class)->publish(
             'asset.deleted',
@@ -88,6 +100,7 @@ class AssetObserver
                 'title' => 'Asset Deleted',
                 'message' => $asset->name,
                 'asset' => $asset->toArray(),
+                'correlation_id' => $correlationId,
             ]
         );
         

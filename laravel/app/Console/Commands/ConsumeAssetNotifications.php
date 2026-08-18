@@ -115,7 +115,7 @@ class ConsumeAssetNotifications extends Command
                             'title' => 'Asset Created',
                             'message' => $event['name'],
                             'type' => 'success',
-                            'is_read' => false
+                            'is_read' => false,
                         ]);
                         $this->info(
                             'Notification created'
@@ -131,6 +131,8 @@ class ConsumeAssetNotifications extends Command
                                 'type' => $notification->type,
                                 'is_read' => $notification->is_read,
                                 'created_at' => $notification->created_at,
+                                'asset_id' => $event['asset_id'],
+                                'correlation_id' => $event['correlation_id']
                             ]
                         );
                         
@@ -158,6 +160,8 @@ class ConsumeAssetNotifications extends Command
                                 'type' => $notification->type,
                                 'is_read' => $notification->is_read,
                                 'created_at' => $notification->created_at,
+                                'asset_id' => $event['asset_id'],
+                                'correlation_id' => $event['correlation_id']
                             ]
                         );
                     }

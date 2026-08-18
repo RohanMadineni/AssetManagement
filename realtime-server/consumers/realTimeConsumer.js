@@ -92,10 +92,18 @@ async function startRealtimeConsumer(io) {
                 return;
 
             try{
+                
                 const notification = JSON.parse(
                     message.content.toString()
                 );
-                
+                console.log(notification);
+                const correlationId = notification.correlation_id;
+
+                console.log(
+                    `[RabbitMQ] Received ${notification.message} ` +
+                    `asset_id=${notification.asset_id} ` +
+                    `correlation_id=${correlationId}`
+                );
                 const notificationId = notification.id;
 
                 if (!notificationId) {

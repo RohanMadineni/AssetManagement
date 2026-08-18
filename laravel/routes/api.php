@@ -63,7 +63,7 @@ Route::middleware('auth:sanctum')->group(function(){
     });
 });
 Route::put('/putusers/{id}', [UserController::class, 'update'])->middleware('auth:sanctum', EnsureHasRole::class.':admin');
-Route::middleware('auth:sanctum', EnsureHasRole::class.':admin')->group(function(){ 
+Route::middleware(['auth:sanctum', EnsureHasRole::class.':admin'])->group(function(){ 
     Route::get('/users', [UserController::class, 'index']);
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
     

@@ -17,7 +17,7 @@ use Carbon\Carbon;
 use App\Jobs\SendRealtimeNotification;
 use Illuminate\Support\Facades\Cache;
 use App\Services\RabbitMQPublisher;
-
+use Illuminate\Support\Facades\Log;
 class AssetController extends Controller
 {
     //
@@ -190,7 +190,11 @@ class AssetController extends Controller
                 'price'=>$validated['price'], 
                 
             ]);
-            
+            $correlationId = request()->attributes->get('correlation_id');
+            Log::info('Asset created', [
+                'asset_id' => $asset->id,
+                'correlation_id' => $correlationId,
+            ]);
             if ($request->has('attributes')) {
                 foreach ($request->input('attributes') as $parameter_id => $value) {
                     Attribute_value::create([
@@ -290,6 +294,11 @@ class AssetController extends Controller
 
         $asset->attribute_values()->delete();
         $asset->delete();
+        $correlationId = request()->attributes->get('correlation_id');
+        Log::info('Asset deleted', [
+            'asset_id' => $asset->id,
+            'correlation_id' => $correlationId,
+        ]);
 
         return response()->json([
             'message' => 'Asset deleted'
