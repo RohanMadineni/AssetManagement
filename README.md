@@ -29,6 +29,10 @@ The system consists of:
 
 **Start: docker compose up -d**
 
+## Set Up
+  - docker compose build
+  - docker compose up -d
+    
 ### Useful commands: 
 
 Laravel: 
